@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "143448234850",
+    "project_id": "medicare-cfddf",
+    "storage_bucket": "medicare-cfddf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143448234850:android:d9a3be9c38f84b9c5bea3b",
+        "android_client_info": {
+          "package_name": "com.example.medicare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHnC2ZTNBK1sSYf4jFj_nb3Tg5VS5ZgTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
