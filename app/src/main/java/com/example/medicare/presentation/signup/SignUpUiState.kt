@@ -10,7 +10,7 @@ data class SignUpUiState(
     val secondName:String="",
     val secondNameErrorMessage:String?=null,
     val password: String="",
-    val passwordIsHidden: Boolean=true,
+    val isPasswordVisible: Boolean=true,
     val passwordErrorMessage: String?=null,
     val gender: ChooseTabState?=null,
     val genderError: String?=null,

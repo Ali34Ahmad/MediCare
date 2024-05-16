@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -22,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicare.R
@@ -35,18 +39,21 @@ fun OutlinedTextFieldComponent(
     @StringRes hint: Int,
     modifier: Modifier = Modifier,
     errorMessage: String?,
-    showTrailingIcon: Boolean = false,
-    isRequired:Boolean=true
+    showEyeTrailingIcon: Boolean = false,
+    isPasswordVisible: Boolean = false,
+    isRequired: Boolean = true,
+    onVisibilityIconClicked: () -> Unit = {},
 ) {
     var isFocused by remember {
         mutableStateOf(false)
     }
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = if(title==null){""}
-            else{
+            text = if (title == null) {
+                ""
+            } else {
                 if (isRequired) "$title*" else title
-                },
+            },
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.height(0.dp))
@@ -55,7 +62,7 @@ fun OutlinedTextFieldComponent(
             onValueChange = onValueChange,
             label = {
                 Text(
-                    text = if(!isFocused&&textFieldValue.equals("")) stringResource(id = hint) else "",
+                    text = if (!isFocused && textFieldValue.equals("")) stringResource(id = hint) else "",
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
@@ -66,18 +73,23 @@ fun OutlinedTextFieldComponent(
                 },
             maxLines = 1,
             trailingIcon = {
-                if (showTrailingIcon) Icon(
-                    imageVector = Icons.Outlined.Visibility,
-                    contentDescription = null
-                )
+                if (showEyeTrailingIcon)
+                    IconButton(onClick = onVisibilityIconClicked) {
+                        Icon(
+                            imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
             },
+            visualTransformation = if (isPasswordVisible||!showEyeTrailingIcon) VisualTransformation.None else PasswordVisualTransformation()
         )
+
         Spacer(modifier = Modifier.height(4.dp))
-        if(errorMessage!=null){
+        if (errorMessage != null) {
             Text(
                 text = errorMessage,
                 style = MaterialTheme.typography.bodySmall,
-                color=MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error
             )
         }
 
@@ -130,7 +142,7 @@ fun TextFieldComponentPreview() {
                 onValueChange = {},
                 hint = R.string.email_hint,
                 modifier = Modifier.padding(16.dp),
-                showTrailingIcon = true,
+                showEyeTrailingIcon = true,
                 errorMessage = ""
             )
         }

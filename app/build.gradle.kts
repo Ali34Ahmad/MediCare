@@ -4,6 +4,8 @@ plugins {
     id("com.google.gms.google-services")
     alias(libs.plugins.ksp)
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.kotlin.serialization)
+
 }
 
 android {
@@ -87,6 +89,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.material.icons.extended)
+
+
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.navigation.compose)
 
 
 }

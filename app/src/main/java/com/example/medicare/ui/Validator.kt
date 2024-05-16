@@ -1,18 +1,17 @@
 package com.example.medicare.ui
 
+import com.example.dispensary.ui.composables.ChooseTabState
+
 class Validator {
 
-    fun emailIsValid(email:String): Boolean {
+    private fun String.isValidEmail(): Boolean {
         val emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?\$"
-        if (!email.matches(emailRegex.toRegex())) {
-            return false
-        }
-        return true
+        return matches(emailRegex.toRegex())
     }
 
     fun checkEmail(email:String):String?{
         if(email.equals("")) return "required_field"
-        else if (!emailIsValid(email)) return "invalid_email"
+        else if (!email.isValidEmail()) return "invalid_email"
         return null
     }
     fun checkFirstName(firstName:String):String?{
@@ -28,4 +27,11 @@ class Validator {
         if(password.length<8) return "password_at_least_8_letters"
         return null
     }
+
+    fun checkGender(gender: ChooseTabState?):String?{
+        if(gender==null) return "required_field"
+        return null
+    }
+
+
 }
