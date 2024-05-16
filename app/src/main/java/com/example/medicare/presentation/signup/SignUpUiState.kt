@@ -1,4 +1,4 @@
-package com.example.medicare.ui.presentation.signup
+package com.example.medicare.presentation.signup
 
 import com.example.dispensary.ui.composables.ChooseTabState
 

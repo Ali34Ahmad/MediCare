@@ -1,17 +1,17 @@
-package com.example.medicare.ui.presentation.signup
+package com.example.medicare.presentation.signup
 
-import android.app.Application
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.getString
+
+
+
+
 import androidx.lifecycle.ViewModel
 import com.example.dispensary.ui.composables.ChooseTabState
-import com.example.medicare.R
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
 
 interface ResourceProvider{
@@ -24,8 +24,11 @@ interface ResourceProvider{
     }
 }*/
 
-class SignUpViewModel(
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 

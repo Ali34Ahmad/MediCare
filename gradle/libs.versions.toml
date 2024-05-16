@@ -1,9 +1,6 @@
 [versions]
-<<<<<<< HEAD
-agp = "8.4.0"
-=======
 agp = "8.3.2"
->>>>>>> 421e5a2 (Initial commit)
+
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
@@ -13,10 +10,9 @@ lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.9.0"
 composeBom = "2023.08.00"
 
-googleServices = "4.4.1"
+
 firebaseBom = "32.8.1"
 firebaseAuth = "22.3.1"
-googleGmsGoogleServices = "4.4.1"
 
 kspPlugin = "1.9.0-1.0.12"
 hiltAndroid = "2.51.1"
@@ -27,14 +23,11 @@ kotlinxCoroutinesAndroid = "1.8.0"
 kotlinxCoroutinesCore = "1.7.3"
 kotlinxCoroutinesPlayServices = "1.7.3"
 
-<<<<<<< HEAD
-[libraries]
-=======
 materialIconsExtendedVersion = "1.6.7"
 
 [libraries]
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtendedVersion" }
->>>>>>> 421e5a2 (Initial commit)
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

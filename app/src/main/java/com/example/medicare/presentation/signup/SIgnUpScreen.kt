@@ -1,4 +1,4 @@
-package com.example.medicare.ui.presentation.signup
+package com.example.medicare.presentation.signup
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dispensary.ui.composables.AppLogo
 import com.example.dispensary.ui.composables.CheckBoxComponent
@@ -27,8 +28,11 @@ import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel) {
+fun SignUpScreen(
+    viewModel: SignUpViewModel = hiltViewModel()
+) {
     val uiState = viewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
