@@ -13,6 +13,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
@@ -68,3 +69,13 @@ fun MediCareTheme(
         content = content
     )
 }
+
+object Spacing{
+    val extraSmall=4.dp
+    val small=8.dp
+    val medium=16.dp
+    val large=32.dp
+    val extraLarge=64.dp
+}
+
+//val MaterialTheme.Spacing=Spacing

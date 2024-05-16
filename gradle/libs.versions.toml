@@ -1,5 +1,9 @@
 [versions]
+<<<<<<< HEAD
 agp = "8.4.0"
+=======
+agp = "8.3.2"
+>>>>>>> 421e5a2 (Initial commit)
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
@@ -23,7 +27,14 @@ kotlinxCoroutinesAndroid = "1.8.0"
 kotlinxCoroutinesCore = "1.7.3"
 kotlinxCoroutinesPlayServices = "1.7.3"
 
+<<<<<<< HEAD
 [libraries]
+=======
+materialIconsExtendedVersion = "1.6.7"
+
+[libraries]
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtendedVersion" }
+>>>>>>> 421e5a2 (Initial commit)
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
