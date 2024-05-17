@@ -1,6 +1,7 @@
 package com.example.medicare.data.services
 
-import com.example.medicare.data.model.User
+
+import com.example.medicare.data.model.UserAccount
 import kotlinx.coroutines.flow.Flow
 
 interface AccountService {
@@ -9,7 +10,7 @@ interface AccountService {
 
     val isSignedIn: Boolean
 
-    val currentUser: Flow<User>
+    val currentUserAccount: Flow<UserAccount>
     suspend fun login(email: String, password: String)
 
     suspend fun signUp(email: String, password: String)
