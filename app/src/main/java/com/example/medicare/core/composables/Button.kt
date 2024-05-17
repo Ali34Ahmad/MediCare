@@ -30,7 +30,7 @@ fun ElevatedButtonComponent(
     Button(onClick = onClick,modifier=modifier) {
         Text(
             text = stringResource(id = text),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyLarge
             )
     }
 }

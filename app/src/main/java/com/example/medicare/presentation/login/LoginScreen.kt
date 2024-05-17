@@ -1,4 +1,4 @@
-package com.example.medicare.presentation.signup
+package com.example.medicare.presentation.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,10 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dispensary.ui.composables.CheckBoxComponent
-import com.example.dispensary.ui.composables.ChooseTab
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
-import com.example.dispensary.ui.composables.OutlinedTextFieldWithTwoFieldsComponent
 import com.example.dispensary.ui.composables.TextStyle
 import com.example.dispensary.ui.composables.TextWithMultipleStyles
 import com.example.medicare.R
@@ -33,9 +31,9 @@ import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
 @Composable
-fun SignUpScreen(
-    onSignUpClick: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+fun LoginScreen(
+    onLoginClick: () -> Unit = {},
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -62,24 +60,6 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(Spacing.medium))
 
-        OutlinedTextFieldWithTwoFieldsComponent(
-            title = stringResource(id = R.string.name),
-            textFieldValue1 = uiState.value.firstName,
-            textFieldValue2 = uiState.value.secondName,
-            onValueChange1 = {
-                viewModel.updateFirstName(it)
-            },
-            onValueChange2 = {
-                viewModel.updateSecondName(it)
-            },
-            hint1 = R.string.first_name_hint,
-            hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.firstNameErrorMessage,
-            errorMessage2 = uiState.value.secondNameErrorMessage,
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.medium))
-
         OutlinedTextFieldComponent(
             title = stringResource(id = R.string.password),
             textFieldValue = uiState.value.password,
@@ -92,20 +72,7 @@ fun SignUpScreen(
             onVisibilityIconClicked = {
                 viewModel.updatePasswordVisibilityState()
             },
-            isPasswordVisible = uiState.value.isPasswordVisible,
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.medium))
-
-        ChooseTab(
-            title = stringResource(id = R.string.gender),
-            text1 = R.string.male,
-            text2 = R.string.female,
-            chooseTabState = uiState.value.gender,
-            onChooseChange = { chooseTabState ->
-                viewModel.updateGender(chooseTabState)
-            },
-            errorMessage = uiState.value.genderError
+            isPasswordVisible = uiState.value.isPasswordVisible
         )
 
         Spacer(modifier = Modifier.height(Spacing.large))
@@ -124,7 +91,7 @@ fun SignUpScreen(
 
         ElevatedButtonComponent(
             text = R.string.sign_up,
-            onClick = { viewModel.signUp(onSignUpClick) },
+            onClick = { viewModel.login(onLoginClick) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -135,9 +102,9 @@ fun SignUpScreen(
             contentAlignment = Alignment.Center
         ) {
             TextWithMultipleStyles(
-                text1 = stringResource(id = R.string.already_have_account_part1),
+                text1 = stringResource(id = R.string.do_not_have_account_part1),
                 style1 = TextStyle.Normal,
-                text2 = stringResource(id = R.string.already_have_account_part2),
+                text2 = stringResource(id = R.string.do_not_have_account_part2),
                 style2 = TextStyle.Normal,
                 color2 = MaterialTheme.colorScheme.primary,
                 fontSizeSp = 16,
@@ -148,12 +115,10 @@ fun SignUpScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun SignUpScreenPreview() {
+private fun LoginScreenPreview() {
     MediCareTheme {
         Surface {
-            SignUpScreen(
-                onSignUpClick = {}
-            )
+            LoginScreen()
         }
     }
 }

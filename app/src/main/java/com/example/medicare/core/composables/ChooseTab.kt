@@ -37,7 +37,7 @@ fun ChooseTab(
     isRequired: Boolean = true,
     @StringRes text1: Int,
     @StringRes text2: Int,
-    errorMessage:String?="",
+    errorMessage: String? = null,
     chooseTabState: ChooseTabState?,
     onChooseChange: (ChooseTabState) -> Unit,
 ) {
@@ -126,10 +126,12 @@ fun ChooseTab(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = errorMessage ?: "",
-            style = MaterialTheme.typography.labelLarge
-        )
+        if (errorMessage != null)
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodySmall,
+                color=MaterialTheme.colorScheme.error
+            )
     }
 }
 
