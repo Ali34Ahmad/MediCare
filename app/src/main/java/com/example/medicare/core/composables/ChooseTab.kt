@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicare.R
+import com.example.medicare.ui.theme.Spacing
 import com.example.medicare.ui.theme.primary_container
 
 sealed class ChooseTabState {
@@ -50,7 +51,7 @@ fun ChooseTab(
             },
             style = MaterialTheme.typography.titleMedium
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Spacing.extraSmall))
         Row(modifier = modifier.fillMaxWidth()) {
             Box(
                 modifier = Modifier

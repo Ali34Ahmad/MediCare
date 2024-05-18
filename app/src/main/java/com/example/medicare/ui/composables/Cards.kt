@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicare.R
+import com.example.medicare.ui.theme.Spacing
 import com.example.medicare.ui.theme.green
 import com.example.medicare.ui.theme.primary_container
 import com.example.medicare.ui.theme.secondary
@@ -42,20 +43,20 @@ import com.example.medicare.ui.theme.tertiary
 fun SectionCardComponent(
     modifier: Modifier = Modifier,
     @DrawableRes image: Int,
+    isSelected: Boolean=false,
     title: String,
 ) {
     Column(
         modifier = modifier
-            .width(120.dp)
+            .width(64.dp)
             .clickable { },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
                 .border(
-                    width = 1.dp, color = MaterialTheme.colorScheme.primary,
+                    width = if(isSelected)1.dp else 0.dp, color = MaterialTheme.colorScheme.primary,
                     shape = MaterialTheme.shapes.medium
                 ),
             colors = CardDefaults.cardColors(containerColor = primary_container)
@@ -66,6 +67,7 @@ fun SectionCardComponent(
                 modifier = Modifier.padding(10.dp),
             )
         }
+        Spacer(modifier = Modifier.height(Spacing.extraSmall))
         Text(
             text = title,
             style = MaterialTheme.typography.titleSmall
@@ -137,9 +139,7 @@ fun VaccinationAppointmentCardComponent(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier,
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
@@ -211,8 +211,7 @@ fun ClinicAppointmentCardComponent(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
@@ -280,7 +279,7 @@ fun ClinicAppointmentCardComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildCardComponent(
-    onClick: () -> Unit,
+    onClick: () -> Unit={},
     upNumber: String,
     downNumber: String,
     childName: String,
@@ -291,8 +290,7 @@ fun ChildCardComponent(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
@@ -556,7 +554,7 @@ fun ClinicInformationCardComponent(
     sectionName: String,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier) {
+    Card(modifier = modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(16.dp)) {
             Box(contentAlignment = Alignment.BottomEnd) {
                 Image(

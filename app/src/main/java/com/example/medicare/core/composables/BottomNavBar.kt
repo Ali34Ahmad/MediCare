@@ -41,21 +41,50 @@ val listOfFilledIcons = listOf(
     R.drawable.ic_child_filled,
 )
 
+val bottomNavItems = listOf(
+    BottomNavigationItem(
+        label = R.string.home,
+        route = "Home"
+    ),
+    BottomNavigationItem(
+        label = R.string.vaccines,
+        route = "Home"
+    ),
+    BottomNavigationItem(
+        label = R.string.appointments,
+        route = "Home"
+    ),
+    BottomNavigationItem(
+        label = R.string.children,
+        route = "Home"
+    ),
+
+    )
+
 @Composable
 fun BottomNavBarComponent(
-    items: List<BottomNavigationItem>,
     modifier: Modifier = Modifier,
+    onItem1Click: () -> Unit = {},
+    onItem2Click: () -> Unit = {},
+    onItem3Click: () -> Unit = {},
+    onItem4Click: () -> Unit = {},
+    selectedIndex: Int = 0,
 ) {
-    var selectedIndex by remember { mutableStateOf(0) }
     NavigationBar(modifier = modifier) {
-        items.forEachIndexed { index, item ->
+        bottomNavItems.forEachIndexed { index, item ->
             NavigationBarItem(
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = tint,
                     indicatorColor = primary_container
                 ),
                 selected = selectedIndex == index,
-                onClick = { selectedIndex = index },
+                onClick =
+                when (index) {
+                    0 -> onItem1Click
+                    1 -> onItem2Click
+                    2 -> onItem3Click
+                    else -> onItem4Click
+                },
                 icon = {
                     Icon(
                         painter = painterResource(
@@ -82,27 +111,7 @@ fun BottomNavBarComponent(
 private fun BottomNavBarComponentPreview() {
     MaterialTheme {
         Surface {
-            BottomNavBarComponent(
-                items = listOf(
-                    BottomNavigationItem(
-                        label = R.string.home,
-                        route = "Home"
-                    ),
-                    BottomNavigationItem(
-                        label = R.string.vaccines,
-                        route = "Home"
-                    ),
-                    BottomNavigationItem(
-                        label = R.string.appointments,
-                        route = "Home"
-                    ),
-                    BottomNavigationItem(
-                        label = R.string.children,
-                        route = "Home"
-                    ),
-
-                    )
-            )
+            BottomNavBarComponent()
         }
     }
 }
