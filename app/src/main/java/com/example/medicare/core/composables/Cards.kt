@@ -479,11 +479,11 @@ fun AppointmentReminderNotificationCardComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateCardComponent(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     dayOfMonth: String,
     dayOfWeek: String,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,

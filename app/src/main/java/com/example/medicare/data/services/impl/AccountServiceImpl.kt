@@ -1,6 +1,6 @@
 package com.example.medicare.data.services.impl
 
-import com.example.medicare.data.model.User
+import com.example.medicare.data.model.UserAccount
 import com.example.medicare.data.services.AccountService
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
@@ -10,7 +10,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AccountServiceImpl @Inject constructor(
-    private val auth : FirebaseAuth
+    private val auth : FirebaseAuth,
 ) : AccountService {
     override val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
@@ -21,14 +21,17 @@ class AccountServiceImpl @Inject constructor(
     Override the currentUser property to provide a Flow of User objects.
     This Flow emits a new User object whenever the current user changes.
      */
-    override val currentUser: Flow<User>
+
+
+    override val currentUserAccount: Flow<UserAccount>
         get() = callbackFlow {
+
             val listener = FirebaseAuth.AuthStateListener {
                 auth ->
                 trySend(
-                    User(
-                    auth.currentUser?.uid ?: "",
-                    auth.currentUser?.email?: ""
+                    UserAccount(
+                    id = auth.currentUser?.uid ?: "",
+                    email = auth.currentUser?.email?: "",
                     )
                 )
             }
@@ -36,6 +39,7 @@ class AccountServiceImpl @Inject constructor(
             awaitClose {
                 auth.removeAuthStateListener(listener)
             }
+            TODO("make it return user from firestore")
         }
 
     override suspend fun login(email: String, password: String) {

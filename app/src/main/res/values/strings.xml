@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Medicare</string>
+    <string name="app_name">MediCare</string>
 
 
     <!--Bottom Nav bar texts-->
@@ -23,7 +23,6 @@
     <string name="first_name_hint">First</string>
     <string name="second_name_hint">Second</string>
     <string name="password_hint">Password</string>
-    <string name="number_hint">22/5</string>
 
     <!---->
     <string name="required_field">Reuired field</string>
@@ -57,10 +56,6 @@
     <string name="book_now">Book now</string>
     <string name="notify_parent">Notify parent</string>
     <string name="save">Save</string>
-
-    <!--Content description texts-->
-    <string name="go_back">Go back</string>
-
 
     <!--Text text-->
     <string name="already_have_account_part1">Already have an account?</string>
@@ -105,9 +100,5 @@
     <string name="test_availability_end_date">05/07/2024</string>
     <string name="test_work_start_time">09:00 AM</string>
     <string name="test_work_end_time">03:00 PM</string>
-    <string name="clinics">Clinics</string>
-    <string name="upcoming_vaccinations">Upcoming vaccinations</string>
-    <string name="see_all">See all</string>
-    <string name="birthday">Birthday</string>
 
 </resources>

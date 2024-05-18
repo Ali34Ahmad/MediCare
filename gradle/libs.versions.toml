@@ -24,6 +24,9 @@ kotlinxCoroutinesCore = "1.7.3"
 kotlinxCoroutinesPlayServices = "1.7.3"
 
 materialIconsExtendedVersion = "1.6.7"
+googleGmsGoogleServices = "4.4.1"
+firebaseDatabase = "21.0.0"
+firebaseFirestore = "25.0.0"
 uiTextGoogleFonts = "1.6.7"
 serialization = "1.6.3"
 composeNavigation = "2.8.0-alpha08"
@@ -59,6 +62,7 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
