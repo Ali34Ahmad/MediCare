@@ -47,7 +47,11 @@ class AccountServiceImpl @Inject constructor(
     }
 
     override suspend fun signUp(email: String, password: String) {
-       auth.createUserWithEmailAndPassword(email, password).await()
+       auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
+
+       }.addOnFailureListener {
+
+       }.await()
     }
 
     override suspend fun deleteAccount() {

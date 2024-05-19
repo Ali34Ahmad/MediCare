@@ -7,7 +7,7 @@ import com.google.firebase.firestore.DocumentId
 
 data class Vaccine(
     @DocumentId
-    val id : String,
+    val id : String ="",
     val name : String,
     val description : String,
     val fromAge : Age,
@@ -17,6 +17,17 @@ data class Vaccine(
     val conflicts : List<String>,
     val visitNumber : Int,
 ){
+    constructor() : this(
+        id = "",
+        name = "",
+        description = "",
+        fromAge = Age(),
+        toAge = Age(),
+        availabilityStartDate = FullDate(),
+        lastAvailableDate = FullDate(),
+        conflicts = listOf(),
+        visitNumber = 0
+    )
     fun getVaccineState() : VaccineState {
         val comparison = FullDate.compareFullDates(lastAvailableDate , FullDate.getCurrentDate())
         return if(comparison >= 0 ){

@@ -11,6 +11,7 @@ data class FullDate(
     val month: Month,
     val day: DayOfWeek
 ){
+    constructor() : this(2000,Month.JAN,DayOfWeek.SUN)
     companion object{
         fun getCurrentDate() : FullDate{
             val calendar = Calendar.getInstance()
