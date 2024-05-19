@@ -4,12 +4,16 @@ package com.example.medicare.presentation.login
 
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.medicare.data.services.AccountService
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -26,13 +30,11 @@ interface ResourceProvider{
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-
+    private val accountService: AccountService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
-
-    private val validator:Validator=Validator()
 
 
     fun updateEmail(newEmail: String) {
@@ -57,13 +59,20 @@ class LoginViewModel @Inject constructor(
     fun login(onClickLoginButton:()->Unit) {
         _uiState.value=
             _uiState.value.copy(
-                emailErrorMessage = validator.checkEmail(uiState.value.email),
-                passwordErrorMessage = validator.checkPassword(uiState.value.password),
+                emailErrorMessage = Validator.checkEmail(uiState.value.email),
+                passwordErrorMessage = Validator.checkPassword(uiState.value.password),
             )
         if(uiState.value.emailErrorMessage==null&&
             uiState.value.passwordErrorMessage==null&&
             uiState.value.acceptPrivacyIsChecked
             ){
+            viewModelScope.launch {
+                try {
+                    accountService.login(uiState.value.email,uiState.value.password)
+                }catch (e:Exception){
+                    Log.e("Log in",e.message?:"Error")
+                }
+            }
             onClickLoginButton()
         }
     }

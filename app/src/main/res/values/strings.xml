@@ -100,6 +100,5 @@
     <string name="test_availability_end_date">05/07/2024</string>
     <string name="test_work_start_time">09:00 AM</string>
     <string name="test_work_end_time">03:00 PM</string>
-    <string name="not_specified">not specified</string>
 
 </resources>

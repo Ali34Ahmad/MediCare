@@ -11,7 +11,7 @@ val Pink80 = Color(0xFFEFB8C8)
 val primary = Color(0xFF0EA794)
 val primary_container = Color(0xFF9FF2E0)
 
-val secondary = Color(0xFF045046)
+val secondary = Color(0xFF032B25)
 val secondary_container = Color(0xFFDAF9EE)
 
 val tertiary = Color(0xFF006A65)

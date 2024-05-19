@@ -1,13 +1,17 @@
 package com.example.medicare.presentation.signup
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.dispensary.ui.composables.ChooseTabState
+import com.example.medicare.data.services.AccountService
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /*
@@ -22,13 +26,11 @@ interface ResourceProvider {
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-
+    private val accountService: AccountService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
-
-    private val validator: Validator = Validator()
 
 
     fun updateEmail(newEmail: String) {
@@ -64,14 +66,14 @@ class SignUpViewModel @Inject constructor(
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
 
-    fun signUp(onClickSignUpButton:()->Unit) {
+    fun signUp(onSignUpButtonClick:()->Unit) {
         _uiState.value =
             _uiState.value.copy(
-                emailErrorMessage = validator.checkEmail(uiState.value.email),
-                firstNameErrorMessage = validator.checkFirstName(uiState.value.firstName),
-                secondNameErrorMessage = validator.checkSecondName(uiState.value.secondName),
-                passwordErrorMessage = validator.checkPassword(uiState.value.password),
-                genderError = validator.checkGender(uiState.value.gender),
+                emailErrorMessage = Validator.checkEmail(uiState.value.email),
+                firstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.firstName),
+                secondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.secondName),
+                passwordErrorMessage = Validator.checkPassword(uiState.value.password),
+                genderError = Validator.checkGender(uiState.value.gender),
             )
         if (uiState.value.emailErrorMessage == null &&
             uiState.value.firstNameErrorMessage == null &&
@@ -80,7 +82,14 @@ class SignUpViewModel @Inject constructor(
             uiState.value.genderError == null &&
             uiState.value.acceptPrivacyIsChecked
         ) {
-            onClickSignUpButton()
+            viewModelScope.launch {
+                try {
+                    accountService.signUp(uiState.value.email,uiState.value.password)
+                }catch (e:Exception){
+                    Log.e("Sign Up",e.message?:"Error")
+                }
+            }
+            onSignUpButtonClick()
         }
     }
 

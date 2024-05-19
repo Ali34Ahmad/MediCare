@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicare.R
 import com.example.medicare.ui.theme.MediCareTheme
+import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun OutlinedTextFieldComponent(
@@ -56,7 +57,6 @@ fun OutlinedTextFieldComponent(
             },
             style = MaterialTheme.typography.titleMedium
         )
-        Spacer(modifier = Modifier.height(0.dp))
         OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
@@ -81,10 +81,10 @@ fun OutlinedTextFieldComponent(
                         )
                     }
             },
-            visualTransformation = if (isPasswordVisible||!showEyeTrailingIcon) VisualTransformation.None else PasswordVisualTransformation()
+            visualTransformation = if (isPasswordVisible||!showEyeTrailingIcon) VisualTransformation.None else PasswordVisualTransformation(),
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Spacing.extraSmall))
         if (errorMessage != null) {
             Text(
                 text = errorMessage,
