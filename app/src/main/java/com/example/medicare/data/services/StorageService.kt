@@ -1,5 +1,6 @@
 package com.example.medicare.data.services
 
+import android.net.Uri
 import com.example.medicare.data.model.Child
 import com.example.medicare.data.model.Doctor
 import com.example.medicare.data.model.User
@@ -73,4 +74,10 @@ interface StorageService {
      * Get all the user appointments
      */
     val appointments : Flow<List<Appointment>>
+
+    /**
+     * Upload a photo to the cloud storage and return the url of it
+     * to download it later.
+     */
+    suspend fun uploadPhoto(uri : Uri, name : String) : Uri?
 }

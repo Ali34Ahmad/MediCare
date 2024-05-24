@@ -1,6 +1,7 @@
 package com.example.medicare.data.services.impl
 
 import com.example.medicare.data.model.UserAccount
+import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.data.services.AccountService
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
@@ -22,7 +23,6 @@ class AccountServiceImpl @Inject constructor(
     This Flow emits a new User object whenever the current user changes.
      */
 
-
     override val currentUserAccount: Flow<UserAccount>
         get() = callbackFlow {
 
@@ -42,23 +42,40 @@ class AccountServiceImpl @Inject constructor(
             TODO("make it return user from firestore")
         }
 
-    override suspend fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
+    override suspend fun login(email: String, password: String) : AuthState {
+        var state : AuthState = AuthState.Loading
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                state = AuthState.Success
+            }.addOnFailureListener {
+                state = AuthState.Error(it.message.toString())
+            }.await()
+        return state
     }
 
-    override suspend fun signUp(email: String, password: String) {
+    override suspend fun signUp(email: String, password: String) : AuthState{
+        var state : AuthState = AuthState.Loading
        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
-
+           state = AuthState.Success
        }.addOnFailureListener {
-
+           state = AuthState.Error(it.message.toString())
        }.await()
+        return state
     }
 
-    override suspend fun deleteAccount() {
-        auth.currentUser!!.delete().await()
+    override suspend fun deleteAccount() : AuthState{
+        var state : AuthState = AuthState.Loading
+        auth.currentUser!!.delete()
+            .addOnSuccessListener {
+                state = AuthState.Success
+            }.addOnFailureListener {
+                state = AuthState.Error(it.message.toString())
+            }
+            .await()
+        return state
     }
 
-    override fun signOut() {
+    override fun signOut(){
         auth.signOut()
     }
 }

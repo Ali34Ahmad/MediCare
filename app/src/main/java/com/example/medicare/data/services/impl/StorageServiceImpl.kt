@@ -1,5 +1,6 @@
 package com.example.medicare.data.services.impl
 
+import android.net.Uri
 import com.example.medicare.core.constants.DatabaseCollections
 import com.example.medicare.data.model.Appointment
 import com.example.medicare.data.model.Child
@@ -12,9 +13,11 @@ import com.example.medicare.data.services.StorageService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 class StorageServiceImpl @Inject constructor(
@@ -31,6 +34,7 @@ class StorageServiceImpl @Inject constructor(
     private val doctorRef = firestore.collection(DatabaseCollections.DOCTORS_COLLECTION)
     private val clinicRef = firestore.collection(DatabaseCollections.CLINICS_COLLECTION)
     private val appointmentsRef = firestore.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
+    private val storageRef = FirebaseStorage.getInstance().reference
     override suspend fun addNewUser(user: User) {
         usersRef.document(currentUserId).set(user).await()
     }
@@ -92,4 +96,10 @@ class StorageServiceImpl @Inject constructor(
         get() = appointmentsRef.whereEqualTo("userId",currentUserId).snapshots().map { snapshot ->
             snapshot.toObjects(Appointment::class.java)
         }
+
+    override suspend fun uploadPhoto(uri: Uri, name: String): Uri? {
+        val imageRef = storageRef.child("image/$name.jpg")
+        val uploadTask = imageRef.putFile(uri).await()
+        return imageRef.downloadUrl.await()
+    }
 }

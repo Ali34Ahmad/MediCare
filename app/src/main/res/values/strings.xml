@@ -101,4 +101,10 @@
     <string name="test_work_start_time">09:00 AM</string>
     <string name="test_work_end_time">03:00 PM</string>
 
+    <string name="go_back">Go back</string>
+    <string name="birthday">birth day</string>
+    <string name="number_hint">number hint\n</string>
+    <string name="clinics">clinics</string>
+    <string name="upcoming_vaccinations">upcoming vaccination</string>
+    <string name="see_all">see all</string>
 </resources>
