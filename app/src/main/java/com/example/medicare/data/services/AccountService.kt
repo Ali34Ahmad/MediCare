@@ -1,7 +1,7 @@
 package com.example.medicare.data.services
 
 
-import com.example.medicare.data.model.UserAccount
+import com.example.medicare.data.model.user.UserAccount
 import com.example.medicare.data.model.result.AuthState
 import kotlinx.coroutines.flow.Flow
 

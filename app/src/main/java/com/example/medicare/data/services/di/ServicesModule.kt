@@ -1,8 +1,10 @@
 package com.example.medicare.data.services.di
 
 import com.example.medicare.data.services.AccountService
+import com.example.medicare.data.services.NotificationService
 import com.example.medicare.data.services.StorageService
 import com.example.medicare.data.services.impl.AccountServiceImpl
+import com.example.medicare.data.services.impl.NotificationServiceImpl
 import com.example.medicare.data.services.impl.StorageServiceImpl
 import dagger.Binds
 import dagger.Module
@@ -16,4 +18,6 @@ abstract class ServicesModule {
     abstract fun provideAccountService(impl: AccountServiceImpl): AccountService
     @Binds
     abstract fun provideStorageService(impl: StorageServiceImpl): StorageService
+    @Binds
+    abstract fun provideNotificationsService(impl: NotificationServiceImpl) : NotificationService
 }

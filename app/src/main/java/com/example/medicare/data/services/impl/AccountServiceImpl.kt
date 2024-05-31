@@ -1,6 +1,6 @@
 package com.example.medicare.data.services.impl
 
-import com.example.medicare.data.model.UserAccount
+import com.example.medicare.data.model.user.UserAccount
 import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.data.services.AccountService
 import com.google.firebase.auth.FirebaseAuth
@@ -17,12 +17,10 @@ class AccountServiceImpl @Inject constructor(
         get() = auth.currentUser?.uid ?: ""
     override val isSignedIn: Boolean
         get() = auth.currentUser != null
-
     /*
     Override the currentUser property to provide a Flow of User objects.
     This Flow emits a new User object whenever the current user changes.
      */
-
     override val currentUserAccount: Flow<UserAccount>
         get() = callbackFlow {
 

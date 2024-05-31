@@ -1,4 +1,4 @@
-package com.example.medicare.data.model
+package com.example.medicare.data.model.appointment
 
 import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.data.model.date.TimeSocket

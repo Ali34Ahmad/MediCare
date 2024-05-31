@@ -1,24 +1,22 @@
 package com.example.medicare.data.model.date
 
-import com.example.medicare.core.toDay
 import com.example.medicare.core.toMonth
-import com.example.medicare.data.model.enums.DayOfWeek
-import com.example.medicare.data.model.enums.Month
+import com.example.medicare.core.enums.Month
 import java.util.Calendar
 
 data class FullDate(
     val year: Int,
     val month: Month,
-    val day: DayOfWeek
+    val day: Int
 ){
-    constructor() : this(2000,Month.JAN,DayOfWeek.SUN)
+    constructor() : this(1000, Month.JAN,1)
     companion object{
         fun getCurrentDate() : FullDate{
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH) + 1 // Note: Month is zero-based
             val day = calendar.get(Calendar.DAY_OF_MONTH)
-            return FullDate(year, month.toMonth(), day.toDay())
+            return FullDate(year,month.toMonth(),day)
         }
         fun compareFullDates(date1: FullDate, date2: FullDate): Int {
             // Compare years

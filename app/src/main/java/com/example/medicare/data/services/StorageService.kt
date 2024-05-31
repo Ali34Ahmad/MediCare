@@ -1,13 +1,12 @@
 package com.example.medicare.data.services
 
-import android.net.Uri
-import com.example.medicare.data.model.Child
-import com.example.medicare.data.model.Doctor
-import com.example.medicare.data.model.User
-import com.example.medicare.data.model.Vaccine
-import com.example.medicare.data.model.VaccineTableItem
-import com.example.medicare.data.model.Clinic
-import com.example.medicare.data.model.Appointment
+import com.example.medicare.data.model.child.Child
+import com.example.medicare.data.model.user.Doctor
+import com.example.medicare.data.model.user.User
+import com.example.medicare.data.model.vaccine.Vaccine
+import com.example.medicare.data.model.child.VaccineTableItem
+import com.example.medicare.data.model.clinic.Clinic
+import com.example.medicare.data.model.appointment.Appointment
 import kotlinx.coroutines.flow.Flow
 
 
@@ -79,5 +78,4 @@ interface StorageService {
      * Upload a photo to the cloud storage and return the url of it
      * to download it later.
      */
-    suspend fun uploadPhoto(uri : Uri, name : String) : Uri?
 }

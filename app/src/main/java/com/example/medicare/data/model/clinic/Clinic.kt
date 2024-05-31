@@ -1,6 +1,6 @@
-package com.example.medicare.data.model
+package com.example.medicare.data.model.clinic
 
-import com.example.medicare.data.model.Doctor
+import com.example.medicare.data.model.user.Doctor
 import com.example.medicare.data.model.date.DaySocket
 import com.example.medicare.data.model.date.WorkDay
 import com.google.firebase.firestore.DocumentId
@@ -14,7 +14,6 @@ data class Clinic(
     val responsibleDoctor: Doctor,
     val services : List<String> = emptyList()
 ){
-    // Add a no-argument constructor
     constructor() : this("", "", emptyList(), emptyList(), Doctor(
         firstName = "Ali",
         lastName = "Mansoura"

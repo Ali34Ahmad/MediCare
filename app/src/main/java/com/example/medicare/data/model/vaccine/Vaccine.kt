@@ -1,8 +1,8 @@
-package com.example.medicare.data.model
+package com.example.medicare.data.model.vaccine
 
 import com.example.medicare.data.model.date.Age
 import com.example.medicare.data.model.date.FullDate
-import com.example.medicare.data.model.enums.VaccineState
+import com.example.medicare.core.enums.VaccineState
 import com.google.firebase.firestore.DocumentId
 
 data class Vaccine(

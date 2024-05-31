@@ -1,4 +1,4 @@
-package com.example.medicare.data.model.enums
+package com.example.medicare.core.enums
 
 enum class VaccineState{
     AVAILABLE,

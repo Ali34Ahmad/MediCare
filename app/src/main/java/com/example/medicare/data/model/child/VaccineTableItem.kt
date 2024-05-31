@@ -1,6 +1,7 @@
-package com.example.medicare.data.model
+package com.example.medicare.data.model.child
 
 import com.example.medicare.data.model.date.FullDate
+import com.example.medicare.data.model.vaccine.Vaccine
 import com.google.firebase.firestore.DocumentId
 
 data class VaccineTableItem(

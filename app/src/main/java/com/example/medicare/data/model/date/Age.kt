@@ -1,6 +1,6 @@
 package com.example.medicare.data.model.date
 
-import com.example.medicare.data.model.enums.AgeUnit
+import com.example.medicare.core.enums.AgeUnit
 
 data class Age (
     val age: Int,

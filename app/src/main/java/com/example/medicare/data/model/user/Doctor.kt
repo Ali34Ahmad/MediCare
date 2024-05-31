@@ -1,6 +1,6 @@
-package com.example.medicare.data.model
+package com.example.medicare.data.model.user
 
-import com.example.medicare.data.model.enums.Gender
+import com.example.medicare.core.enums.Gender
 import com.google.firebase.firestore.DocumentId
 
 data class Doctor(
