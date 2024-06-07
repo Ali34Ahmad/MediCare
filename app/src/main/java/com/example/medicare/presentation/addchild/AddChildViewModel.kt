@@ -1,11 +1,9 @@
 package com.example.medicare.presentation.addchild
 
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dispensary.ui.composables.ChooseTabState
-import com.example.medicare.data.storage.ImageUploader
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

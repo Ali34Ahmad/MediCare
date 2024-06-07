@@ -14,8 +14,7 @@ class ImageUploaderImpl @Inject constructor(
 
     override suspend fun uploadImage(uri: Uri, name: String): Uri? {
         val imageRef = storageRef.child("image/$name.jpg")
-        val uploadTask = imageRef.putFile(uri).await()
+        imageRef.putFile(uri).await()
         return imageRef.downloadUrl.await()
     }
-
 }
