@@ -1,4 +1,4 @@
-package com.example.medicare.data.services.di
+package com.example.medicare.data.di
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

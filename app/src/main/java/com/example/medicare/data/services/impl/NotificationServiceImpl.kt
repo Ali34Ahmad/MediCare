@@ -14,7 +14,7 @@ import javax.inject.Inject
 class NotificationServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
-):NotificationService{
+): NotificationService {
     //get the notification reference
     private val notificationsRef = firestore.collection(
         DatabaseCollections.NOTIFICATIONS_COLLECTION

@@ -3,6 +3,7 @@ package com.example.medicare.data.repositories.impl
 import com.example.medicare.core.constants.DatabaseCollections
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.repositories.ClinicRepository
+import com.example.medicare.data.storage.ImageUploader
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.flow.Flow

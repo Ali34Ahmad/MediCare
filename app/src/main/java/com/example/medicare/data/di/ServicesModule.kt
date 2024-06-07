@@ -1,4 +1,4 @@
-package com.example.medicare.data.services.di
+package com.example.medicare.data.di
 
 import com.example.medicare.data.services.AccountService
 import com.example.medicare.data.services.NotificationService
