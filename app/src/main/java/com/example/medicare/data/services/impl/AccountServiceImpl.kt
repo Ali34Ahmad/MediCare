@@ -4,7 +4,6 @@ import com.example.medicare.data.model.user.UserAccount
 import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.data.services.AccountService
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
