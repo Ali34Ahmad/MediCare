@@ -18,8 +18,8 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class StorageServiceImpl @Inject constructor(
-    private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth,
+    firestore: FirebaseFirestore,
+    auth: FirebaseAuth,
 ) : StorageService {
     // Get the current user's ID
     private val currentUserId = auth.currentUser!!.uid

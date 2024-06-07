@@ -12,9 +12,12 @@ interface AccountService {
     val isSignedIn: Boolean
 
     val currentUserAccount: Flow<UserAccount>
-    suspend fun login(email: String, password: String) : AuthState
 
-    suspend fun signUp(email: String, password: String) : AuthState
-    suspend fun deleteAccount() : AuthState
+    suspend fun login(email: String, password: String)
+
+    suspend fun signUp(email: String, password: String)
+
+    suspend fun deleteAccount()
+
     fun signOut()
 }

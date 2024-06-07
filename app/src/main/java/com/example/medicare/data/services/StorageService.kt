@@ -73,9 +73,4 @@ interface StorageService {
      * Get all the user appointments
      */
     val appointments : Flow<List<Appointment>>
-
-    /**
-     * Upload a photo to the cloud storage and return the url of it
-     * to download it later.
-     */
 }
