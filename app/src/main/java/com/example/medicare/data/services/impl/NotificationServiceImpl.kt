@@ -12,11 +12,11 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class NotificationServiceImpl @Inject constructor(
-    private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    database: FirebaseFirestore,
+    auth: FirebaseAuth
 ): NotificationService {
     //get the notification reference
-    private val notificationsRef = firestore.collection(
+    private val notificationsRef = database.collection(
         DatabaseCollections.NOTIFICATIONS_COLLECTION
     )
     private val currentUserId = auth.currentUser?.uid

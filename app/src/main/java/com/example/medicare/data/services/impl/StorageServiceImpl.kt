@@ -99,7 +99,7 @@ class StorageServiceImpl @Inject constructor(
 
      suspend fun uploadPhoto(uri: Uri, name: String): Uri? {
         val imageRef = storageRef.child("image/$name.jpg")
-        val uploadTask = imageRef.putFile(uri).await()
+        imageRef.putFile(uri).await()
         return imageRef.downloadUrl.await()
     }
 }
