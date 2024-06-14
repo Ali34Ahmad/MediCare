@@ -8,7 +8,8 @@ interface ChildRepository {
 
     /** Get all user's children*/
     val children : Flow<List<Child>>
-    /**Add a new child to the user's children collection*/
+    /**Add a new child to the user's children
+     *  collection*/
     suspend fun addChild(child : Child)
     /**Add new vaccineTableItem to child's vaccines collection*/
     suspend fun addVaccineTableItem(vaccineTableItem: VaccineTableItem, childId: String)

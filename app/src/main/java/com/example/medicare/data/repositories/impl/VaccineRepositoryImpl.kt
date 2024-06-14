@@ -14,7 +14,9 @@ class VaccineRepositoryImpl @Inject constructor(
     database: FirebaseFirestore
 ): VaccineRepository {
 
-    private val vaccinesRef = database.collection(DatabaseCollections.VACCINES_COLLECTION)
+    private val vaccinesRef = database.collection(
+        DatabaseCollections.VACCINES_COLLECTION
+    )
     override suspend fun addVaccine(vaccine: Vaccine) {
         vaccinesRef.add(vaccine).await()
     }
@@ -23,3 +25,6 @@ class VaccineRepositoryImpl @Inject constructor(
             it.toObjects(Vaccine::class.java)
         }
 }
+
+
+//vaccinesRef.document("MyUniqueID").set(vaccine)

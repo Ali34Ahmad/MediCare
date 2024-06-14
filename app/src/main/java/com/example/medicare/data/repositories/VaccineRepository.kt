@@ -8,5 +8,4 @@ interface VaccineRepository {
     val vaccines  : Flow<List<Vaccine>>
     /**Add new Vaccine*/
     suspend fun addVaccine(vaccine: Vaccine)
-
 }

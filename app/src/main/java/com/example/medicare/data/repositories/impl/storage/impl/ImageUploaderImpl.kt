@@ -1,7 +1,7 @@
-package com.example.medicare.data.storage.impl
+package com.example.medicare.data.repositories.impl.storage.impl
 
 import android.net.Uri
-import com.example.medicare.data.storage.ImageUploader
+import com.example.medicare.data.repositories.impl.storage.ImageUploader
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

@@ -1,9 +1,16 @@
 package com.example.medicare.data.model.date
 
-import com.google.firebase.firestore.DocumentId
+import java.time.DayOfWeek
+
 
 data class WorkDay (
-    val day : Int,
+    val day : String,
     val openingTime : Time,
     val closingTime : Time
-)
+){
+    constructor() : this(
+        day = "Monday",
+        openingTime = Time(),
+        closingTime = Time(),
+    )
+}

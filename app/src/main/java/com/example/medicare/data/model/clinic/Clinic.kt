@@ -10,15 +10,22 @@ data class Clinic(
     @DocumentId
     val id: String ="",
     val name: String = "",
-    val imageUrl: Uri? = null,
+    val imageUrl: String? = null,
     val workDays: List<WorkDay> = emptyList(),
     val daySockets: List<DaySocket> = emptyList(),
-    val responsibleDoctor: Doctor,
+    val responsibleDoctor: Doctor = Doctor(),
     val services : List<String> = emptyList()
 ){
     constructor() : this(
-        "", "", null, emptyList(), emptyList(), Doctor(
-        firstName = "Ali",
-        lastName = "Mansoura"
-    ), emptyList())
+        "",
+        "",
+        null,
+        emptyList(),
+        emptyList(),
+        Doctor(
+            firstName = "Ali",
+            lastName = "Mansoura"
+        ),
+        emptyList()
+    )
 }

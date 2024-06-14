@@ -9,7 +9,7 @@ data class Doctor(
     val firstName : String,
     val lastName : String,
     val speciality : String = "",
-    val img : String? = "",
+    val imageUrl : String? = "",
     val gender: Gender = Gender.MALE
 ){
     val fullName : String = "$firstName $lastName"

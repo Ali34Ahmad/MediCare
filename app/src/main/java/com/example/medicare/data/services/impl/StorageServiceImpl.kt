@@ -25,7 +25,7 @@ class StorageServiceImpl @Inject constructor(
     storage : FirebaseStorage
 ) : StorageService {
     // Get the current user's ID
-    private val currentUserId = auth.currentUser!!.uid
+    private val currentUserId = auth.currentUser?.uid ?:"0"
     // Get references for all collections
     private val usersRef = firestore.collection(DatabaseCollections.USERS_COLLECTION)
     private val childrenRef = usersRef.document(currentUserId).collection(DatabaseCollections.CHILDREN_COLLECTION)
@@ -72,11 +72,11 @@ class StorageServiceImpl @Inject constructor(
 
 
     override suspend fun addDoctor(doctor: Doctor) {
-        doctorRef.add(doctor)
+        doctorRef.add(doctor).await()
     }
 
     override suspend fun createNewClinic(clinic: Clinic) {
-        clinicRef.add(clinic)
+        clinicRef.add(clinic).await()
     }
 
     override val clinics: Flow<List<Clinic>>

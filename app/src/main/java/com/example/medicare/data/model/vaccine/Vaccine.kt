@@ -16,7 +16,8 @@ data class Vaccine(
     val lastAvailableDate : FullDate,
     val conflicts : List<String>,
     val visitNumber : Int,
-){
+)
+{
     constructor() : this(
         id = "",
         name = "",
