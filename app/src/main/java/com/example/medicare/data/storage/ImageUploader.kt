@@ -1,4 +1,4 @@
-package com.example.medicare.data.repositories.impl.storage
+package com.example.medicare.data.storage
 
 import android.net.Uri
 

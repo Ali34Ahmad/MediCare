@@ -13,13 +13,14 @@ data class Appointment(
     val timeSocket: TimeSocket,
     val vaccineId : String,
  ){
-    constructor() : this(
+    private constructor() : this(
         "",
         "",
         "",
         FullDate(),
         TimeSocket(),
         vaccineId = ""
+
     )
 }
 

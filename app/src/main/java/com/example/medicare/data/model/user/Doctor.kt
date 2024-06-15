@@ -13,5 +13,12 @@ data class Doctor(
     val gender: Gender = Gender.MALE
 ){
     val fullName : String = "$firstName $lastName"
-    constructor() : this(firstName = "", lastName = "")
+    private constructor() : this(
+        id = "",
+        firstName = "",
+        lastName = "",
+        speciality = "",
+        imageUrl = null,
+        gender = Gender.MALE
+    )
 }

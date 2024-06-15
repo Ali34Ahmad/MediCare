@@ -10,7 +10,7 @@ data class VaccineTableItem(
     val vaccine: Vaccine,
     val vaccineDate : FullDate?
 ){
-    constructor() : this(
+    private constructor() : this(
         id = "",
         vaccine = Vaccine(),
         vaccineDate = FullDate()

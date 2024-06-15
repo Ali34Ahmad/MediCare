@@ -7,7 +7,7 @@ data class User(
     val lastName : String,
     val gender : Gender,
 ){
-    constructor() : this(
+    private constructor() : this(
         email = "",
         firstName = "no name",
         lastName= "no name",

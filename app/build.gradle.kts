@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.messaging)
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -94,6 +96,9 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.navigation.compose)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
 
     implementation(libs.material3)
 

@@ -16,7 +16,7 @@ data class Child(
     val childNumber : ChildNumber,
     val vaccineTable : List<VaccineTableItem>
 ){
-    constructor() : this(
+    private constructor() : this(
         firstName = "no name",
         lastName = "no name",
         father = "no name",

@@ -15,7 +15,7 @@ class AppointmentRepositoryImpl @Inject constructor(
     database : FirebaseFirestore,
     auth: FirebaseAuth
 ) : AppointmentRepository {
-    private val currentUserId = auth.currentUser!!.uid ?: "0"
+    private val currentUserId = auth.currentUser!!.uid
 
     private val appointmentsRef = database.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
 

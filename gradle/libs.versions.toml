@@ -1,6 +1,7 @@
 [versions]
 agp = "8.3.2"
 
+converterMoshi = "2.9.0"
 calendar = "1.2.0"
 coilCompose = "2.6.0"
 coreVersion = "1.2.0"
@@ -30,6 +31,7 @@ materialIconsExtendedVersion = "1.6.7"
 googleGmsGoogleServices = "4.4.1"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.0.0"
+retrofit = "2.9.0"
 uiTextGoogleFonts = "1.6.7"
 serialization = "1.6.3"
 composeNavigation = "2.8.0-alpha08"
@@ -48,6 +50,8 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -80,6 +84,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 sheets-compose-dialogs-core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "coreVersion" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

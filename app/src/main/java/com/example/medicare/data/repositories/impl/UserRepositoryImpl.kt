@@ -14,7 +14,7 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
-    private val currentUserId = auth.currentUser!!.uid ?: "0"
+    private val currentUserId = auth.currentUser!!.uid
 
     override suspend fun addNewUser(user: User) {
         usersRef.document(currentUserId).set(user).await()
