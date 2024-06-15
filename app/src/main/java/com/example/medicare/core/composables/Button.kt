@@ -2,9 +2,14 @@ package com.example.dispensary.ui.composables
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -15,11 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicare.R
+import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun ElevatedButtonComponent(
@@ -57,29 +62,35 @@ fun OutlinedButtonComponent(
 
 @Composable
 fun DatePickerButtonComponent(
-    dayOfMonth: String,
+    dayOfMonth: Int,
     month:String,
+    onClick: () -> Unit,
     modifier:Modifier=Modifier,
 ) {
+
     Row(
         modifier = modifier
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = MaterialTheme.shapes.small
-            ),
+            )
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "$month $dayOfMonth",
             modifier=Modifier
-                .padding(vertical = 4.dp, horizontal = 16.dp)
+                .padding(vertical = Spacing.extraSmall, horizontal = Spacing.medium)
         )
+        Spacer(modifier = Modifier.width(Spacing.small))
         Icon(
-            painter = painterResource(id = R.drawable.ic_appointment_outlined),
+            imageVector = Icons.Outlined.CalendarToday,
             contentDescription = null,
             modifier=Modifier.size(18.dp)
         )
+        Spacer(modifier = Modifier.width(Spacing.small))
+
     }
 }
 @Preview(showBackground = true, widthDp = 360)
@@ -116,10 +127,10 @@ private fun DatePickerButtonComponentPreview() {
     MaterialTheme{
         Surface {
             DatePickerButtonComponent(
-                month = stringResource(R.string.test_month),
-                dayOfMonth = stringResource(id = R.string.test_day_of_month),
+                month = "April",
+                dayOfMonth = 24,
                 modifier=Modifier.padding(16.dp),
-
+                onClick = {},
             )
         }
     }

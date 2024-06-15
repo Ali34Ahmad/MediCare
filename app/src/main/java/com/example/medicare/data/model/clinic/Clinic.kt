@@ -17,15 +17,11 @@ data class Clinic(
     val services : List<String> = emptyList()
 ){
     constructor() : this(
-        "",
-        "",
-        null,
-        emptyList(),
-        emptyList(),
-        Doctor(
+        id = "",
+        name = "",
+        responsibleDoctor = Doctor(
             firstName = "Ali",
             lastName = "Mansoura"
-        ),
-        emptyList()
+        )
     )
 }

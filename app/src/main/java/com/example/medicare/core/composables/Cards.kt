@@ -1,6 +1,5 @@
 package com.example.dispensary.ui.composables
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,38 +30,67 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.medicare.R
+import com.example.medicare.core.calculateRemainingTime
+import com.example.medicare.core.enums.DayPeriod
+import com.example.medicare.core.enums.TimeSocketState
+import com.example.medicare.core.enums.TimeUnit
+import com.example.medicare.core.isOpenNow
+import com.example.medicare.data.model.appointment.Appointment
+import com.example.medicare.data.model.child.Child
+import com.example.medicare.data.model.clinic.Clinic
+import com.example.medicare.data.model.date.FullDate
+import com.example.medicare.data.model.date.RemainingTime
+import com.example.medicare.data.model.date.Time
+import com.example.medicare.data.model.date.TimeSocket
+import com.example.medicare.data.model.notification.Notification
+import com.example.medicare.data.model.user.Doctor
 import com.example.medicare.ui.theme.Spacing
 import com.example.medicare.ui.theme.green
 import com.example.medicare.ui.theme.primary_container
-import com.example.medicare.ui.theme.secondary
 import com.example.medicare.ui.theme.secondary_container
 import com.example.medicare.ui.theme.tertiary
+import java.time.Clock
+import java.time.DayOfWeek
+import java.time.Duration.ofHours
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 @Composable
 fun SectionCardComponent(
     modifier: Modifier = Modifier,
-    @DrawableRes image: Int,
-    isSelected: Boolean=false,
+    imageUrl: String,
+    isSelected: Boolean = false,
     title: String,
+    onClick: () -> Unit,
 ) {
     Column(
         modifier = modifier
             .width(64.dp)
-            .clickable { },
+            .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(64.dp)
                 .border(
-                    width = if(isSelected)1.dp else 0.dp, color = MaterialTheme.colorScheme.primary,
+                    width = if (isSelected) 2.dp else 0.dp,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = MaterialTheme.shapes.medium
                 ),
             colors = CardDefaults.cardColors(containerColor = primary_container)
         ) {
-            Image(
-                painter = painterResource(id = image),
+            AsyncImage(
+                model = imageUrl,
                 contentDescription = null,
                 modifier = Modifier.padding(10.dp),
             )
@@ -78,9 +106,7 @@ fun SectionCardComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResponsibleDoctorCardComponent(
-    doctorName: String,
-    doctorSpecialization: String,
-    @DrawableRes doctorImage: Int,
+    doctor: Doctor,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -100,22 +126,22 @@ fun ResponsibleDoctorCardComponent(
                     .height(100.dp)
             ) {
                 Text(
-                    text = doctorName,
+                    text = doctor.fullName,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = doctorSpecialization,
+                    text = doctor.speciality,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 ElevatedButtonComponent(
                     text = R.string.book,
-                    onClick = onClick,
+                    onClick = { onClick() },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            Image(
-                painter = painterResource(id = doctorImage),
+            AsyncImage(
+                model = doctor.imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
@@ -130,14 +156,34 @@ fun ResponsibleDoctorCardComponent(
 @Composable
 fun VaccinationAppointmentCardComponent(
     onClick: () -> Unit,
-    dayOfMonth: String,
-    dayOfWeek: String,
-    patientName: String,
-    appointmentTime: String,
-    vaccineName: String,
-    remainingTime: String,
+    vaccinationAppointment:Appointment,
     modifier: Modifier = Modifier,
 ) {
+    val hours =
+        if (vaccinationAppointment.timeSocket.time.hour.toString().length == 1)
+            "0${vaccinationAppointment.timeSocket.time.hour}"
+        else
+            "${vaccinationAppointment.timeSocket.time.hour}"
+
+    val minutes =
+        if (vaccinationAppointment.timeSocket.time.minute.toString().length == 1)
+            "0${vaccinationAppointment.timeSocket.time.minute}"
+        else
+            "${vaccinationAppointment.timeSocket.time.minute}"
+
+    val monthNumber =
+        if (vaccinationAppointment.date.month.ordinal.toString().length == 1)
+            "0${vaccinationAppointment.date.month.ordinal}"
+        else
+            "${vaccinationAppointment.date.month.ordinal}"
+
+    val remainingTime=vaccinationAppointment
+        .calculateRemainingTime(
+            vaccinationAppointment.date,
+            vaccinationAppointment.timeSocket
+        )
+
+
     Card(
         modifier = modifier,
         onClick = onClick,
@@ -155,12 +201,12 @@ fun VaccinationAppointmentCardComponent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = dayOfMonth,
+                        text = vaccinationAppointment.date.day,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Text(
-                        text = dayOfWeek,
+                        text = monthNumber,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -171,23 +217,23 @@ fun VaccinationAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = patientName,
+                    text = vaccinationAppointment.userId,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = appointmentTime,
+                        text = "$hours:$minutes ${vaccinationAppointment.timeSocket.time.dayPeriod.name}",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = remainingTime,
+                        text = "${remainingTime.remainingTime} ${remainingTime.timeUnit.name.lowercase()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
                 }
                 Text(
-                    text = vaccineName,
+                    text = vaccinationAppointment.vaccineId,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -200,13 +246,7 @@ fun VaccinationAppointmentCardComponent(
 @Composable
 fun ClinicAppointmentCardComponent(
     onClick: () -> Unit,
-    dayOfMonth: String,
-    dayOfWeek: String,
-    patientName: String,
-    appointmentTime: String,
-    doctorName: String,
-    doctorSpecialization: String,
-    remainingTime: String,
+    clinicAppointment:Appointment,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -215,6 +255,24 @@ fun ClinicAppointmentCardComponent(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
+        val hours =
+            if (clinicAppointment.timeSocket.time.hour.toString().length == 1)
+                "0${clinicAppointment.timeSocket.time.hour}"
+            else
+                "${clinicAppointment.timeSocket.time.hour}"
+
+        val minutes =
+            if (clinicAppointment.timeSocket.time.minute.toString().length == 1)
+                "0${clinicAppointment.timeSocket.time.minute}"
+            else
+                "${clinicAppointment.timeSocket.time.minute}"
+
+        val remainingTime=clinicAppointment
+            .calculateRemainingTime(
+                clinicAppointment.date,
+                clinicAppointment.timeSocket
+            )
+
         Row(modifier = Modifier.padding(8.dp)) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = tertiary)
@@ -227,12 +285,12 @@ fun ClinicAppointmentCardComponent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = dayOfMonth,
+                        text = clinicAppointment.date.day,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Text(
-                        text = dayOfWeek,
+                        text = clinicAppointment.date.month.name,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -243,30 +301,30 @@ fun ClinicAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = patientName,
+                    text = clinicAppointment.userId,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = appointmentTime,
+                        text = "$hours:$minutes ${clinicAppointment.timeSocket.time.dayPeriod.name}",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = remainingTime,
+                        text = "${remainingTime.remainingTime} ${remainingTime.timeUnit.name.lowercase()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = doctorName,
+                        text = "clinicAppointment.clinicId.doctor.fullName",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = doctorSpecialization,
+                        text = "clinicAppointment.clinicId.doctor.speciality",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
@@ -279,22 +337,22 @@ fun ClinicAppointmentCardComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildCardComponent(
-    onClick: () -> Unit={},
-    upNumber: String,
-    downNumber: String,
-    childName: String,
-    fatherName: String,
-    motherName: String,
-    dateOfBirth: String,
+    onClick: () -> Unit = {},
+    child:Child,
     modifier: Modifier = Modifier,
 ) {
+    val day =
+        if (child.birthDate.day.length == 1) "0${child.birthDate.day}" else child.birthDate.day
+    val monthNumber =
+        if ((child.birthDate.month.ordinal + 1).toString().length == 1) "0${child.birthDate.month.ordinal + 1}" else "${child.birthDate.month.ordinal + 1}"
+
     Card(
         modifier = modifier
             .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(Spacing.small)) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = tertiary)
             ) {
@@ -306,7 +364,7 @@ fun ChildCardComponent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = upNumber,
+                        text = child.childNumber.firstNumber.toString(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -317,7 +375,7 @@ fun ChildCardComponent(
                             .background(color = MaterialTheme.colorScheme.onTertiary)
                     )
                     Text(
-                        text = downNumber,
+                        text = child.childNumber.secondNumber.toString(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -328,24 +386,24 @@ fun ChildCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = childName,
+                    text = "${child.firstName} ${child.lastName}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = fatherName,
+                        text = child.father,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.outline,
                     )
                     Text(
-                        text = dateOfBirth,
+                        text = "$day/$monthNumber/${child.birthDate.year}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
                 }
                 Text(
-                    text = motherName,
+                    text = child.mother,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -358,51 +416,45 @@ fun ChildCardComponent(
 @Composable
 fun AvailableVaccinationNotificationCardComponent(
     onClick: () -> Unit,
-    @DrawableRes image: Int,
-    availabilityStartDate: String,
-    availabilityEndDate: String,
-    title: String,
-    state: String,
-    doctorName: String,
+    notification: Notification,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(Spacing.small)) {
             Image(
-                painter = painterResource(id = image),
+                painter = painterResource(id = R.drawable.inoculate),
                 contentDescription = null,
                 modifier = Modifier
                     .width(44.dp)
                     .height(56.dp),
             )
             Column(
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = Spacing.medium),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = title,
+                    text = stringResource(id = R.string.vaccination_available),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "$availabilityStartDate - $availabilityEndDate",
+                        text = "${notification.vaccine?.availabilityStartDate} - ${notification.vaccine?.lastAvailableDate}",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.outline,
                     )
                     Text(
-                        text = state,
+                        text = "notification.vaccine.isAvailableNow()",
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 Text(
-                    text = doctorName,
+                    text = notification.vaccine?.name?:""/*notification.doctorName*/,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -415,58 +467,52 @@ fun AvailableVaccinationNotificationCardComponent(
 @Composable
 fun AppointmentReminderNotificationCardComponent(
     onClick: () -> Unit,
-    @DrawableRes image: Int,
-    time: String,
-    patientName: String,
-    remainingTime: String,
-    doctorName: String,
-    doctorSpecialization: String,
+    notification:Notification,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(Spacing.small)) {
             Image(
-                painter = painterResource(id = image),
+                painter = painterResource(id = R.drawable.appointment),
                 contentDescription = null,
                 modifier = Modifier
                     .width(44.dp)
                     .height(56.dp),
             )
             Column(
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = Spacing.medium),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = patientName,
+                    text = notification.patientName,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = time,
+                        text = "notification.appointment",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.outline,
                     )
                     Text(
-                        text = remainingTime,
+                        text = "notification.appointment",
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = doctorName,
+                        text = notification.doctorName,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = doctorSpecialization,
+                        text = "notification.doctor.speciality",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
@@ -482,13 +528,13 @@ fun DateCardComponent(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     dayOfMonth: String,
-    dayOfWeek: String,
+    dayOfWeek: DayOfWeek,
     isSelected: Boolean = false,
 ) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = if (!isSelected) primary_container else secondary,
+            containerColor = if (!isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary,
         ),
         onClick = onClick,
     ) {
@@ -508,7 +554,7 @@ fun DateCardComponent(
                     MaterialTheme.colorScheme.onSecondary,
             )
             Text(
-                text = dayOfWeek,
+                text = dayOfWeek.name,
                 style = MaterialTheme.typography.bodyLarge,
                 color = if (!isSelected)
                     MaterialTheme.colorScheme.onPrimaryContainer
@@ -520,45 +566,59 @@ fun DateCardComponent(
 }
 
 @Composable
-fun TimeCardComponent(
-    time: String,
+fun TimeSocketCardComponent(
+    timeSocket: TimeSocket,
+    onClick: (Int) -> Unit,
+    currentIndex: Int,
+    color: Color = MaterialTheme.colorScheme.background,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
+            .clickable {
+                onClick(currentIndex)
+            }
+            .background(
+                color = color,
+                shape = MaterialTheme.shapes.small
+            )
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = MaterialTheme.shapes.small
-            )
-            .clickable {
-            },
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Text(
-            text = time,
+            text =formateTime(timeSocket),
             modifier = Modifier
                 .padding(vertical = 4.dp, horizontal = 16.dp)
         )
     }
 }
 
+fun formateTime(timeSocket: TimeSocket): String {
+    return if (timeSocket.time.hour.toString().length == 2 && timeSocket.time.minute.toString().length == 2)
+        "${timeSocket.time.hour}:${timeSocket.time.minute} ${timeSocket.time.dayPeriod}"
+    else if (timeSocket.time.hour.toString().length == 1 && timeSocket.time.minute.toString().length == 2)
+        "0${timeSocket.time.hour}:${timeSocket.time.minute} ${timeSocket.time.dayPeriod}"
+    else if (timeSocket.time.hour.toString().length == 2 && timeSocket.time.minute.toString().length == 1)
+        "${timeSocket.time.hour}:0${timeSocket.time.minute} ${timeSocket.time.dayPeriod}"
+    else
+        "0${timeSocket.time.hour}:0${timeSocket.time.minute} ${timeSocket.time.dayPeriod}"
+}
+
+
 @Composable
 fun ClinicInformationCardComponent(
-    @DrawableRes doctorImage: Int,
-    @DrawableRes clinicImage: Int,
-    doctorName: String,
-    doctorSpecialization: String,
-    workStartTime: String,
-    workEndTime: String,
-    isOpenNow: Boolean,
-    sectionName: String,
+    clinic: Clinic,
     modifier: Modifier = Modifier,
 ) {
     Card(modifier = modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(16.dp)) {
             Box(contentAlignment = Alignment.BottomEnd) {
-                Image(
-                    painter = painterResource(id = doctorImage),
+                AsyncImage(
+                    model =clinic.responsibleDoctor.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .height(120.dp)
@@ -569,23 +629,23 @@ fun ClinicInformationCardComponent(
             }
             Column(modifier = Modifier.padding(start = 8.dp)) {
                 Text(
-                    text = doctorName,
+                    text = "${clinic.responsibleDoctor.firstName} ${clinic.responsibleDoctor.lastName}",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = doctorSpecialization,
+                    text = clinic.responsibleDoctor.speciality,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "$workStartTime - $workEndTime",
+                    text = "${clinic.workDays[0].openingTime} - ${clinic.workDays[0].openingTime}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
                 Text(
-                    text = if (isOpenNow) stringResource(id = R.string.open_now)
+                    text = if (clinic.isOpenNow()) stringResource(id = R.string.open_now)
                     else stringResource(id = R.string.closed_now),
-                    color = if (isOpenNow) green
+                    color = if (clinic.isOpenNow()) green
                     else Color.Red,
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -597,14 +657,14 @@ fun ClinicInformationCardComponent(
                         modifier = Modifier.size(36.dp),
                         colors = CardDefaults.cardColors(containerColor = primary_container)
                     ) {
-                        Image(
-                            painter = painterResource(id = clinicImage),
+                        AsyncImage(
+                            model =clinic.imageUrl,
                             contentDescription = null,
                             modifier = Modifier.padding(4.dp),
                         )
                     }
                     Text(
-                        text = sectionName,
+                        text = clinic.name,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(start = 4.dp)
                     )
@@ -623,8 +683,9 @@ private fun SectionCardComponentPreview() {
         Surface {
             SectionCardComponent(
                 modifier = Modifier,
-                image = R.drawable.vaccines,
-                title = stringResource(id = R.string.test_vaccines)
+                imageUrl = "",
+                title = stringResource(id = R.string.test_vaccines),
+                onClick = {}
             )
         }
     }
@@ -637,10 +698,8 @@ private fun ResponsibleDoctorCardComponentPreview() {
         Surface {
             ResponsibleDoctorCardComponent(
                 modifier = Modifier,
-                doctorImage = R.drawable.doctor_image,
-                doctorName = stringResource(id = R.string.test_doctor_name),
-                doctorSpecialization = stringResource(id = R.string.test_doctor_specialization),
-                onClick = {}
+                onClick = {},
+                doctor = Doctor()
             )
         }
     }
@@ -654,12 +713,7 @@ private fun VaccinationCardAppointmentComponentPreview() {
             VaccinationAppointmentCardComponent(
                 modifier = Modifier,
                 onClick = {},
-                dayOfMonth = stringResource(id = R.string.test_day_of_month),
-                dayOfWeek = stringResource(id = R.string.test_day_of_week),
-                patientName = stringResource(id = R.string.test_patient_name),
-                appointmentTime = stringResource(id = R.string.test_time),
-                vaccineName = stringResource(id = R.string.test_vaccine_name),
-                remainingTime = stringResource(id = R.string.test_remaining_time),
+                vaccinationAppointment = Appointment()
             )
         }
     }
@@ -673,14 +727,8 @@ private fun ClinicCardAppointmentComponentPreview() {
             ClinicAppointmentCardComponent(
                 modifier = Modifier,
                 onClick = {},
-                dayOfMonth = stringResource(id = R.string.test_day_of_month),
-                dayOfWeek = stringResource(id = R.string.test_day_of_week),
-                patientName = stringResource(id = R.string.test_patient_name),
-                appointmentTime = stringResource(id = R.string.test_time),
-                doctorName = stringResource(id = R.string.test_doctor_name),
-                doctorSpecialization = stringResource(id = R.string.test_eye),
-                remainingTime = stringResource(id = R.string.test_remaining_time),
-            )
+                clinicAppointment = Appointment()
+                )
         }
     }
 }
@@ -693,12 +741,7 @@ private fun ChildCardComponentPreview() {
             ChildCardComponent(
                 modifier = Modifier,
                 onClick = {},
-                childName = stringResource(id = R.string.test_child_name),
-                dateOfBirth = stringResource(id = R.string.test_date_of_birth),
-                upNumber = stringResource(id = R.string.test_up_number),
-                downNumber = stringResource(id = R.string.test_dow_number),
-                fatherName = stringResource(id = R.string.test_father_name),
-                motherName = stringResource(id = R.string.test_mother_name),
+                child=Child(),
             )
         }
     }
@@ -712,12 +755,7 @@ private fun NotificationCardComponentPreview() {
             AvailableVaccinationNotificationCardComponent(
                 modifier = Modifier,
                 onClick = {},
-                image = R.drawable.inoculate,
-                availabilityStartDate = stringResource(id = R.string.test_availability_start_date),
-                availabilityEndDate = stringResource(id = R.string.test_availability_end_date),
-                title = stringResource(id = R.string.vaccination_available),
-                state = stringResource(id = R.string.available),
-                doctorName = stringResource(id = R.string.test_doctor_name)
+                notification = Notification()
             )
         }
     }
@@ -731,12 +769,7 @@ private fun AppointmentReminderNotificationCardComponentPreview() {
             AppointmentReminderNotificationCardComponent(
                 modifier = Modifier,
                 onClick = {},
-                image = R.drawable.schedule,
-                time = stringResource(id = R.string.test_time),
-                patientName = stringResource(id = R.string.vaccination_available),
-                remainingTime = stringResource(id = R.string.available),
-                doctorName = stringResource(id = R.string.test_doctor_name),
-                doctorSpecialization = stringResource(id = R.string.test_eye),
+                notification = Notification()
             )
         }
     }
@@ -752,13 +785,13 @@ private fun DateCardComponentPreview() {
                     modifier = Modifier,
                     onClick = {},
                     dayOfMonth = stringResource(id = R.string.test_day_of_month),
-                    dayOfWeek = stringResource(id = R.string.test_day_of_week),
+                    dayOfWeek = DayOfWeek.SUNDAY,
                 )
                 DateCardComponent(
                     modifier = Modifier,
                     onClick = {},
                     dayOfMonth = stringResource(id = R.string.test_day_of_month),
-                    dayOfWeek = stringResource(id = R.string.test_day_of_week),
+                    dayOfWeek = DayOfWeek.SUNDAY,
                     isSelected = true
                 )
             }
@@ -772,8 +805,13 @@ private fun DateCardComponentPreview() {
 private fun TimeCardComponentPreview() {
     MaterialTheme {
         Surface {
-            TimeCardComponent(
-                time = stringResource(id = R.string.test_time)
+            TimeSocketCardComponent(
+                timeSocket = TimeSocket(
+                    time = Time(9, 0, DayPeriod.AM),
+                    state = TimeSocketState.FREE
+                ),
+                onClick = {},
+                currentIndex = 0
             )
 
         }
@@ -786,14 +824,7 @@ private fun SectionInformationCardComponentPreview() {
     MaterialTheme {
         Surface {
             ClinicInformationCardComponent(
-                doctorImage = R.drawable.doctor_image,
-                clinicImage = R.drawable.eye,
-                doctorSpecialization = stringResource(id = R.string.test_doctor_specialization),
-                doctorName = stringResource(id = R.string.test_doctor_name),
-                workStartTime = stringResource(id = R.string.test_work_start_time),
-                workEndTime = stringResource(id = R.string.test_work_end_time),
-                isOpenNow = true,
-                sectionName = stringResource(id = R.string.test_eye)
+                clinic = Clinic()
             )
         }
     }

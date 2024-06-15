@@ -1,6 +1,7 @@
 package com.example.medicare.presentation.children
 
 data class ChildrenUiState(
-    val damn:Int?=null,
-    //val children: List<Child> = emptyList()
+    val showLoadingDialog:Boolean=false,
+    val showErrorDialog:Boolean=false,
+    val showNoChildAdded:Boolean=false
 )

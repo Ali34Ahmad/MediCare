@@ -2,9 +2,11 @@ package com.example.medicare.presentation.login
 
 data class LoginUiState(
     val email:String="",
-    val emailErrorMessage:String?=null,
+    val emailErrorMessage:Int?=null,
     val password: String="",
-    val isPasswordVisible: Boolean=true,
-    val passwordErrorMessage: String?=null,
+    val isPasswordVisible: Boolean=false,
+    val passwordErrorMessage: Int?=null,
     val acceptPrivacyIsChecked:Boolean=false,
+    val showLoadingDialog:Boolean=false,
+    val showErrorDialog:Boolean=false,
 )

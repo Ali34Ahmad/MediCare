@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,19 +22,34 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
-import com.example.dispensary.ui.composables.TextStyle
-import com.example.dispensary.ui.composables.TextWithMultipleStyles
+import com.example.dispensary.ui.composables.SpannableTextComponent
 import com.example.medicare.R
 import com.example.medicare.core.composables.AppLogo
+import com.example.medicare.core.composables.ErrorDialog
+import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit = {},
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    onSignUpClick: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
+
+    ErrorDialog(
+        showDialog = uiState.value.showErrorDialog,
+        onDismissRequest = {
+            viewModel.updateErrorDialogVisibilityState()
+        },
+        onConfirmClick = {
+            viewModel.updateErrorDialogVisibilityState()
+        }
+    )
+    LoadingDialog(
+        showDialog = uiState.value.showLoadingDialog,
+    )
 
     Column(
         modifier = Modifier
@@ -67,7 +81,7 @@ fun LoginScreen(
                 viewModel.updatePassword(it)
             },
             hint = R.string.password,
-            errorMessage = uiState.value.passwordErrorMessage,
+            errorMessage = uiState.value.passwordErrorMessage?:R.string.blank,
             showEyeTrailingIcon = true,
             onVisibilityIconClicked = {
                 viewModel.updatePasswordVisibilityState()
@@ -90,7 +104,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(Spacing.large))
 
         ElevatedButtonComponent(
-            text = R.string.sign_up,
+            text = R.string.log_in,
             onClick = { viewModel.login(onLoginClick) },
             modifier = Modifier.fillMaxWidth()
         )
@@ -101,13 +115,10 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            TextWithMultipleStyles(
+            SpannableTextComponent(
                 text1 = stringResource(id = R.string.do_not_have_account_part1),
-                style1 = TextStyle.Normal,
                 text2 = stringResource(id = R.string.do_not_have_account_part2),
-                style2 = TextStyle.Normal,
-                color2 = MaterialTheme.colorScheme.primary,
-                fontSizeSp = 16,
+                onCLick = onSignUpClick
             )
         }
     }
@@ -118,7 +129,7 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     MediCareTheme {
         Surface {
-            LoginScreen()
+            LoginScreen(onLoginClick = {}, onSignUpClick = {})
         }
     }
 }

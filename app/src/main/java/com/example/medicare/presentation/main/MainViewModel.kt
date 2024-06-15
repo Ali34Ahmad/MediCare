@@ -27,8 +27,12 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    fun updateUserId(userId: String) {
-        _uiState.value = _uiState.value.copy(userId = userId)
+    fun navigateBackButtonClicked(){
+        when(uiState.value.currentScreen){
+            is Destination.AddChild->updateCurrentScreen(Destination.Children)
+            is Destination.BookAppointment->updateCurrentScreen(Destination.Home)
+            is Destination.Notification->updateCurrentScreen(Destination.Home)
+            else->updateCurrentScreen(Destination.Home)
+        }
     }
-
 }

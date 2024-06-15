@@ -1,6 +1,9 @@
 [versions]
 agp = "8.3.2"
 
+calendar = "1.2.0"
+coilCompose = "2.6.0"
+coreVersion = "1.2.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
@@ -32,8 +35,15 @@ serialization = "1.6.3"
 composeNavigation = "2.8.0-alpha08"
 googleGmsGoogleServicesVersion = "4.4.1"
 firebaseStorage = "21.0.0"
+material3="1.1.0-alpha06"
+core="1.9.0"
 
 [libraries]
+calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "calendar" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+material3 = { version = "material3", module = "androidx.compose.material3:material3" }
+core = { version = "core", module = "androidx.core:core-ktx" }
+
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtendedVersion" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,6 +79,7 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+sheets-compose-dialogs-core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "coreVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

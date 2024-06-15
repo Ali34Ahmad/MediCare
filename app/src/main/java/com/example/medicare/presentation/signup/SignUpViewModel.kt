@@ -5,7 +5,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dispensary.ui.composables.ChooseTabState
+import com.example.medicare.core.enums.Gender
+import com.example.medicare.data.model.user.User
 import com.example.medicare.data.services.AccountService
+import com.example.medicare.data.services.StorageService
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,19 +17,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/*
-interface ResourceProvider {
-    fun getString(resId: Int)
-}
- class MyApplication : Application(), ResourceProvider {
-    override fun getString(resId: Int): String {
-        return resources.getString(resId)
-    }
-}*/
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val storageService: StorageService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -56,24 +51,40 @@ class SignUpViewModel @Inject constructor(
             _uiState.value.copy(isPasswordVisible = !_uiState.value.isPasswordVisible)
     }
 
-    fun updateGender(newGender: ChooseTabState) {
+    fun updateGender(newState: ChooseTabState) {
         _uiState.value =
-            _uiState.value.copy(gender = newGender, genderError = null)
+            _uiState.value.copy(
+                chooseTabState = newState,
+                gender = when (newState) {
+                    is ChooseTabState.First -> Gender.MALE
+                    is ChooseTabState.Second -> Gender.FEMALE
+                },
+                genderError = null
+            )
     }
 
     fun updateCheckState(newState: Boolean) {
         _uiState.value =
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
+    fun updateErrorDialogVisibilityState() {
+        _uiState.value =
+            _uiState.value.copy(showErrorDialog = !uiState.value.showErrorDialog)
+    }
+    fun updateLoadingDialogVisibilityState() {
+        _uiState.value =
+            _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
+    }
 
-    fun signUp(onSignUpButtonClick:()->Unit) {
+
+    fun signUp(onSignUpButtonClick: () -> Unit) {
         _uiState.value =
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
                 firstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.firstName),
                 secondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.secondName),
                 passwordErrorMessage = Validator.checkPassword(uiState.value.password),
-                genderError = Validator.checkGender(uiState.value.gender),
+                genderError = Validator.checkGender(uiState.value.chooseTabState),
             )
         if (uiState.value.emailErrorMessage == null &&
             uiState.value.firstNameErrorMessage == null &&
@@ -84,12 +95,24 @@ class SignUpViewModel @Inject constructor(
         ) {
             viewModelScope.launch {
                 try {
-                    accountService.signUp(uiState.value.email,uiState.value.password)
-                }catch (e:Exception){
-                    Log.e("Sign Up",e.message?:"Error")
+                    updateLoadingDialogVisibilityState()
+                    accountService.signUp(uiState.value.email, uiState.value.password)
+                    storageService.addNewUser(
+                        User(
+                            email = uiState.value.email,
+                            firstName = uiState.value.firstName,
+                            lastName = uiState.value.secondName,
+                            gender = uiState.value.gender ?: Gender.MALE,
+                        )
+                    )
+                    updateLoadingDialogVisibilityState()
+                    onSignUpButtonClick()
+                } catch (e: Exception) {
+                    updateLoadingDialogVisibilityState()
+                    updateErrorDialogVisibilityState()
+                    Log.e("Sign Up", e.message ?: "Error")
                 }
             }
-            onSignUpButtonClick()
         }
     }
 

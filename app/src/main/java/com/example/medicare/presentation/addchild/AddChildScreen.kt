@@ -22,6 +22,8 @@ import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldWithTwoFieldsComponent
 import com.example.medicare.R
+import com.example.medicare.core.composables.ErrorDialog
+import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
@@ -32,6 +34,19 @@ fun AddChildScreen(
     viewModel: AddChildViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
+
+    ErrorDialog(
+        showDialog = uiState.value.showErrorDialog,
+        onDismissRequest = {
+            viewModel.updateErrorDialogVisibilityState()
+        },
+        onConfirmClick = {
+            viewModel.updateErrorDialogVisibilityState()
+        }
+    )
+    LoadingDialog(
+        showDialog = uiState.value.showLoadingDialog,
+    )
 
     Column(
         modifier = modifier
@@ -64,8 +79,8 @@ fun AddChildScreen(
             },
             hint1 = R.string.first_name_hint,
             hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.childSecondNameErrorMessage,
-            errorMessage2 = uiState.value.childSecondNameErrorMessage,
+            errorMessage1 = uiState.value.childSecondNameErrorMessage?:R.string.blank,
+            errorMessage2 = uiState.value.childSecondNameErrorMessage?:R.string.blank,
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
@@ -82,8 +97,8 @@ fun AddChildScreen(
             },
             hint1 = R.string.first_name_hint,
             hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.fatherFirstNameErrorMessage,
-            errorMessage2 = uiState.value.fatherSecondNameErrorMessage,
+            errorMessage1 = uiState.value.fatherFirstNameErrorMessage?:R.string.blank,
+            errorMessage2 = uiState.value.fatherSecondNameErrorMessage?:R.string.blank,
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
@@ -100,20 +115,20 @@ fun AddChildScreen(
             },
             hint1 = R.string.first_name_hint,
             hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.motherFirstNameErrorMessage,
-            errorMessage2 = uiState.value.motherSecondNameErrorMessage,
+            errorMessage1 = uiState.value.motherFirstNameErrorMessage?:R.string.blank,
+            errorMessage2 = uiState.value.motherSecondNameErrorMessage?:R.string.blank,
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
 
         OutlinedTextFieldComponent(
             title = stringResource(id = R.string.date_of_birth),
-            textFieldValue = uiState.value.dateOfBirth,
+            textFieldValue =uiState.value.dateOfBirth,
             onValueChange = {
                 viewModel.updateDateOfBirth(it)
             },
             hint = R.string.birthday,
-            errorMessage = uiState.value.dateOfBirthErrorMessage
+            errorMessage = uiState.value.dateOfBirthErrorMessage?:R.string.blank
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
@@ -126,7 +141,7 @@ fun AddChildScreen(
             onChooseChange = { chooseTabState ->
                 viewModel.updateGender(chooseTabState)
             },
-            errorMessage = uiState.value.genderErrorMessage
+            errorMessage = stringResource(uiState.value.genderErrorMessage?:R.string.blank)
         )
 
         Spacer(modifier = Modifier.height(Spacing.large))

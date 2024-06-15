@@ -1,5 +1,9 @@
 package com.example.dispensary.ui.composables
 
+import android.text.SpannedString
+import android.text.style.ClickableSpan
+import androidx.compose.foundation.CombinedClickableNode
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -7,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -96,6 +102,55 @@ fun TextWithMultipleStyles(
         fontSize = fontSizeSp.sp,
         modifier = modifier
     )
+}
+
+@Composable
+fun SpannableTextComponent(
+    text1: String,
+    text2: String,
+    onCLick: () -> Unit,
+    modifier: Modifier=Modifier
+) {
+
+    val text = "$text1 $text2"
+    val start=text.indexOf(text2)
+    val end=start+text1.length
+    val annotatedString = buildAnnotatedString {
+        withStyle(
+            SpanStyle(
+                fontWeight =FontWeight.Normal
+            )
+        ) {
+            append("$text1 ")
+        }
+        pushStringAnnotation(tag = "clickable", annotation = text2)
+        withStyle(
+            SpanStyle(
+                fontWeight =FontWeight.Bold,
+            )
+        ) {
+            append("$text2 ")
+        }
+        pop()
+    }
+
+    ClickableText(
+        text = annotatedString,
+        modifier=modifier,
+        onClick = { offset ->
+            annotatedString.getStringAnnotations(tag = "clickable", start = start, end = end)
+                .firstOrNull()?.let { annotation ->
+                onCLick()
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SpannableTextComponentPreview() {
+    SpannableTextComponent(text1 = "Already have an account? ", text2 = "Log in", onCLick = {})
+    
 }
 
 @Preview(showBackground = true)

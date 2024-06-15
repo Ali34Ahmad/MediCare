@@ -1,22 +1,19 @@
 package com.example.medicare.presentation.clinicappointments
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dispensary.ui.composables.ChooseTab
 import com.example.medicare.R
-import com.example.medicare.presentation.vaccinationappointments.VaccinationAppointmentViewModel
-import com.example.medicare.presentation.vaccinationappointments.VaccinationAppointmentsScreen
-import com.example.medicare.ui.composables.UpcomingVaccinationAppointmentVerticalList
+import com.example.medicare.data.model.appointment.Appointment
+import com.example.medicare.ui.composables.ClinicAppointmentVerticalList
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
@@ -26,6 +23,10 @@ fun ClinicAppointmentsScreen(
     viewModel: ClinicAppointmentsViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsState()
+    val clinicAppointments:List<Appointment> =viewModel.appointments.collectAsStateWithLifecycle(initialValue = emptyList()).value
+        .filter { appointment ->  appointment.vaccineId.isBlank()}
+
+    
 
     ChooseTab(
         title = null,
@@ -39,7 +40,9 @@ fun ClinicAppointmentsScreen(
     )
     Spacer(modifier = Modifier.height(Spacing.small))
 
-    UpcomingVaccinationAppointmentVerticalList()
+    ClinicAppointmentVerticalList(
+        clinicsAppointments =clinicAppointments
+    )
 }
 
 @Preview

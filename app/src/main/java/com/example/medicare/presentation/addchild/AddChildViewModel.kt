@@ -4,6 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dispensary.ui.composables.ChooseTabState
+import com.example.medicare.R
+import com.example.medicare.core.enums.Gender
+import com.example.medicare.core.enums.Month
+import com.example.medicare.data.model.child.Child
+import com.example.medicare.data.model.child.ChildNumber
+import com.example.medicare.data.model.child.VaccineTableItem
+import com.example.medicare.data.model.date.FullDate
+import com.example.medicare.data.services.StorageService
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddChildViewModel @Inject constructor(
-
+    private val storageService: StorageService
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddChildUiState())
     val uiState = _uiState.asStateFlow()
@@ -27,7 +35,7 @@ class AddChildViewModel @Inject constructor(
         if (partsOfNumber.size != 2) {
             _uiState.value =
                 _uiState.value.copy(
-                    numberErrorMessage = "Invalid number (Child number should look like this 22/5)"
+                    numberErrorMessage = R.string.invalide_child_number
                 )
             return
         }
@@ -102,39 +110,110 @@ class AddChildViewModel @Inject constructor(
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
 
-    fun addChild(onAddChildClick:()->Unit) {
+    fun updateErrorDialogVisibilityState() {
+        _uiState.value =
+            _uiState.value.copy(showErrorDialog = !uiState.value.showErrorDialog)
+    }
+
+    fun updateLoadingDialogVisibilityState() {
+        _uiState.value =
+            _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
+    }
+
+    fun addChild(onAddChildClick: () -> Unit) {
+        extractNumberComponents("${uiState.value.upNumber}/${uiState.value.downNumber}")
         _uiState.value =
             _uiState.value.copy(
-                numberErrorMessage = Validator.checkEmail(uiState.value.number),
                 childFirstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.childFirstName),
                 childSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.childSecondName),
-                fatherFirstNameErrorMessage = Validator.checkPassword(uiState.value.fatherFirstName),
+                fatherFirstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.fatherFirstName),
                 fatherSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.fatherSecondName),
-                motherFirstNameErrorMessage =  Validator.checkRequiredTextField(uiState.value.motherFirstName),
-                motherSecondNameErrorMessage =  Validator.checkRequiredTextField(uiState.value.motherSecondName),
-                dateOfBirthErrorMessage =  Validator.checkRequiredTextField(uiState.value.dateOfBirth),
-                genderErrorMessage =  Validator.checkGender(uiState.value.gender),
+                motherFirstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.motherFirstName),
+                motherSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.motherSecondName),
+                dateOfBirthErrorMessage = Validator.checkRequiredTextField(uiState.value.dateOfBirth.toString()),
+                genderErrorMessage = Validator.checkGender(uiState.value.gender),
             )
-        if (uiState.value.numberErrorMessage == null &&
-            uiState.value.childFirstNameErrorMessage == null &&
-            uiState.value.childSecondNameErrorMessage == null &&
-            uiState.value.fatherFirstNameErrorMessage == null &&
-            uiState.value.fatherSecondNameErrorMessage == null &&
-            uiState.value.motherFirstNameErrorMessage == null &&
-            uiState.value.motherSecondNameErrorMessage == null &&
-            uiState.value.dateOfBirthErrorMessage == null &&
-            uiState.value.genderErrorMessage == null &&
-            uiState.value.acceptPrivacyIsChecked
-        ) {
+        if (checkAllEnteredData()) {
             viewModelScope.launch {
                 try {
-                }catch (e:Exception){
-                    Log.e("Sign Up",e.message?:"Error")
+                    updateLoadingDialogVisibilityState()
+                    val year: Int = extractDateComponents(uiState.value.dateOfBirth).third
+                    val month: Month =
+                        getMonthByNumber(extractDateComponents(uiState.value.dateOfBirth).second)
+                    val day: Int = extractDateComponents(uiState.value.dateOfBirth).first
+                    storageService.addChild(
+                        Child(
+                            firstName = uiState.value.childFirstName,
+                            lastName = uiState.value.childSecondName,
+                            birthDate = FullDate(year = year, month = month, day = day.toString()),
+                            childNumber = ChildNumber(
+                                uiState.value.upNumber ?: -1,
+                                secondNumber = uiState.value.downNumber ?: -1
+                            ),
+                            gender = when (uiState.value.gender) {
+                                is ChooseTabState.First -> Gender.MALE
+                                is ChooseTabState.Second -> Gender.FEMALE
+                                else -> throw Exception("You must let the user choose the gender")
+                            },
+                            vaccineTable = emptyList(),
+                            father = "${uiState.value.fatherFirstName} ${uiState.value.fatherSecondName}",
+                            mother = "${uiState.value.motherFirstName} ${uiState.value.motherSecondName}"
+                        )
+                    )
+                    updateLoadingDialogVisibilityState()
+                    onAddChildClick()
+                } catch (e: Exception) {
+                    updateLoadingDialogVisibilityState()
+                    updateErrorDialogVisibilityState()
+                    Log.e("Add Child", e.message ?: "Error")
                 }
             }
-            onAddChildClick()
         }
     }
 
+    private fun checkAllEnteredData(): Boolean {
+        return uiState.value.numberErrorMessage == null &&
+                uiState.value.childFirstNameErrorMessage == null &&
+                uiState.value.childSecondNameErrorMessage == null &&
+                uiState.value.fatherFirstNameErrorMessage == null &&
+                uiState.value.fatherSecondNameErrorMessage == null &&
+                uiState.value.motherFirstNameErrorMessage == null &&
+                uiState.value.motherSecondNameErrorMessage == null &&
+                uiState.value.dateOfBirthErrorMessage == null &&
+                uiState.value.genderErrorMessage == null &&
+                uiState.value.acceptPrivacyIsChecked
+    }
+
+    private fun extractDateComponents(dateString: String): Triple<Int, Int, Int> {
+        val parts = dateString.split("/")
+        if (parts.size != 3) {
+            _uiState.value =
+                _uiState.value.copy(dateOfBirthErrorMessage = R.string.invalid_date_value)
+        }
+        val year = parts[2].toInt()
+        val month = parts[1].toInt()
+        val day = parts[0].toInt()
+        return Triple(day, month, year)
+    }
+
+    private fun extractNumberComponents(number: String): Pair<Int, Int> {
+        val parts = number.split("/")
+        if (parts.size != 2) {
+            _uiState.value =
+                _uiState.value.copy(numberErrorMessage = R.string.invalide_child_number)
+        }
+        val first = parts[0].toInt()
+        val second = parts[1].toInt()
+        return Pair(first = first, second = second)
+    }
+
+
+    private fun getMonthByNumber(monthNumber: Int): Month {
+        if (monthNumber !in 1..12) {
+            _uiState.value =
+                _uiState.value.copy(dateOfBirthErrorMessage = R.string.invalid_date_value)
+        }
+        return Month.entries[monthNumber - 1]
+    }
 
 }

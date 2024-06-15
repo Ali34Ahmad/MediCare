@@ -6,4 +6,5 @@ data class DaySocket (
     val date: FullDate,
     val timeSockets: List<TimeSocket> = emptyList()
 ){
+    constructor() : this(date= FullDate(),timeSockets= emptyList())
 }

@@ -16,25 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
-/*
-interface ResourceProvider{
-    fun getString(resId:Int)
-}
-
- class MyApplication : Application(), ResourceProvider {
-    override fun getString(resId: Int): String {
-        return resources.getString(resId)
-    }
-}*/
-
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val accountService: AccountService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
 
     fun updateEmail(newEmail: String) {
@@ -56,24 +44,39 @@ class LoginViewModel @Inject constructor(
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
 
+    fun updateErrorDialogVisibilityState() {
+        _uiState.value =
+            _uiState.value.copy(showErrorDialog = !uiState.value.showErrorDialog)
+    }
+    fun updateLoadingDialogVisibilityState() {
+        _uiState.value =
+            _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
+    }
+
     fun login(onClickLoginButton:()->Unit) {
         _uiState.value=
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
                 passwordErrorMessage = Validator.checkPassword(uiState.value.password),
             )
-        if(uiState.value.emailErrorMessage==null&&
-            uiState.value.passwordErrorMessage==null&&
-            uiState.value.acceptPrivacyIsChecked
-            ){
+        if(checkAllEnteredData()){
             viewModelScope.launch {
                 try {
+                    updateLoadingDialogVisibilityState()
                     accountService.login(uiState.value.email,uiState.value.password)
+                    updateLoadingDialogVisibilityState()
+                    onClickLoginButton()
                 }catch (e:Exception){
+                    updateLoadingDialogVisibilityState()
+                    updateErrorDialogVisibilityState()
                     Log.e("Log in",e.message?:"Error")
                 }
             }
-            onClickLoginButton()
         }
+    }
+    private fun checkAllEnteredData(): Boolean {
+        return uiState.value.emailErrorMessage==null&&
+                uiState.value.passwordErrorMessage==null&&
+                uiState.value.acceptPrivacyIsChecked
     }
 }

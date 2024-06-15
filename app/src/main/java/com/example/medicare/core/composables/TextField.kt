@@ -39,7 +39,7 @@ fun OutlinedTextFieldComponent(
     onValueChange: (String) -> Unit,
     @StringRes hint: Int,
     modifier: Modifier = Modifier,
-    errorMessage: String?,
+    errorMessage: Int?,
     showEyeTrailingIcon: Boolean = false,
     isPasswordVisible: Boolean = false,
     isRequired: Boolean = true,
@@ -87,7 +87,7 @@ fun OutlinedTextFieldComponent(
         Spacer(modifier = Modifier.height(Spacing.extraSmall))
         if (errorMessage != null) {
             Text(
-                text = errorMessage,
+                text = stringResource(errorMessage),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error
             )
@@ -106,8 +106,8 @@ fun OutlinedTextFieldWithTwoFieldsComponent(
     @StringRes hint1: Int,
     @StringRes hint2: Int,
     modifier: Modifier = Modifier,
-    errorMessage1: String?,
-    errorMessage2: String?
+    errorMessage1: Int?,
+    errorMessage2: Int?
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         OutlinedTextFieldComponent(
@@ -143,7 +143,7 @@ fun TextFieldComponentPreview() {
                 hint = R.string.email_hint,
                 modifier = Modifier.padding(16.dp),
                 showEyeTrailingIcon = true,
-                errorMessage = ""
+                errorMessage = R.string.blank
             )
         }
 
@@ -163,8 +163,8 @@ fun TextFieldWithTwoFieldsComponentPreview() {
                 onValueChange2 = {},
                 hint1 = R.string.first_name_hint,
                 hint2 = R.string.second_name_hint,
-                errorMessage1 = "",
-                errorMessage2 = "",
+                errorMessage1 = R.string.blank,
+                errorMessage2 = R.string.blank,
                 modifier = Modifier.padding(16.dp),
             )
         }

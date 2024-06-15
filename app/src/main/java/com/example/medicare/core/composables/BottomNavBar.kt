@@ -41,6 +41,7 @@ val listOfFilledIcons = listOf(
     R.drawable.ic_child_filled,
 )
 
+
 val bottomNavItems = listOf(
     BottomNavigationItem(
         label = R.string.home,
@@ -48,15 +49,15 @@ val bottomNavItems = listOf(
     ),
     BottomNavigationItem(
         label = R.string.vaccines,
-        route = "Home"
+        route = "Vaccine"
     ),
     BottomNavigationItem(
         label = R.string.appointments,
-        route = "Home"
+        route = "Appointment"
     ),
     BottomNavigationItem(
         label = R.string.children,
-        route = "Home"
+        route = "Children"
     ),
 
     )
@@ -69,6 +70,9 @@ fun BottomNavBarComponent(
     onItem3Click: () -> Unit = {},
     onItem4Click: () -> Unit = {},
     selectedIndex: Int = 0,
+    bottomNavItems: List<BottomNavigationItem>,
+    listOfOutlinedIcons: List<Int>,
+    listOfFilledIcons: List<Int>,
 ) {
     NavigationBar(modifier = modifier) {
         bottomNavItems.forEachIndexed { index, item ->
@@ -111,7 +115,11 @@ fun BottomNavBarComponent(
 private fun BottomNavBarComponentPreview() {
     MaterialTheme {
         Surface {
-            BottomNavBarComponent()
+            BottomNavBarComponent(
+                bottomNavItems = bottomNavItems,
+                listOfFilledIcons = listOfFilledIcons,
+                listOfOutlinedIcons = listOfOutlinedIcons
+            )
         }
     }
 }

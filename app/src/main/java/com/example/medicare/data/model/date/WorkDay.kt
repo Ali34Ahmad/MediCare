@@ -1,16 +1,13 @@
 package com.example.medicare.data.model.date
 
-import java.time.DayOfWeek
+import com.example.medicare.core.enums.DayOfWeek
+import com.google.firebase.firestore.DocumentId
 
 
 data class WorkDay (
-    val day : String,
+    val day : DayOfWeek,
     val openingTime : Time,
     val closingTime : Time
 ){
-    constructor() : this(
-        day = "Monday",
-        openingTime = Time(),
-        closingTime = Time(),
-    )
+    constructor() : this(day=DayOfWeek.SUN,openingTime=Time(),closingTime=Time())
 }

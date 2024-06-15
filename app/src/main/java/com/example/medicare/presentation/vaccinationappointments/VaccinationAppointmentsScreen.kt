@@ -14,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dispensary.ui.composables.ChooseTab
 import com.example.medicare.R
+import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.ui.composables.UpcomingVaccinationAppointmentVerticalList
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
@@ -25,6 +27,9 @@ fun VaccinationAppointmentsScreen(
     modifier: Modifier = Modifier,
     viewModel: VaccinationAppointmentViewModel = hiltViewModel(),
 ) {
+    val vaccinationAppointments:List<Appointment> =viewModel.vaccinationAppointments.collectAsStateWithLifecycle(initialValue = emptyList()).value
+        .filter { appointment ->  appointment.vaccineId.isNotBlank()}
+
     val uiState = viewModel.uiState.collectAsState()
     ChooseTab(
         title = null,
@@ -38,7 +43,7 @@ fun VaccinationAppointmentsScreen(
     )
     Spacer(modifier = Modifier.height(Spacing.small))
 
-    UpcomingVaccinationAppointmentVerticalList()
+    UpcomingVaccinationAppointmentVerticalList(upcomingVaccinationAppointments = vaccinationAppointments)
 
 }
 

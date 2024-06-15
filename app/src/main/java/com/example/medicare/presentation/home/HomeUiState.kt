@@ -1,7 +1,9 @@
 package com.example.medicare.presentation.home
 
+import com.example.medicare.data.model.user.Doctor
+
+
 data class HomeUiState(
-    val userId:String?=null,
-    val selectedSectionCardId:String?=null,
-    //val responsibleDoctor:Doctor
+    val responsibleDoctor: Doctor?=null,
+    val selectedClinicIndex:Int=0,
 )

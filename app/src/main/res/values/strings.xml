@@ -21,7 +21,7 @@
     <!--TextField hints-->
     <string name="email_hint">name@email.com</string>
     <string name="first_name_hint">First</string>
-    <string name="second_name_hint">Second</string>
+    <string name="second_name_hint">Last</string>
     <string name="password_hint">Password</string>
 
     <!---->
@@ -100,6 +100,21 @@
     <string name="test_availability_end_date">05/07/2024</string>
     <string name="test_work_start_time">09:00 AM</string>
     <string name="test_work_end_time">03:00 PM</string>
+    <string name="book_a_date">Book a day</string>
+    <string name="available_times">Available times</string>
+    <string name="appointment_for">Appointment for</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="visit">Visit</string>
+    <string name="vaccine">Vaccine</string>
+    <string name="ok">Ok</string>
+    <string name="choose">Choose</string>
+    <string name="cancel">Cancel</string>
+    <string name="none">None</string>
+    <string name="sending_information">Sending Information ...</string>
+    <string name="clinic_name">Clinic name</string>
+    <string name="schedule">Schedule</string>
+    <string name="profile">Profile</string>
 
     <string name="go_back">Go back</string>
     <string name="birthday">birth day</string>
@@ -107,4 +122,10 @@
     <string name="clinics">clinics</string>
     <string name="upcoming_vaccinations">upcoming vaccination</string>
     <string name="see_all">see all</string>
+    <string name="add_clinic">Add clinic</string>
+    <string name="invalide_child_number">Invalid number (Child number should look like this 22/5)</string>
+    <string name="invalid_date_value">Invalid date value</string>
+    <string name="blank" />
+    <string name="date">Date</string>
+    <string name="state">State</string>
 </resources>

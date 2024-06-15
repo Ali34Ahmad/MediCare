@@ -8,7 +8,7 @@ data class VaccineTableItem(
     @DocumentId
     val id : String,
     val vaccine: Vaccine,
-    val vaccineDate : FullDate
+    val vaccineDate : FullDate?
 ){
     constructor() : this(
         id = "",
