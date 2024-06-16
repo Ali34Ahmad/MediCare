@@ -131,11 +131,11 @@ fun HomeScreen(
                         ),
                     daySockets = listOf(
                         DaySocket(
-                            date= FullDate(day=1.toString(),month=Month.JUN,year=2024),
+                            date= FullDate(day=1,month=Month.JUN,year=2024),
                             timeSockets = listOfTimeSockets
                         ),
                         DaySocket(
-                            date= FullDate(day=2.toString(),month=Month.JUN,year=2024),
+                            date= FullDate(day=2,month=Month.JUN,year=2024),
                             timeSockets = listOfTimeSockets
                         ),
                     ),

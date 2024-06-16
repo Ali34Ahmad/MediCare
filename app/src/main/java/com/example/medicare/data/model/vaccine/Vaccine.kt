@@ -8,17 +8,17 @@ import com.google.firebase.firestore.DocumentId
 data class Vaccine(
     @DocumentId
     val id : String ="",
-    val name : String,
-    val description : String,
-    val fromAge : Age,
-    val toAge: Age,
-    val availabilityStartDate : FullDate,
-    val lastAvailableDate : FullDate,
-    val conflicts : List<String>,
-    val visitNumber : Int,
+    val name : String ="",
+    val description : String = "",
+    val fromAge : Age? = null,
+    val toAge: Age? = null,
+    val availabilityStartDate : FullDate = FullDate(),
+    val lastAvailableDate : FullDate = FullDate(),
+    val conflicts : List<String> = emptyList(),
+    val visitNumber : Int = 0,
 )
 {
-    constructor() : this(
+    private constructor() : this(
         id = "",
         name = "",
         description = "",

@@ -76,7 +76,7 @@ fun BookAppointmentScreen(
     val bookedDate=FullDate(
         year=uiState.value.bookedDate.year,
         month = viewModel.getMonthByJavaMonth(uiState.value.bookedDate.month),
-        day=uiState.value.bookedDate.dayOfMonth.toString()
+        day=uiState.value.bookedDate.dayOfMonth
     )
     val timeSockets=uiState.value.clinic.daySockets[viewModel.getDaySocketIndex(bookedDate)]
         .timeSockets.filter {

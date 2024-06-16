@@ -14,7 +14,7 @@ data class Notification(
     val userId : String = "",
     val doctorName : String = "",
     val message : String = "",
-    val clinic: Clinic ,
+    val clinic: Clinic = Clinic() ,
     val importance : Int = 0,
     val arrivalTime : Pair<FullDate,Time>? = null,
     val visitDate : Pair<FullDate,Time>? = null,

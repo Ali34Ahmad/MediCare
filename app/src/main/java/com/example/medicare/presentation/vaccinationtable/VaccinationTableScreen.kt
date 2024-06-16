@@ -210,7 +210,7 @@ private fun VaccinationTableListItemPreview() {
                         conflicts = emptyList(),
                         visitNumber = 1
                     ),
-                    vaccineDate = FullDate(day = 1.toString(), month = Month.JUN, year = 2024),
+                    vaccineDate = FullDate(day = 1, month = Month.JUN, year = 2024),
                 )
             )
         }

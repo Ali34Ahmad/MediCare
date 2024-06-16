@@ -201,7 +201,7 @@ fun VaccinationAppointmentCardComponent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = vaccinationAppointment.date.day,
+                        text = vaccinationAppointment.date.day.toString(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -285,7 +285,7 @@ fun ClinicAppointmentCardComponent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = clinicAppointment.date.day,
+                        text = clinicAppointment.date.day.toString(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -342,7 +342,7 @@ fun ChildCardComponent(
     modifier: Modifier = Modifier,
 ) {
     val day =
-        if (child.birthDate.day.length == 1) "0${child.birthDate.day}" else child.birthDate.day
+        if (child.birthDate.day.toString().length == 1) "0${child.birthDate.day}" else child.birthDate.day
     val monthNumber =
         if ((child.birthDate.month.ordinal + 1).toString().length == 1) "0${child.birthDate.month.ordinal + 1}" else "${child.birthDate.month.ordinal + 1}"
 

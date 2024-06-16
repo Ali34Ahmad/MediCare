@@ -90,7 +90,7 @@ class BookAppointmentViewModel @Inject constructor(
                         date = FullDate(
                             year = uiState.value.bookedDate.year,
                             month = getMonthByJavaMonth(uiState.value.bookedDate.month),
-                            day = uiState.value.bookedDate.dayOfMonth.toString()
+                            day = uiState.value.bookedDate.dayOfMonth
                         ),
                         timeSocket = uiState.value.freeTimes[uiState.value.chosenTimeSocketIndex],
                         vaccineId = ""
@@ -105,6 +105,7 @@ class BookAppointmentViewModel @Inject constructor(
 
     fun getMonthByJavaMonth(month: java.time.Month): Month {
         return when (month) {
+
             java.time.Month.JANUARY -> Month.JAN
             java.time.Month.FEBRUARY -> Month.FEB
             java.time.Month.MARCH -> Month.MAR
@@ -117,6 +118,7 @@ class BookAppointmentViewModel @Inject constructor(
             java.time.Month.OCTOBER -> Month.OCT
             java.time.Month.NOVEMBER -> Month.NOV
             java.time.Month.DECEMBER -> Month.DEC
+
         }
     }
 

@@ -8,5 +8,5 @@ data class WorkDay (
     val openingTime : Time,
     val closingTime : Time
 ){
-    constructor() : this(day=DayOfWeek.SUN,openingTime=Time(),closingTime=Time())
+    private constructor() : this(day=DayOfWeek.SUN,openingTime=Time(),closingTime=Time())
 }

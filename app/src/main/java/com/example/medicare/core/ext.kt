@@ -108,7 +108,7 @@ fun Appointment.calculateRemainingTime(targetDate: FullDate, targetTime: TimeSoc
 }
 
 fun FullDate.formatDate():String{
-    val day= if(this.day.length==1)
+    val day= if(this.day.toString().length==1)
         "0${this.day}/"
     else
         "${this.day}/"

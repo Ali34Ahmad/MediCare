@@ -6,12 +6,12 @@ import com.google.firebase.firestore.DocumentId
 
 data class Appointment(
     @DocumentId
-    val id: String,
-    val clinicId: String,
-    val userId : String,
-    val date: FullDate,
-    val timeSocket: TimeSocket,
-    val vaccineId : String,
+    val id: String = "",
+    val clinicId: String="",
+    val userId : String="",
+    val date: FullDate= FullDate(),
+    val timeSocket: TimeSocket= TimeSocket(),
+    val vaccineId : String="",
  ){
     private constructor() : this(
         "",

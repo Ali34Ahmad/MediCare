@@ -12,7 +12,7 @@ data class Clinic(
     val imageUrl: String? = null,
     val workDays: List<WorkDay> = emptyList(),
     val daySockets: List<DaySocket> = emptyList(),
-    val responsibleDoctor: Doctor ,
+    val responsibleDoctor: Doctor = Doctor(),
     val services : List<String> = emptyList()
 ){
     private constructor() : this(

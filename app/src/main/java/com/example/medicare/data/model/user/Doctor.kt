@@ -6,8 +6,8 @@ import com.google.firebase.firestore.DocumentId
 data class Doctor(
     @DocumentId
     val id : String ="",
-    val firstName : String,
-    val lastName : String,
+    val firstName : String="",
+    val lastName : String="",
     val speciality : String = "",
     val imageUrl : String? = "",
     val gender: Gender = Gender.MALE

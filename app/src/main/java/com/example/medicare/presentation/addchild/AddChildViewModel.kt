@@ -145,7 +145,7 @@ class AddChildViewModel @Inject constructor(
                         Child(
                             firstName = uiState.value.childFirstName,
                             lastName = uiState.value.childSecondName,
-                            birthDate = FullDate(year = year, month = month, day = day.toString()),
+                            birthDate = FullDate(year = year, month = month, day = day),
                             childNumber = ChildNumber(
                                 uiState.value.upNumber ?: -1,
                                 secondNumber = uiState.value.downNumber ?: -1

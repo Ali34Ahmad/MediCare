@@ -3,9 +3,9 @@ package com.example.medicare.data.model.date
 import com.example.medicare.core.enums.DayPeriod
 
 data class Time(
-    val hour: Int,
-    val minute: Int,
-    val dayPeriod: DayPeriod
+    val hour: Int = 0,
+    val minute: Int = 0,
+    val dayPeriod: DayPeriod = DayPeriod.AM
 ){
-    constructor() : this(0,0, DayPeriod.AM)
+    private constructor() : this(0,0, DayPeriod.AM)
 }

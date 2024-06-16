@@ -7,14 +7,14 @@ import com.google.firebase.firestore.DocumentId
 data class Child(
     @DocumentId
     val id : String = "",
-    val firstName : String,
-    val lastName : String,
-    val father : String,
-    val mother : String,
-    val birthDate : FullDate,
-    val gender : Gender,
-    val childNumber : ChildNumber,
-    val vaccineTable : List<VaccineTableItem>
+    val firstName : String="",
+    val lastName : String="",
+    val father : String="",
+    val mother : String="",
+    val birthDate : FullDate= FullDate(),
+    val gender : Gender=Gender.MALE,
+    val childNumber : ChildNumber = ChildNumber(),
+    val vaccineTable : List<VaccineTableItem> = emptyList()
 ){
     private constructor() : this(
         firstName = "no name",
