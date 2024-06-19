@@ -3,8 +3,8 @@ package com.example.medicare.data.model.date
 
 import com.example.medicare.core.enums.Month
 import com.example.medicare.core.toMonth
+import kotlinx.serialization.Serializable
 import java.util.Calendar
-
 data class FullDate(
     val day: Int,
     val month: Month,

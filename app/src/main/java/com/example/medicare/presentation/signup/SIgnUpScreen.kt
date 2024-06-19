@@ -1,6 +1,5 @@
 package com.example.medicare.presentation.signup
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,23 +10,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ChooseTab
+import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldWithTwoFieldsComponent
 import com.example.dispensary.ui.composables.SpannableTextComponent
-import com.example.dispensary.ui.composables.TextStyle
-import com.example.dispensary.ui.composables.TextWithMultipleStyles
 import com.example.medicare.R
 import com.example.medicare.core.composables.AppLogo
 import com.example.medicare.core.composables.ErrorDialog
@@ -37,23 +32,31 @@ import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun SignUpScreen(
-    onSignUpClick: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel(),
-    onLoginClick: () -> Unit
+    navigateToHomeScreen: () -> Unit,
+    uiState: SignUpUiState,
+    updateErrorDialogVisibilityState:()->Unit,
+    updateEmailEvent:(String)->Unit,
+    updateFirstNameEvent:(String)->Unit,
+    updateSecondNameEvent:(String)->Unit,
+    updatePasswordEvent:(String)->Unit,
+    updatePasswordVisibilityStateEvent:()->Unit,
+    updateGenderEvent:(ChooseTabState)->Unit,
+    updateCheckStateEvent:(Boolean)->Unit,
+    onSignUpClickEvent:()->Unit,
+    onLoginClickEvent: () -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsState()
 
     ErrorDialog(
-        showDialog = uiState.value.showErrorDialog,
+        showDialog = uiState.showErrorDialog,
         onDismissRequest = {
-            viewModel.updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState()
         },
         onConfirmClick = {
-            viewModel.updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState()
         }
     )
     LoadingDialog(
-        showDialog = uiState.value.showLoadingDialog,
+        showDialog = uiState.showLoadingDialog,
     )
 
     Column(
@@ -69,47 +72,47 @@ fun SignUpScreen(
 
         OutlinedTextFieldComponent(
             title = stringResource(id = R.string.email),
-            textFieldValue = uiState.value.email,
+            textFieldValue = uiState.email,
             onValueChange = {
-                viewModel.updateEmail(it)
+                updateEmailEvent(it)
             },
             hint = R.string.email_hint,
-            errorMessage = uiState.value.emailErrorMessage?:R.string.blank
+            errorMessage = uiState.emailErrorMessage?:R.string.blank
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
 
         OutlinedTextFieldWithTwoFieldsComponent(
             title = stringResource(id = R.string.name),
-            textFieldValue1 = uiState.value.firstName,
-            textFieldValue2 = uiState.value.secondName,
+            textFieldValue1 = uiState.firstName,
+            textFieldValue2 = uiState.secondName,
             onValueChange1 = {
-                viewModel.updateFirstName(it)
+                updateFirstNameEvent(it)
             },
             onValueChange2 = {
-                viewModel.updateSecondName(it)
+                updateSecondNameEvent(it)
             },
             hint1 = R.string.first_name_hint,
             hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.firstNameErrorMessage?:R.string.blank,
-            errorMessage2 = uiState.value.secondNameErrorMessage?:R.string.blank,
+            errorMessage1 = uiState.firstNameErrorMessage?:R.string.blank,
+            errorMessage2 = uiState.secondNameErrorMessage?:R.string.blank,
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
 
         OutlinedTextFieldComponent(
             title = stringResource(id = R.string.password),
-            textFieldValue = uiState.value.password,
+            textFieldValue = uiState.password,
             onValueChange = {
-                viewModel.updatePassword(it)
+                updatePasswordEvent(it)
             },
             hint = R.string.password,
-            errorMessage = uiState.value.passwordErrorMessage?:R.string.blank,
+            errorMessage = uiState.passwordErrorMessage?:R.string.blank,
             showEyeTrailingIcon = true,
             onVisibilityIconClicked = {
-                viewModel.updatePasswordVisibilityState()
+                updatePasswordVisibilityStateEvent()
             },
-            isPasswordVisible = uiState.value.isPasswordVisible,
+            isPasswordVisible = uiState.isPasswordVisible,
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
@@ -118,19 +121,19 @@ fun SignUpScreen(
             title = stringResource(id = R.string.gender),
             text1 = R.string.male,
             text2 = R.string.female,
-            chooseTabState = uiState.value.chooseTabState,
+            chooseTabState = uiState.chooseTabState,
             onChooseChange = { chooseTabState ->
-                viewModel.updateGender(chooseTabState)
+                updateGenderEvent(chooseTabState)
             },
-            errorMessage = stringResource(uiState.value.genderError?:R.string.blank)
+            errorMessage = stringResource(uiState.genderError?:R.string.blank)
         )
 
         Spacer(modifier = Modifier.height(Spacing.large))
 
         CheckBoxComponent(
-            checked = uiState.value.acceptPrivacyIsChecked,
+            checked = uiState.acceptPrivacyIsChecked,
             onCheckedChange = {
-                viewModel.updateCheckState(it)
+                updateCheckStateEvent(it)
             },
             text1 = stringResource(id = R.string.checkbox_auth_text1),
             text2 = stringResource(id = R.string.checkbox_auth_text2),
@@ -142,7 +145,9 @@ fun SignUpScreen(
         ElevatedButtonComponent(
             text = R.string.sign_up,
             onClick = {
-                viewModel.signUp(onSignUpClick)
+                onSignUpClickEvent()
+                if (uiState.isSignUpSuccessful)
+                    navigateToHomeScreen()
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -156,7 +161,7 @@ fun SignUpScreen(
             SpannableTextComponent(
                 text1 = stringResource(id = R.string.already_have_account_part1),
                 text2 = stringResource(id = R.string.log_in),
-                onCLick =onLoginClick
+                onCLick =onLoginClickEvent
             )
         }
     }
@@ -168,8 +173,22 @@ private fun SignUpScreenPreview() {
     MediCareTheme {
         Surface {
             SignUpScreen(
-                onSignUpClick = {},
-                onLoginClick = {},
+                navigateToHomeScreen = {},
+                onLoginClickEvent = {},
+                uiState = SignUpUiState(
+                    email = "",
+                    emailErrorMessage = null,
+                    firstName = ""
+                ),
+                onSignUpClickEvent = {},
+                updateSecondNameEvent = {},
+                updateEmailEvent = {},
+                updateCheckStateEvent = {},
+                updateErrorDialogVisibilityState = {},
+                updateFirstNameEvent = {},
+                updateGenderEvent = {},
+                updatePasswordEvent = {},
+                updatePasswordVisibilityStateEvent = {}
             )
         }
     }

@@ -1,5 +1,7 @@
 package com.example.medicare.data.model.child
 
+import kotlinx.serialization.Serializable
+
 data class ChildNumber(
     val firstNumber : Int = 0,
     val secondNumber : Int = 0

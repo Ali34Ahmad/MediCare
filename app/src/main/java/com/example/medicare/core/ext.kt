@@ -1,5 +1,6 @@
 package com.example.medicare.core
 
+import androidx.navigation.NavController
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.date.Age
 import com.example.medicare.data.model.date.FullDate
@@ -12,6 +13,9 @@ import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.RemainingTime
 import com.example.medicare.data.model.date.Time
 import com.example.medicare.data.model.date.TimeSocket
+import com.example.medicare.presentation.MedicareAppViewModel
+import com.example.medicare.presentation.navigation.Destination
+import com.example.medicare.presentation.navigation.getCurrentDestinationUsingName
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -122,3 +126,29 @@ fun FullDate.formatDate():String{
 
     return  "$day/$month/$year"
 }
+
+
+fun <T : Any> NavController.navigate(destination: T, viewModel: MedicareAppViewModel) {
+    navigate(destination)
+    if (destination is Destination)
+        viewModel.updateCurrentDestination(destination)
+}
+
+inline fun <reified T : Any> NavController.popUpToAndNavigate(
+    destination: Destination,
+    viewModel: MedicareAppViewModel
+) {
+    navigate(destination) {
+        popUpTo<T> {
+            inclusive = true
+        }
+    }
+    viewModel.updateCurrentDestination(destination)
+}
+
+
+fun NavController.navigateUp(viewModel: MedicareAppViewModel) {
+    navigateUp()
+    viewModel.updateCurrentDestination(getCurrentDestinationUsingName(this))
+}
+

@@ -9,9 +9,8 @@ import com.example.medicare.core.enums.Gender
 import com.example.medicare.core.enums.Month
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.child.ChildNumber
-import com.example.medicare.data.model.child.VaccineTableItem
 import com.example.medicare.data.model.date.FullDate
-import com.example.medicare.data.services.StorageService
+import com.example.medicare.data.repositories.ChildRepository
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +20,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddChildViewModel @Inject constructor(
-    private val storageService: StorageService
+    private val childRepository: ChildRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddChildUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun updateNumber(newNumber: String) {
+    fun updateChildNumber(newNumber: String) {
         _uiState.value = _uiState.value.copy(
             number = newNumber,
             numberErrorMessage = null
@@ -120,7 +119,7 @@ class AddChildViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
     }
 
-    fun addChild(onAddChildClick: () -> Unit) {
+    fun addChild() {
         extractNumberComponents("${uiState.value.upNumber}/${uiState.value.downNumber}")
         _uiState.value =
             _uiState.value.copy(
@@ -130,7 +129,7 @@ class AddChildViewModel @Inject constructor(
                 fatherSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.fatherSecondName),
                 motherFirstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.motherFirstName),
                 motherSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.motherSecondName),
-                dateOfBirthErrorMessage = Validator.checkRequiredTextField(uiState.value.dateOfBirth.toString()),
+                dateOfBirthErrorMessage = Validator.checkRequiredTextField(uiState.value.dateOfBirth),
                 genderErrorMessage = Validator.checkGender(uiState.value.gender),
             )
         if (checkAllEnteredData()) {
@@ -141,7 +140,7 @@ class AddChildViewModel @Inject constructor(
                     val month: Month =
                         getMonthByNumber(extractDateComponents(uiState.value.dateOfBirth).second)
                     val day: Int = extractDateComponents(uiState.value.dateOfBirth).first
-                    storageService.addChild(
+                    childRepository.addChild(
                         Child(
                             firstName = uiState.value.childFirstName,
                             lastName = uiState.value.childSecondName,
@@ -161,10 +160,11 @@ class AddChildViewModel @Inject constructor(
                         )
                     )
                     updateLoadingDialogVisibilityState()
-                    onAddChildClick()
+                    _uiState.value=_uiState.value.copy(isAddChildSuccessful = true)
                 } catch (e: Exception) {
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
+                    _uiState.value=_uiState.value.copy(isAddChildSuccessful = false)
                     Log.e("Add Child", e.message ?: "Error")
                 }
             }

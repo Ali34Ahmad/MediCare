@@ -27,4 +27,5 @@ data class AddChildUiState(
     val acceptPrivacyIsChecked:Boolean=false,
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
+    val isAddChildSuccessful:Boolean=false,
 )

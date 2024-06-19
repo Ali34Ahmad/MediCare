@@ -156,7 +156,7 @@ fun ResponsibleDoctorCardComponent(
 @Composable
 fun VaccinationAppointmentCardComponent(
     onClick: () -> Unit,
-    vaccinationAppointment:Appointment,
+    vaccinationAppointment: Appointment,
     modifier: Modifier = Modifier,
 ) {
     val hours =
@@ -177,7 +177,7 @@ fun VaccinationAppointmentCardComponent(
         else
             "${vaccinationAppointment.date.month.ordinal}"
 
-    val remainingTime=vaccinationAppointment
+    val remainingTime = vaccinationAppointment
         .calculateRemainingTime(
             vaccinationAppointment.date,
             vaccinationAppointment.timeSocket
@@ -246,7 +246,7 @@ fun VaccinationAppointmentCardComponent(
 @Composable
 fun ClinicAppointmentCardComponent(
     onClick: () -> Unit,
-    clinicAppointment:Appointment,
+    clinicAppointment: Appointment,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -267,7 +267,7 @@ fun ClinicAppointmentCardComponent(
             else
                 "${clinicAppointment.timeSocket.time.minute}"
 
-        val remainingTime=clinicAppointment
+        val remainingTime = clinicAppointment
             .calculateRemainingTime(
                 clinicAppointment.date,
                 clinicAppointment.timeSocket
@@ -337,8 +337,8 @@ fun ClinicAppointmentCardComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildCardComponent(
-    onClick: () -> Unit = {},
-    child:Child,
+    onChildCardClick: (Child) -> Unit,
+    child: Child,
     modifier: Modifier = Modifier,
 ) {
     val day =
@@ -349,7 +349,9 @@ fun ChildCardComponent(
     Card(
         modifier = modifier
             .fillMaxWidth(),
-        onClick = onClick,
+        onClick = {
+            onChildCardClick(child)
+        },
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {
         Row(modifier = Modifier.padding(Spacing.small)) {
@@ -454,7 +456,7 @@ fun AvailableVaccinationNotificationCardComponent(
                     )
                 }
                 Text(
-                    text = notification.vaccine?.name?:""/*notification.doctorName*/,
+                    text = notification.vaccine?.name ?: ""/*notification.doctorName*/,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -467,7 +469,7 @@ fun AvailableVaccinationNotificationCardComponent(
 @Composable
 fun AppointmentReminderNotificationCardComponent(
     onClick: () -> Unit,
-    notification:Notification,
+    notification: Notification,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -590,7 +592,7 @@ fun TimeSocketCardComponent(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text =formateTime(timeSocket),
+            text = formateTime(timeSocket),
             modifier = Modifier
                 .padding(vertical = 4.dp, horizontal = 16.dp)
         )
@@ -618,7 +620,7 @@ fun ClinicInformationCardComponent(
         Row(modifier = Modifier.padding(16.dp)) {
             Box(contentAlignment = Alignment.BottomEnd) {
                 AsyncImage(
-                    model =clinic.responsibleDoctor.imageUrl,
+                    model = clinic.responsibleDoctor.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .height(120.dp)
@@ -658,7 +660,7 @@ fun ClinicInformationCardComponent(
                         colors = CardDefaults.cardColors(containerColor = primary_container)
                     ) {
                         AsyncImage(
-                            model =clinic.imageUrl,
+                            model = clinic.imageUrl,
                             contentDescription = null,
                             modifier = Modifier.padding(4.dp),
                         )
@@ -728,7 +730,7 @@ private fun ClinicCardAppointmentComponentPreview() {
                 modifier = Modifier,
                 onClick = {},
                 clinicAppointment = Appointment()
-                )
+            )
         }
     }
 }
@@ -740,8 +742,8 @@ private fun ChildCardComponentPreview() {
         Surface {
             ChildCardComponent(
                 modifier = Modifier,
-                onClick = {},
-                child=Child(),
+                onChildCardClick = {},
+                child = Child(),
             )
         }
     }

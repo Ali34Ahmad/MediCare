@@ -1,6 +1,7 @@
 package com.example.medicare.data.model.date
 
 import com.example.medicare.core.enums.DayPeriod
+import kotlinx.serialization.Serializable
 
 data class Time(
     val hour: Int = 0,

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.core.enums.Gender
 import com.example.medicare.data.model.user.User
+import com.example.medicare.data.repositories.UserRepository
 import com.example.medicare.data.services.AccountService
 import com.example.medicare.data.services.StorageService
 import com.example.medicare.ui.Validator
@@ -21,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val accountService: AccountService,
-    private val storageService: StorageService,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -67,17 +68,19 @@ class SignUpViewModel @Inject constructor(
         _uiState.value =
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
+
     fun updateErrorDialogVisibilityState() {
         _uiState.value =
             _uiState.value.copy(showErrorDialog = !uiState.value.showErrorDialog)
     }
+
     fun updateLoadingDialogVisibilityState() {
         _uiState.value =
             _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
     }
 
 
-    fun signUp(onSignUpButtonClick: () -> Unit) {
+    fun signUp() {
         _uiState.value =
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
@@ -86,18 +89,13 @@ class SignUpViewModel @Inject constructor(
                 passwordErrorMessage = Validator.checkPassword(uiState.value.password),
                 genderError = Validator.checkGender(uiState.value.chooseTabState),
             )
-        if (uiState.value.emailErrorMessage == null &&
-            uiState.value.firstNameErrorMessage == null &&
-            uiState.value.secondNameErrorMessage == null &&
-            uiState.value.passwordErrorMessage == null &&
-            uiState.value.genderError == null &&
-            uiState.value.acceptPrivacyIsChecked
-        ) {
+
+        if (checkAllEnteredData()) {
             viewModelScope.launch {
                 try {
                     updateLoadingDialogVisibilityState()
                     accountService.signUp(uiState.value.email, uiState.value.password)
-                    storageService.addNewUser(
+                    userRepository.addNewUser(
                         User(
                             email = uiState.value.email,
                             firstName = uiState.value.firstName,
@@ -105,15 +103,25 @@ class SignUpViewModel @Inject constructor(
                             gender = uiState.value.gender ?: Gender.MALE,
                         )
                     )
+                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = true)
                     updateLoadingDialogVisibilityState()
-                    onSignUpButtonClick()
                 } catch (e: Exception) {
+                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = false)
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
                     Log.e("Sign Up", e.message ?: "Error")
                 }
             }
         }
+    }
+
+    private fun checkAllEnteredData(): Boolean {
+        return uiState.value.emailErrorMessage == null &&
+                uiState.value.firstNameErrorMessage == null &&
+                uiState.value.secondNameErrorMessage == null &&
+                uiState.value.passwordErrorMessage == null &&
+                uiState.value.genderError == null &&
+                uiState.value.acceptPrivacyIsChecked
     }
 
 }

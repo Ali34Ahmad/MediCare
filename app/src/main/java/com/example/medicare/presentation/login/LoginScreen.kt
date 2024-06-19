@@ -1,5 +1,6 @@
 package com.example.medicare.presentation.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,13 +13,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
@@ -32,30 +30,35 @@ import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun LoginScreen(
-    onLoginClick: () -> Unit = {},
-    viewModel: LoginViewModel = hiltViewModel(),
-    onSignUpClick: () -> Unit
+    uiState: LoginUiState,
+    navigateToHomeScreen: () -> Unit,
+    onSignUpClick: () -> Unit,
+    updateErrorDialogVisibilityStateEvent: () -> Unit,
+    updateEmailEvent: (String) -> Unit,
+    updatePasswordEvent: (String) -> Unit,
+    updatePasswordVisibilityStateEvent: () -> Unit,
+    updateCheckStateEvent: (Boolean) -> Unit,
+    onLoginClick: () -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
 
     ErrorDialog(
-        showDialog = uiState.value.showErrorDialog,
+        showDialog = uiState.showErrorDialog,
         onDismissRequest = {
-            viewModel.updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityStateEvent()
         },
         onConfirmClick = {
-            viewModel.updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityStateEvent()
         }
     )
     LoadingDialog(
-        showDialog = uiState.value.showLoadingDialog,
+        showDialog = uiState.showLoadingDialog,
     )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(Spacing.medium),
         verticalArrangement = Arrangement.Center
     ) {
         AppLogo(modifier = Modifier.fillMaxWidth())
@@ -64,37 +67,37 @@ fun LoginScreen(
 
         OutlinedTextFieldComponent(
             title = stringResource(id = R.string.email),
-            textFieldValue = uiState.value.email,
+            textFieldValue = uiState.email,
             onValueChange = {
-                viewModel.updateEmail(it)
+                updateEmailEvent(it)
             },
             hint = R.string.email_hint,
-            errorMessage = uiState.value.emailErrorMessage
+            errorMessage = uiState.emailErrorMessage
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
 
         OutlinedTextFieldComponent(
             title = stringResource(id = R.string.password),
-            textFieldValue = uiState.value.password,
+            textFieldValue = uiState.password,
             onValueChange = {
-                viewModel.updatePassword(it)
+                updatePasswordEvent(it)
             },
             hint = R.string.password,
-            errorMessage = uiState.value.passwordErrorMessage?:R.string.blank,
+            errorMessage = uiState.passwordErrorMessage ?: R.string.blank,
             showEyeTrailingIcon = true,
             onVisibilityIconClicked = {
-                viewModel.updatePasswordVisibilityState()
+                updatePasswordVisibilityStateEvent()
             },
-            isPasswordVisible = uiState.value.isPasswordVisible
+            isPasswordVisible = uiState.isPasswordVisible
         )
 
         Spacer(modifier = Modifier.height(Spacing.large))
 
         CheckBoxComponent(
-            checked = uiState.value.acceptPrivacyIsChecked,
+            checked = uiState.acceptPrivacyIsChecked,
             onCheckedChange = {
-                viewModel.updateCheckState(it)
+                updateCheckStateEvent(it)
             },
             text1 = stringResource(id = R.string.checkbox_auth_text1),
             text2 = stringResource(id = R.string.checkbox_auth_text2),
@@ -105,7 +108,14 @@ fun LoginScreen(
 
         ElevatedButtonComponent(
             text = R.string.log_in,
-            onClick = { viewModel.login(onLoginClick) },
+            onClick = {
+                onLoginClick()
+                Log.e("Log in state", "${uiState.isLoginSuccessful}")
+                if (uiState.isLoginSuccessful) {
+                    navigateToHomeScreen()
+                    Log.e("Log in Button Click", "navigateToHomeScreen")
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -129,7 +139,17 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     MediCareTheme {
         Surface {
-            LoginScreen(onLoginClick = {}, onSignUpClick = {})
+            LoginScreen(
+                onLoginClick = {},
+                onSignUpClick = {},
+                navigateToHomeScreen = {},
+                updateErrorDialogVisibilityStateEvent = {},
+                updatePasswordVisibilityStateEvent = {},
+                updateEmailEvent = {},
+                updatePasswordEvent = {},
+                updateCheckStateEvent = {},
+                uiState = LoginUiState()
+            )
         }
     }
 }

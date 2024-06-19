@@ -2,6 +2,7 @@ package com.example.medicare.data.model.user
 
 import com.example.medicare.core.enums.Gender
 import com.google.firebase.firestore.DocumentId
+import kotlinx.serialization.Serializable
 
 data class Doctor(
     @DocumentId

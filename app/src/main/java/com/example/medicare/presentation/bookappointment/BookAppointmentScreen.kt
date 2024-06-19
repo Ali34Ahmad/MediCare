@@ -25,24 +25,24 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dispensary.ui.composables.ClinicInformationCardComponent
 import com.example.dispensary.ui.composables.DatePickerButtonComponent
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.medicare.R
+import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.TimeSocketsPager
 import com.example.medicare.core.enums.TimeSocketState
+import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.presentation.home.HomeScreenSection
@@ -53,120 +53,149 @@ import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import java.time.LocalDate
+import java.time.Month
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookAppointmentScreen(
     onBookNowButtonClick: () -> Unit,
+    navigateToHomeScreen: () -> Unit,
+    onNavigateUpClick: () -> Unit,
     clinic: Clinic,
     modifier: Modifier = Modifier,
-    viewModel: BookAppointmentViewModel = hiltViewModel(),
-) {
-    val uiState = viewModel.uiState.collectAsState()
-    val currentUserName=viewModel.userName?:"Username"
-    val children=viewModel.listOfChildren.collectAsStateWithLifecycle(initialValue = emptyList()).value
+    uiState: BookAppointmentUiState,
+    userName:String?,
+    children:List<Child>,
+    updateClinicEvent:(Clinic)->Unit,
+    updateUserAndChildrenNamesEvent:(List<String>)->Unit,
+    getMonthByJavaMonth:(Month)->com.example.medicare.core.enums.Month,
+    getDaySocketIndex:(FullDate)->Int,
+    updateBookedDateEvent:(LocalDate)->Unit,
+    slideToPreviousPageEvent:()->Unit,
+    slideToNextPageEvent:()->Unit,
+    updateChosenTimeSocketIndexEvent:(Int)->Unit,
+    updateChosenNameIndexEvent:(Int)->Unit,
+    updateNamesMenuVisibilityStateEvent:()->Unit,
+    ) {
+    val currentUserName=userName?:"Username"
 
-    viewModel.updateClinic(clinic)
+    updateClinicEvent(clinic)
 
-    val childrenNames:MutableList<String> = mutableListOf(currentUserName)
+    val userAndChildrenNames:MutableList<String> = mutableListOf(currentUserName)
     children.forEach { child->
-        childrenNames.add(child.firstName)
+        userAndChildrenNames.add(child.firstName)
     }
+    updateUserAndChildrenNamesEvent(userAndChildrenNames)
 
     val bookedDate=FullDate(
-        year=uiState.value.bookedDate.year,
-        month = viewModel.getMonthByJavaMonth(uiState.value.bookedDate.month),
-        day=uiState.value.bookedDate.dayOfMonth
+        year=uiState.bookedDate.year,
+        month = getMonthByJavaMonth(uiState.bookedDate.month),
+        day=uiState.bookedDate.dayOfMonth
     )
-    val timeSockets=uiState.value.clinic.daySockets[viewModel.getDaySocketIndex(bookedDate)]
+    val timeSockets=uiState.clinic.daySockets[getDaySocketIndex(bookedDate)]
         .timeSockets.filter {
                 timeSocket -> timeSocket.state==TimeSocketState.FREE
         }
 
     MyDatePickerDialog(
         onConfirmButtonClick = { date ->
-            viewModel.updateBookedDate(date)
-            uiState.value.datePickerState.hide()
+            updateBookedDateEvent(date)
+            uiState.datePickerState.hide()
         },
-        datePickerState = uiState.value.datePickerState
+        datePickerState = uiState.datePickerState
     )
 
+    Scaffold(
+        topBar = {
+            MedicareTopAppBar(
+                showNavigateUpIconButton = true,
+                showNotificationIconButton = false,
+                title = R.string.app_name,
+                onNavigateUpClick = onNavigateUpClick
+            )
+        }
+    ) { contentPadding ->
+        Surface(modifier = Modifier.padding(contentPadding)) {
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-    ) {
-        Spacer(modifier = Modifier.height(Spacing.medium))
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-        ClinicInformationCardComponent(
-            clinic=uiState.value.clinic,
-            modifier = Modifier.padding(horizontal = Spacing.medium)
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.medium))
-
-        HomeScreenSection(title = R.string.book_a_date) {
-            Column {
-                DatePickerButtonComponent(
-                    dayOfMonth = uiState.value.bookedDate.dayOfMonth,
-                    month = uiState.value.bookedDate.month.toString(),
-                    onClick = {
-                        uiState.value.datePickerState.show()
-                    },
+                ClinicInformationCardComponent(
+                    clinic = uiState.clinic,
                     modifier = Modifier.padding(horizontal = Spacing.medium)
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.medium))
+
+                HomeScreenSection(title = R.string.book_a_date) {
+                    Column {
+                        DatePickerButtonComponent(
+                            dayOfMonth = uiState.bookedDate.dayOfMonth,
+                            month = uiState.bookedDate.month.toString(),
+                            onClick = {
+                                uiState.datePickerState.show()
+                            },
+                            modifier = Modifier.padding(horizontal = Spacing.medium)
+                        )
+                    }
+                }
+
+
+                HomeScreenSection(title = R.string.available_times) {
+                    TimeSocketsPager(
+                        timeSockets = timeSockets,
+                        onPreviousButtonClick = {
+                            slideToPreviousPageEvent()
+                        },
+                        onNextButtonClick = {
+                            slideToNextPageEvent()
+                        },
+                        pagerState = uiState.pagerState,
+                        modifier = Modifier.padding(horizontal = Spacing.small),
+                        onClick = {
+                            updateChosenTimeSocketIndexEvent(it)
+                        },
+                        currentSelectedTimeSocketIndex = uiState.chosenTimeSocketIndex
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(Spacing.large))
+
+                ChoosePatientNameSection(
+                    chosenNameIndex = uiState.chosenNameIndex,
+                    showMenu = uiState.isNamesMenuVisible,
+                    listOfNames = uiState.userAndChildrenNames,
+                    modifier = Modifier.padding(horizontal = Spacing.medium),
+                    onMenuItemClick = { index ->
+                        updateChosenNameIndexEvent(index)
+                    },
+                    onClick = {
+                        updateNamesMenuVisibilityStateEvent()
+                    },
+                    onDismissRequest = {
+                        updateNamesMenuVisibilityStateEvent()
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.large))
+
+                ElevatedButtonComponent(
+                    text = R.string.book_now,
+                    onClick = {
+                        onBookNowButtonClick()
+                        if(uiState.isBookAppointmentIsSuccessful)
+                            navigateToHomeScreen()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.medium)
                 )
             }
         }
-
-
-        HomeScreenSection(title = R.string.available_times) {
-            TimeSocketsPager(
-                timeSockets = timeSockets,
-                onPreviousButtonClick = {
-                    viewModel.slideToPreviousPage()
-                },
-                onNextButtonClick = {
-                    viewModel.slideToNextPage()
-                },
-                pagerState = uiState.value.pagerState,
-                modifier = Modifier.padding(horizontal = Spacing.small),
-                onClick = {
-                    viewModel.updateChosenTimeSocketIndex(it)
-                },
-                currentSelectedTimeSocketIndex=uiState.value.chosenTimeSocketIndex
-            )
-        }
-
-        Spacer(modifier = Modifier.height(Spacing.large))
-
-        ChoosePatientNameSection(
-            chosenNameIndex = uiState.value.chosenNameIndex,
-            showMenu = uiState.value.isNamesMenuVisible,
-            listOfNames = childrenNames,
-            modifier = Modifier.padding(horizontal = Spacing.medium),
-            onMenuItemClick = { index ->
-                viewModel.updateChosenNameIndex(index)
-            },
-            onClick = {
-                viewModel.updateNamesMenuVisibilityState()
-            },
-            onDismissRequest={
-                viewModel.updateNamesMenuVisibilityState()
-            }
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.large))
-
-        ElevatedButtonComponent(
-            text = R.string.book_now,
-            onClick = {
-                viewModel.bookAppointment(onBookNowButtonClick)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Spacing.medium)
-        )
     }
 }
 
@@ -332,7 +361,25 @@ fun ChoosePatientNameDropDownMenu(
 private fun BookAppointmentScreenPreview() {
     MediCareTheme {
         Surface {
-            BookAppointmentScreen(onBookNowButtonClick = {}, clinic = Clinic())
+            BookAppointmentScreen(
+                onBookNowButtonClick = {},
+                clinic = Clinic(),
+                onNavigateUpClick = {},
+                getMonthByJavaMonth = {com.example.medicare.core.enums.Month.JUN},
+                updateBookedDateEvent = {},
+                updateChosenNameIndexEvent = {},
+                updateChosenTimeSocketIndexEvent = {},
+                updateClinicEvent = {},
+                updateNamesMenuVisibilityStateEvent = {},
+                updateUserAndChildrenNamesEvent = {},
+                children = listOf(Child()),
+                navigateToHomeScreen = {},
+                slideToNextPageEvent = {},
+                slideToPreviousPageEvent = {},
+                getDaySocketIndex = {0},
+                uiState = BookAppointmentUiState(),
+                userName = "Ali Ahmad",
+            )
         }
     }
 }

@@ -9,11 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,8 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.medicare.R
+import com.example.medicare.core.composables.MedicareTopAppBar
+import com.example.medicare.core.composables.VaccinationTableList
+import com.example.medicare.core.composables.VaccinationTableListItem
+import com.example.medicare.core.enums.AgeUnit
 import com.example.medicare.core.enums.Month
 import com.example.medicare.core.formatDate
+import com.example.medicare.core.navigateUp
+import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.child.VaccineTableItem
 import com.example.medicare.data.model.date.Age
 import com.example.medicare.data.model.date.FullDate
@@ -39,154 +44,29 @@ import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun VaccinationTableScreen(
+    childId: String,
+    onNavigateUpClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: VaccinationTableViewModel = hiltViewModel()
+    uiState: VaccinationTableUiState,
+    updateVaccinationTable: (String) -> Unit,
+    vaccinationTable: List<VaccineTableItem>,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
-    VaccinationTableList(
-        modifier = modifier,
-        listOfVaccines = uiState.value.listOfVaccines
-    )
-}
+    updateVaccinationTable(childId)
 
-@Composable
-fun VaccinationTableList(
-    listOfVaccines: List<VaccineTableItem>,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier = modifier.fillMaxWidth()) {
-        item {
-            VaccinationTableListFirstItem(modifier = Modifier.fillMaxWidth())
-        }
-        items(listOfVaccines) { vaccineTableItem ->
-            VaccinationTableListItem(
-                vaccineTableItem,
-                modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        topBar = {
+            MedicareTopAppBar(
+                showNavigateUpIconButton = true,
+                showNotificationIconButton = false,
+                title = R.string.app_name,
+                onNavigateUpClick = onNavigateUpClick
             )
         }
-    }
-}
-
-@Composable
-fun VaccinationTableListItem(
-    vaccineTableItem: VaccineTableItem,
-    modifier: Modifier = Modifier
-) {
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .weight(0.3f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = vaccineTableItem.vaccine.visitNumber.toString(),
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = vaccineTableItem.vaccine.name,
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = vaccineTableItem.vaccineDate?.formatDate() ?: "...",
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(0.5f)
-                .height(37.dp)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Icon(
-                imageVector =
-            if(vaccineTableItem.vaccineDate!=null) Icons.Outlined.Check
-                else Icons.Outlined.AddCircle,
-                contentDescription = null
-            )
-        }
-
-    }
-}
-
-@Composable
-fun VaccinationTableListFirstItem(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(0.4f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.visit),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(id = R.string.vaccine),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.date),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(0.4f)
-                .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.state),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(vertical = Spacing.small)
+    ) { contentPadding ->
+        Surface(modifier = Modifier.padding(contentPadding)) {
+            VaccinationTableList(
+                modifier = modifier,
+                listOfVaccines = vaccinationTable
             )
         }
     }
@@ -194,35 +74,50 @@ fun VaccinationTableListFirstItem(
 
 @Preview
 @Composable
-private fun VaccinationTableListItemPreview() {
+private fun VaccinationTableScreenPreview() {
     MediCareTheme {
         Surface {
-            VaccinationTableListItem(
-                VaccineTableItem(
-                    id = "",
-                    vaccine = Vaccine(
-                        name = "Vaccine name",
-                        description = "",
-                        fromAge = Age(),
-                        toAge = Age(),
-                        availabilityStartDate = FullDate(),
-                        lastAvailableDate = FullDate(),
-                        conflicts = emptyList(),
-                        visitNumber = 1
+            VaccinationTableScreen(
+                childId = "1",
+                onNavigateUpClick = {},
+                uiState = VaccinationTableUiState(
+                    ""
+                ),
+                updateVaccinationTable = {},
+                vaccinationTable = listOf(
+                    VaccineTableItem(
+                        id = "",
+                        vaccine = Vaccine(
+                            id = "",
+                            name = "Vaccine name",
+                            description = "This vaccine is shit",
+                            fromAge = Age(10,AgeUnit.DAYS),
+                            toAge = Age(2,AgeUnit.MONTHS),
+                            availabilityStartDate = FullDate(10,Month.JUN,2023),
+                            lastAvailableDate = FullDate(10,Month.JUN,2023),
+                            conflicts = listOf("Conflict 1"),
+                            visitNumber = 1
+                        ),
+                        vaccineDate = FullDate(10, Month.JUN, 2023)
                     ),
-                    vaccineDate = FullDate(day = 1, month = Month.JUN, year = 2024),
+                    VaccineTableItem(
+                        id = "",
+                        vaccine = Vaccine(
+                            id = "",
+                            name = "Vaccine name",
+                            description = "This vaccine is shit",
+                            fromAge = Age(10,AgeUnit.DAYS),
+                            toAge = Age(2,AgeUnit.MONTHS),
+                            availabilityStartDate = FullDate(10,Month.JUN,2023),
+                            lastAvailableDate = FullDate(10,Month.JUN,2023),
+                            conflicts = listOf("Conflict 1"),
+                            visitNumber = 1
+                        ),
+                        vaccineDate = FullDate(10, Month.JUN, 2023)
+                    ),
+
                 )
             )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun VaccinationTableListPreview() {
-    MediCareTheme {
-        Surface {
-            VaccinationTableList(emptyList())
         }
     }
 }

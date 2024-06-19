@@ -4,6 +4,7 @@ import com.example.medicare.data.model.user.Doctor
 import com.example.medicare.data.model.date.DaySocket
 import com.example.medicare.data.model.date.WorkDay
 import com.google.firebase.firestore.DocumentId
+import kotlinx.serialization.Serializable
 
 data class Clinic(
     @DocumentId

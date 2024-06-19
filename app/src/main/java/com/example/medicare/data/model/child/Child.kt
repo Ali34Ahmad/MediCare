@@ -3,6 +3,8 @@ package com.example.medicare.data.model.child
 import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.core.enums.Gender
 import com.google.firebase.firestore.DocumentId
+import kotlinx.serialization.Serializable
+
 
 data class Child(
     @DocumentId

@@ -1,6 +1,7 @@
 package com.example.medicare.data.model.date
 
 import com.google.firebase.firestore.DocumentId
+import kotlinx.serialization.Serializable
 
 data class DaySocket (
     val date: FullDate,

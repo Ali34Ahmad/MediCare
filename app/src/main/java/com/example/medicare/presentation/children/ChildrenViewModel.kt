@@ -2,6 +2,7 @@ package com.example.medicare.presentation.children
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.medicare.data.repositories.ChildRepository
 import com.example.medicare.data.services.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,12 +11,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChildrenViewModel @Inject constructor(
-    private val storageService: StorageService
+    private val childRepository: ChildRepository
 ):ViewModel() {
     private val _uiState= MutableStateFlow(ChildrenUiState())
     val uiState=_uiState.asStateFlow()
 
-    val  children= storageService.children
+    val  children= childRepository.children
     init {
         try {
             updateLoadingDialogVisibilityState(true)

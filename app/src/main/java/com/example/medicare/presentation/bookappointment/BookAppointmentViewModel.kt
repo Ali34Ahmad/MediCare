@@ -8,6 +8,9 @@ import com.example.medicare.core.enums.Month
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.FullDate
+import com.example.medicare.data.repositories.AppointmentRepository
+import com.example.medicare.data.repositories.ChildRepository
+import com.example.medicare.data.repositories.UserRepository
 import com.example.medicare.data.services.AccountService
 import com.example.medicare.data.services.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +25,9 @@ import javax.inject.Inject
 @ExperimentalMaterial3Api
 @HiltViewModel
 class BookAppointmentViewModel @Inject constructor(
-    private val storageService: StorageService,
+    private val appointmentRepository: AppointmentRepository,
+    private val childRepository: ChildRepository,
+    private val userRepository: UserRepository,
     private val accountService: AccountService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookAppointmentUiState())
@@ -30,11 +35,15 @@ class BookAppointmentViewModel @Inject constructor(
 
     var userName:String? =null
         private set
-    val listOfChildren=storageService.children
+    val listOfChildren=childRepository.children
     init {
         viewModelScope.launch {
-            userName="${storageService.getUser()?.firstName} ${storageService.getUser()?.lastName}"
+            userName="${userRepository.getUser()?.firstName}"
         }
+    }
+
+    fun updateUserAndChildrenNames(userAndChildrenNames:List<String>){
+        _uiState.value=_uiState.value.copy(userAndChildrenNames = userAndChildrenNames)
     }
 
     fun updateBookedDate(newDate: LocalDate) {
@@ -79,10 +88,10 @@ class BookAppointmentViewModel @Inject constructor(
         return -1
     }
 
-    fun bookAppointment(onBookNowButtonClick: () -> Unit) {
+    fun bookAppointment() {
         try {
             viewModelScope.launch {
-                storageService.addAppointment(
+                appointmentRepository.addAppointment(
                     Appointment(
                         id="",
                         clinicId = uiState.value.clinic.id,
@@ -97,29 +106,19 @@ class BookAppointmentViewModel @Inject constructor(
                     )
                 )
             }
-            onBookNowButtonClick()
+            _uiState.value=_uiState.value.copy(isBookAppointmentIsSuccessful=true)
         } catch (e: Exception) {
             Log.e("Book Appointment", e.message ?: "Error")
+            _uiState.value=_uiState.value.copy(isBookAppointmentIsSuccessful=false)
         }
     }
 
     fun getMonthByJavaMonth(month: java.time.Month): Month {
-        return when (month) {
-
-            java.time.Month.JANUARY -> Month.JAN
-            java.time.Month.FEBRUARY -> Month.FEB
-            java.time.Month.MARCH -> Month.MAR
-            java.time.Month.APRIL -> Month.APR
-            java.time.Month.MAY -> Month.MAY
-            java.time.Month.JUNE -> Month.JUN
-            java.time.Month.JULY -> Month.JUL
-            java.time.Month.AUGUST -> Month.AUG
-            java.time.Month.SEPTEMBER -> Month.SEP
-            java.time.Month.OCTOBER -> Month.OCT
-            java.time.Month.NOVEMBER -> Month.NOV
-            java.time.Month.DECEMBER -> Month.DEC
-
-        }
+        val values = Month.entries.toTypedArray()
+        if (month.ordinal in values.indices) {
+            return values[month.ordinal]
+        }else
+            return values[0]
     }
 
     fun updateClinic(clinic: Clinic) {

@@ -3,6 +3,8 @@ package com.example.medicare.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medicare.data.model.clinic.Clinic
+import com.example.medicare.data.repositories.AppointmentRepository
+import com.example.medicare.data.repositories.ClinicRepository
 import com.example.medicare.data.services.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,13 +14,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val storageService: StorageService
+    private val appointmentRepository: AppointmentRepository,
+    private val clinicRepository: ClinicRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
-    val clinics = storageService.clinics
-    val appointments = storageService.appointments
+    val clinics = clinicRepository.clinics
+    val appointments = appointmentRepository.appointments
 
     fun updateSelectedClinic(selectedClinicIndex: Int) {
         _uiState.value = _uiState.value.copy(
@@ -27,7 +30,7 @@ class HomeViewModel @Inject constructor(
     }
     fun addClinic(clinic: Clinic){
         viewModelScope.launch {
-            storageService.addClinic(clinic)
+            clinicRepository.addClinic(clinic)
         }
     }
 }

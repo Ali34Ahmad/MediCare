@@ -9,160 +9,191 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ChooseTab
+import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldWithTwoFieldsComponent
 import com.example.medicare.R
 import com.example.medicare.core.composables.ErrorDialog
 import com.example.medicare.core.composables.LoadingDialog
+import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun AddChildScreen(
     modifier: Modifier = Modifier,
-    onAddChildClick:()->Unit,
-    viewModel: AddChildViewModel = hiltViewModel()
+    navigateToChildrenScreen: () -> Unit,
+    onNavigateUpClick: () -> Unit,
+    uiState: AddChildUiState,
+    updateErrorDialogVisibilityState: () -> Unit,
+    updateChildNumberEvent: (String) -> Unit,
+    updateChildFirstNameEvent: (String) -> Unit,
+    updateChildSecondNameEvent: (String) -> Unit,
+    updateFatherFirstNameEvent: (String) -> Unit,
+    updateFatherSecondNameEvent: (String) -> Unit,
+    updateMotherFirstNameEvent: (String) -> Unit,
+    updateMotherSecondNameEvent: (String) -> Unit,
+    updateDateOfBirthEvent: (String) -> Unit,
+    updateGenderEvent: (ChooseTabState) -> Unit,
+    updateCheckStateEvent: (Boolean) -> Unit,
+    onAddChildClick: () -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
-
     ErrorDialog(
-        showDialog = uiState.value.showErrorDialog,
+        showDialog = uiState.showErrorDialog,
         onDismissRequest = {
-            viewModel.updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState()
         },
         onConfirmClick = {
-            viewModel.updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState()
         }
     )
     LoadingDialog(
-        showDialog = uiState.value.showLoadingDialog,
+        showDialog = uiState.showLoadingDialog,
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Spacing.medium),
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedTextFieldComponent(
-            title = stringResource(id = R.string.number),
-            textFieldValue =uiState.value.number,
-            onValueChange = {
-                viewModel.updateNumber(it)
-            },
-            hint = R.string.number_hint,
-            errorMessage = uiState.value.numberErrorMessage
-        )
+    Scaffold(
+        topBar = {
+            MedicareTopAppBar(
+                showNavigateUpIconButton = true,
+                showNotificationIconButton = false,
+                title = R.string.app_name,
+                onNavigateUpClick = onNavigateUpClick
+            )
+        }
+    ) { contentPadding ->
+        Surface(modifier = Modifier.padding(contentPadding)) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(Spacing.medium),
+                verticalArrangement = Arrangement.Center
+            ) {
+                OutlinedTextFieldComponent(
+                    title = stringResource(id = R.string.number),
+                    textFieldValue = uiState.number,
+                    onValueChange = {
+                        updateChildNumberEvent(it)
+                    },
+                    hint = R.string.number_hint,
+                    errorMessage = uiState.numberErrorMessage
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.medium))
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-        OutlinedTextFieldWithTwoFieldsComponent(
-            title = stringResource(id = R.string.name),
-            textFieldValue1 = uiState.value.childFirstName,
-            textFieldValue2 = uiState.value.childSecondName,
-            onValueChange1 = {
-                viewModel.updateChildFirstName(it)
-            },
-            onValueChange2 = {
-                viewModel.updateChildSecondName(it)
-            },
-            hint1 = R.string.first_name_hint,
-            hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.childSecondNameErrorMessage?:R.string.blank,
-            errorMessage2 = uiState.value.childSecondNameErrorMessage?:R.string.blank,
-        )
+                OutlinedTextFieldWithTwoFieldsComponent(
+                    title = stringResource(id = R.string.name),
+                    textFieldValue1 = uiState.childFirstName,
+                    textFieldValue2 = uiState.childSecondName,
+                    onValueChange1 = {
+                        updateChildFirstNameEvent(it)
+                    },
+                    onValueChange2 = {
+                        updateChildSecondNameEvent(it)
+                    },
+                    hint1 = R.string.first_name_hint,
+                    hint2 = R.string.second_name_hint,
+                    errorMessage1 = uiState.childSecondNameErrorMessage ?: R.string.blank,
+                    errorMessage2 = uiState.childSecondNameErrorMessage ?: R.string.blank,
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.medium))
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-        OutlinedTextFieldWithTwoFieldsComponent(
-            title = stringResource(id = R.string.father_name),
-            textFieldValue1 = uiState.value.fatherFirstName,
-            textFieldValue2 = uiState.value.fatherSecondName,
-            onValueChange1 = {
-                viewModel.updateFatherFirstName(it)
-            },
-            onValueChange2 = {
-                viewModel.updateFatherSecondName(it)
-            },
-            hint1 = R.string.first_name_hint,
-            hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.fatherFirstNameErrorMessage?:R.string.blank,
-            errorMessage2 = uiState.value.fatherSecondNameErrorMessage?:R.string.blank,
-        )
+                OutlinedTextFieldWithTwoFieldsComponent(
+                    title = stringResource(id = R.string.father_name),
+                    textFieldValue1 = uiState.fatherFirstName,
+                    textFieldValue2 = uiState.fatherSecondName,
+                    onValueChange1 = {
+                        updateFatherFirstNameEvent(it)
+                    },
+                    onValueChange2 = {
+                        updateFatherSecondNameEvent(it)
+                    },
+                    hint1 = R.string.first_name_hint,
+                    hint2 = R.string.second_name_hint,
+                    errorMessage1 = uiState.fatherFirstNameErrorMessage ?: R.string.blank,
+                    errorMessage2 = uiState.fatherSecondNameErrorMessage ?: R.string.blank,
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.medium))
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-        OutlinedTextFieldWithTwoFieldsComponent(
-            title = stringResource(id = R.string.mother_name),
-            textFieldValue1 = uiState.value.motherFirstName,
-            textFieldValue2 = uiState.value.motherSecondName,
-            onValueChange1 = {
-                viewModel.updateMotherFirstName(it)
-            },
-            onValueChange2 = {
-                viewModel.updateMotherSecondName(it)
-            },
-            hint1 = R.string.first_name_hint,
-            hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.value.motherFirstNameErrorMessage?:R.string.blank,
-            errorMessage2 = uiState.value.motherSecondNameErrorMessage?:R.string.blank,
-        )
+                OutlinedTextFieldWithTwoFieldsComponent(
+                    title = stringResource(id = R.string.mother_name),
+                    textFieldValue1 = uiState.motherFirstName,
+                    textFieldValue2 = uiState.motherSecondName,
+                    onValueChange1 = {
+                        updateMotherFirstNameEvent(it)
+                    },
+                    onValueChange2 = {
+                        updateMotherSecondNameEvent(it)
+                    },
+                    hint1 = R.string.first_name_hint,
+                    hint2 = R.string.second_name_hint,
+                    errorMessage1 = uiState.motherFirstNameErrorMessage ?: R.string.blank,
+                    errorMessage2 = uiState.motherSecondNameErrorMessage ?: R.string.blank,
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.medium))
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-        OutlinedTextFieldComponent(
-            title = stringResource(id = R.string.date_of_birth),
-            textFieldValue =uiState.value.dateOfBirth,
-            onValueChange = {
-                viewModel.updateDateOfBirth(it)
-            },
-            hint = R.string.birthday,
-            errorMessage = uiState.value.dateOfBirthErrorMessage?:R.string.blank
-        )
+                OutlinedTextFieldComponent(
+                    title = stringResource(id = R.string.date_of_birth),
+                    textFieldValue = uiState.dateOfBirth,
+                    onValueChange = {
+                        updateDateOfBirthEvent(it)
+                    },
+                    hint = R.string.birthday,
+                    errorMessage = uiState.dateOfBirthErrorMessage ?: R.string.blank
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.medium))
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-        ChooseTab(
-            title = stringResource(id = R.string.gender),
-            text1 = R.string.male,
-            text2 = R.string.female,
-            chooseTabState = uiState.value.gender,
-            onChooseChange = { chooseTabState ->
-                viewModel.updateGender(chooseTabState)
-            },
-            errorMessage = stringResource(uiState.value.genderErrorMessage?:R.string.blank)
-        )
+                ChooseTab(
+                    title = stringResource(id = R.string.gender),
+                    text1 = R.string.male,
+                    text2 = R.string.female,
+                    chooseTabState = uiState.gender,
+                    onChooseChange = { chooseTabState ->
+                        updateGenderEvent(chooseTabState)
+                    },
+                    errorMessage = stringResource(
+                        uiState.genderErrorMessage ?: R.string.blank
+                    )
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.large))
+                Spacer(modifier = Modifier.height(Spacing.large))
 
-        CheckBoxComponent(
-            checked = uiState.value.acceptPrivacyIsChecked,
-            onCheckedChange = {
-                viewModel.updateCheckState(it)
-            },
-            text1 = stringResource(id = R.string.checkbox_auth_text1),
-            text2 = stringResource(id = R.string.checkbox_auth_text2),
-            text3 = stringResource(id = R.string.checkbox_auth_text3),
-        )
+                CheckBoxComponent(
+                    checked = uiState.acceptPrivacyIsChecked,
+                    onCheckedChange = {
+                        updateCheckStateEvent(it)
+                    },
+                    text1 = stringResource(id = R.string.checkbox_auth_text1),
+                    text2 = stringResource(id = R.string.checkbox_auth_text2),
+                    text3 = stringResource(id = R.string.checkbox_auth_text3),
+                )
 
-        Spacer(modifier = Modifier.height(Spacing.large))
+                Spacer(modifier = Modifier.height(Spacing.large))
 
-        ElevatedButtonComponent(
-            text = R.string.add_child,
-            onClick = { viewModel.addChild(onAddChildClick) },
-            modifier = Modifier.fillMaxWidth()
-        )
+                ElevatedButtonComponent(
+                    text = R.string.add_child,
+                    onClick = {
+                        onAddChildClick()
+                        if (uiState.isAddChildSuccessful)
+                            navigateToChildrenScreen()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 
 
@@ -173,7 +204,23 @@ fun AddChildScreen(
 private fun AddChildScreenPreview() {
     MediCareTheme {
         Surface {
-            AddChildScreen(onAddChildClick={})
+            AddChildScreen(
+                onNavigateUpClick = {},
+                onAddChildClick = {},
+                updateChildSecondNameEvent = {},
+                updateFatherSecondNameEvent = {},
+                updateMotherSecondNameEvent = {},
+                updateErrorDialogVisibilityState = {},
+                updateCheckStateEvent = {},
+                updateGenderEvent = {},
+                updateChildFirstNameEvent = {},
+                updateChildNumberEvent = {},
+                updateDateOfBirthEvent = {},
+                updateFatherFirstNameEvent = {},
+                updateMotherFirstNameEvent = {},
+                navigateToChildrenScreen = {},
+                uiState = AddChildUiState()
+            )
         }
     }
 }

@@ -1,19 +1,15 @@
 package com.example.medicare.presentation.navigation
 
+import com.example.medicare.data.model.clinic.Clinic
 import kotlinx.serialization.Serializable
 
 
 sealed interface Destination {
     @Serializable
-    object Auth : Destination
-    @Serializable
     object SignUp : Destination
 
     @Serializable
     object Login : Destination
-
-    @Serializable
-    object Main: Destination
 
     @Serializable
     object Home : Destination
@@ -30,8 +26,14 @@ sealed interface Destination {
     @Serializable
     object AddChild : Destination
 
+    @Serializable
     object Notification : Destination
-    data class BookAppointment(val clinicId:String) : Destination
+
+    @Serializable
+    data class BookAppointment(val clinic:String) : Destination
+
+    @Serializable
+    data class VaccinationTable(val childId:String)
 }
 
 

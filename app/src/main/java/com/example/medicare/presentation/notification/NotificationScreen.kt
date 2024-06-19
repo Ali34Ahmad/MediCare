@@ -4,30 +4,45 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.medicare.R
+import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.NotificationList
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun NotificationScreen(
-    onNotificationCardClick: () -> Unit,
+    onNavigateUpClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: NotificationViewModel = hiltViewModel(),
+    uiState: NotificationUiState,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
 
-    Spacer(modifier = Modifier.height(Spacing.medium))
+    Scaffold(
+        topBar = {
+            MedicareTopAppBar(
+                showNavigateUpIconButton = true,
+                showNotificationIconButton = false,
+                title = R.string.app_name,
+                onNavigateUpClick =onNavigateUpClick
+            )
+        }
+    ) { contentPadding ->
+        Surface(modifier = Modifier.padding(contentPadding)) {
+            Spacer(modifier = Modifier.height(Spacing.medium))
 
-    NotificationList(
-        notifications = uiState.value.notificationList,
-        modifier = modifier.padding(horizontal = Spacing.medium)
-    )
+            NotificationList(
+                notifications = uiState.notificationList,
+                modifier = modifier.padding(horizontal = Spacing.medium)
+            )
+        }
+    }
 }
 
 @Preview
@@ -35,7 +50,10 @@ fun NotificationScreen(
 private fun NotificationScreenPreview() {
     MediCareTheme {
         Surface {
-            NotificationScreen(onNotificationCardClick = { /*TODO*/ })
+            NotificationScreen(
+                onNavigateUpClick = { /*TODO*/ },
+                uiState = NotificationUiState()
+                )
         }
     }
 }

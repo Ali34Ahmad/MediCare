@@ -85,9 +85,9 @@ fun OutlinedTextFieldComponent(
         )
 
         Spacer(modifier = Modifier.height(Spacing.extraSmall))
-        if (errorMessage != null) {
+        if (errorMessage != R.string.blank) {
             Text(
-                text = stringResource(errorMessage),
+                text = stringResource(errorMessage?:R.string.blank),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error
             )

@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,7 +54,7 @@ class LoginViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
     }
 
-    fun login(onClickLoginButton:()->Unit) {
+    fun login() {
         _uiState.value=
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
@@ -64,9 +65,11 @@ class LoginViewModel @Inject constructor(
                 try {
                     updateLoadingDialogVisibilityState()
                     accountService.login(uiState.value.email,uiState.value.password)
+                    _uiState.value=_uiState.value.copy(isLoginSuccessful = true)
                     updateLoadingDialogVisibilityState()
-                    onClickLoginButton()
+                    Log.e("Log in viewmodel", uiState.value.isLoginSuccessful.toString())
                 }catch (e:Exception){
+                    _uiState.value=_uiState.value.copy(isLoginSuccessful = false)
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
                     Log.e("Log in",e.message?:"Error")

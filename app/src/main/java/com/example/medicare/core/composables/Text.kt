@@ -1,8 +1,5 @@
 package com.example.dispensary.ui.composables
 
-import android.text.SpannedString
-import android.text.style.ClickableSpan
-import androidx.compose.foundation.CombinedClickableNode
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -11,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -30,12 +25,22 @@ sealed class TextStyle {
 @Composable
 fun TextWithMultipleStyles(
     modifier: Modifier = Modifier,
-    fontSizeSp:Int=14,
-    text1: String, style1: TextStyle = TextStyle.Normal,color1:Color=MaterialTheme.colorScheme.onSurface,
-    text2: String = "", style2: TextStyle = TextStyle.Bold,color2:Color=MaterialTheme.colorScheme.onSurface,
-    text3: String = "", style3: TextStyle = TextStyle.Normal,color3:Color=MaterialTheme.colorScheme.onSurface,
-    text4: String = "", style4: TextStyle = TextStyle.Bold,color4:Color=MaterialTheme.colorScheme.onSurface,
-    text5: String = "", style5: TextStyle = TextStyle.Normal,color5:Color=MaterialTheme.colorScheme.onSurface,
+    fontSizeSp: Int = 14,
+    text1: String,
+    style1: TextStyle = TextStyle.Normal,
+    color1: Color = MaterialTheme.colorScheme.onSurface,
+    text2: String = "",
+    style2: TextStyle = TextStyle.Bold,
+    color2: Color = MaterialTheme.colorScheme.onSurface,
+    text3: String = "",
+    style3: TextStyle = TextStyle.Normal,
+    color3: Color = MaterialTheme.colorScheme.onSurface,
+    text4: String = "",
+    style4: TextStyle = TextStyle.Bold,
+    color4: Color = MaterialTheme.colorScheme.onSurface,
+    text5: String = "",
+    style5: TextStyle = TextStyle.Normal,
+    color5: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     val text = buildAnnotatedString {
         withStyle(
@@ -109,25 +114,25 @@ fun SpannableTextComponent(
     text1: String,
     text2: String,
     onCLick: () -> Unit,
-    modifier: Modifier=Modifier
+    spanStyle: SpanStyle = SpanStyle(fontWeight = FontWeight.Bold),
+    textStyle:androidx.compose.ui.text.TextStyle = MaterialTheme.typography.labelLarge,
+    modifier: Modifier = Modifier
 ) {
 
     val text = "$text1 $text2"
-    val start=text.indexOf(text2)
-    val end=start+text1.length
+    val start = text.indexOf(text2)
+    val end = start + text2.length
     val annotatedString = buildAnnotatedString {
         withStyle(
             SpanStyle(
-                fontWeight =FontWeight.Normal
+                fontWeight = FontWeight.Normal
             )
         ) {
             append("$text1 ")
         }
         pushStringAnnotation(tag = "clickable", annotation = text2)
         withStyle(
-            SpanStyle(
-                fontWeight =FontWeight.Bold,
-            )
+            style = spanStyle
         ) {
             append("$text2 ")
         }
@@ -136,12 +141,13 @@ fun SpannableTextComponent(
 
     ClickableText(
         text = annotatedString,
-        modifier=modifier,
+        modifier = modifier,
+        style = textStyle,
         onClick = { offset ->
             annotatedString.getStringAnnotations(tag = "clickable", start = start, end = end)
                 .firstOrNull()?.let { annotation ->
-                onCLick()
-            }
+                    onCLick()
+                }
         }
     )
 }
@@ -150,13 +156,13 @@ fun SpannableTextComponent(
 @Composable
 fun SpannableTextComponentPreview() {
     SpannableTextComponent(text1 = "Already have an account? ", text2 = "Log in", onCLick = {})
-    
+
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun TextWithMultipleStylesPreview() {
-    MaterialTheme{
+    MaterialTheme {
         Surface {
             TextWithMultipleStyles(
                 fontSizeSp = 16,
