@@ -18,7 +18,7 @@ class ChildRepositoryImpl @Inject constructor(
 ) : ChildRepository {
 
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
-    private val currentUserId = auth.currentUser!!.uid ?: "0"
+    private val currentUserId = auth.currentUser?.uid ?: "0"
     private val childrenRef = usersRef.document(currentUserId).collection(DatabaseCollections.CHILDREN_COLLECTION)
 
     override suspend fun addChild(child: Child) {

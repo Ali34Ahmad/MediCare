@@ -80,7 +80,7 @@ class SignUpViewModel @Inject constructor(
     }
 
 
-    fun signUp() {
+    fun signUp(navigateToHomeScreen:()->Unit)=viewModelScope.launch {
         _uiState.value =
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
@@ -91,7 +91,7 @@ class SignUpViewModel @Inject constructor(
             )
 
         if (checkAllEnteredData()) {
-            viewModelScope.launch {
+
                 try {
                     updateLoadingDialogVisibilityState()
                     accountService.signUp(uiState.value.email, uiState.value.password)
@@ -105,12 +105,13 @@ class SignUpViewModel @Inject constructor(
                     )
                     _uiState.value=_uiState.value.copy(isSignUpSuccessful = true)
                     updateLoadingDialogVisibilityState()
+                    navigateToHomeScreen()
                 } catch (e: Exception) {
                     _uiState.value=_uiState.value.copy(isSignUpSuccessful = false)
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
                     Log.e("Sign Up", e.message ?: "Error")
-                }
+
             }
         }
     }

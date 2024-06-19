@@ -4,6 +4,7 @@ import com.example.medicare.data.model.user.UserAccount
 import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.data.services.AccountService
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 class AccountServiceImpl @Inject constructor(
     private val auth : FirebaseAuth,
+    private val database : FirebaseFirestore
 ) : AccountService {
 
     override val currentUserId: String
@@ -36,13 +38,22 @@ class AccountServiceImpl @Inject constructor(
                 auth.removeAuthStateListener(listener)
             }
         }
-    override suspend fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
-        AuthState.Success
+    override suspend fun login(email: String, password: String) : AuthState{
+        try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            return AuthState.Success
+        }catch (e: Exception){
+            return AuthState.Error(e)
+        }
     }
-    override suspend fun signUp(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password).await()
-        AuthState.Success
+    override suspend fun signUp(email: String, password: String): AuthState  {
+        try {
+            auth.createUserWithEmailAndPassword(email, password).await()
+            return AuthState.Success
+        }catch (e: Exception){
+            return AuthState.Error(e)
+        }
+
     }
     override suspend fun deleteAccount() {
         auth.currentUser!!.delete().await()

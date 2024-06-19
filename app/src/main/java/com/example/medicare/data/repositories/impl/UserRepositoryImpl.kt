@@ -14,14 +14,14 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
-    private val currentUserId = auth.currentUser!!.uid
+    private val currentUserId = auth.currentUser?.uid
 
     override suspend fun addNewUser(user: User) {
-        usersRef.document(currentUserId).set(user).await()
+           currentUserId?.let {usersRef.document(it).set(user).await()}
     }
 
     override suspend fun getUser(): User? {
-        return usersRef.document(currentUserId).get().await().toObject(User::class.java)
+        return currentUserId?.let { usersRef.document(it).get().await().toObject(User::class.java) }
     }
 
 }

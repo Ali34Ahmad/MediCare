@@ -42,7 +42,7 @@ fun SignUpScreen(
     updatePasswordVisibilityStateEvent:()->Unit,
     updateGenderEvent:(ChooseTabState)->Unit,
     updateCheckStateEvent:(Boolean)->Unit,
-    onSignUpClickEvent:()->Unit,
+    onSignUpClickEvent:(()->Unit)->Unit,
     onLoginClickEvent: () -> Unit
 ) {
 
@@ -145,9 +145,7 @@ fun SignUpScreen(
         ElevatedButtonComponent(
             text = R.string.sign_up,
             onClick = {
-                onSignUpClickEvent()
-                if (uiState.isSignUpSuccessful)
-                    navigateToHomeScreen()
+                onSignUpClickEvent(navigateToHomeScreen)
             },
             modifier = Modifier.fillMaxWidth()
         )

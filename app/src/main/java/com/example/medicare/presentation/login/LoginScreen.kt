@@ -110,7 +110,7 @@ fun LoginScreen(
             text = R.string.log_in,
             onClick = {
                 onLoginClick()
-                Log.e("Log in state", "${uiState.isLoginSuccessful}")
+                Log.e("Log in state screen", "${uiState.isLoginSuccessful}")
                 if (uiState.isLoginSuccessful) {
                     navigateToHomeScreen()
                     Log.e("Log in Button Click", "navigateToHomeScreen")

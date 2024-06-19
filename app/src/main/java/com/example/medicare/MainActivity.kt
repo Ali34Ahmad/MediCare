@@ -8,6 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.medicare.presentation.MedicareApp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.medicare.fake.datalayer.DataViewModel
+import com.example.medicare.presentation.MedicareApp
 import com.example.medicare.ui.theme.MediCareTheme
 import dagger.hilt.android.AndroidEntryPoint
 

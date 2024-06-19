@@ -54,14 +54,14 @@ class LoginViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
     }
 
-    fun login() {
+    fun login() =viewModelScope.launch{
         _uiState.value=
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
                 passwordErrorMessage = Validator.checkPassword(uiState.value.password),
             )
         if(checkAllEnteredData()){
-            viewModelScope.launch {
+
                 try {
                     updateLoadingDialogVisibilityState()
                     accountService.login(uiState.value.email,uiState.value.password)
@@ -73,7 +73,7 @@ class LoginViewModel @Inject constructor(
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
                     Log.e("Log in",e.message?:"Error")
-                }
+
             }
         }
     }
