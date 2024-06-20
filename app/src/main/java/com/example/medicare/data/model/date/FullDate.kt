@@ -10,6 +10,7 @@ data class FullDate(
     val month: Month,
     val year: Int,
 ){
+
     constructor() : this(day=2, month=Month.JAN,year=2023)
     companion object{
         fun getCurrentDate() : FullDate{

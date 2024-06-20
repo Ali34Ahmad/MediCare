@@ -24,4 +24,17 @@ class UserRepositoryImpl @Inject constructor(
         return currentUserId?.let { usersRef.document(it).get().await().toObject(User::class.java) }
     }
 
+    override suspend fun updateUser(user: User) {
+        currentUserId?.let {
+
+        }
+    }
+
+    override suspend fun getUserById(id: String): User? {
+        return usersRef.document(id).get().await().toObject(User::class.java)
+    }
+
+    override suspend fun getVisitNumber(id: String): Int {
+        return 0
+    }
 }

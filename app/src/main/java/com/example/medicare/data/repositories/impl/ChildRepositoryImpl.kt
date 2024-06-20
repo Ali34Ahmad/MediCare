@@ -39,4 +39,5 @@ class ChildRepositoryImpl @Inject constructor(
         childrenRef.document(childId).collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
             .document(vaccineTableItem.vaccine.id).set(vaccineTableItem).await()
     }
+
 }

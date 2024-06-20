@@ -72,6 +72,7 @@ fun String.getDayOfWeek(): DayOfWeek {
         else -> DayOfWeek.SUN
     }
 }
+
 fun Time.toLocalTime():LocalTime{
     return LocalTime.of(hour,minute)
 }

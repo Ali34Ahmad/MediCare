@@ -28,7 +28,6 @@ fun VaccinationTableScreen(
     vaccinationTable: List<VaccineTableItem>,
 ) {
     updateVaccinationTable(childId)
-
     Scaffold(
         topBar = {
             MedicareTopAppBar(
