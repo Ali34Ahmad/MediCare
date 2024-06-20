@@ -24,4 +24,16 @@ class ClinicRepositoryImpl @Inject constructor(
     override suspend fun addClinic(clinic: Clinic) {
         clinicRef.add(clinic).await()
     }
+
+    override suspend fun getClinicById(id: String): Clinic?  {
+       return clinicRef.document(id).get().await().toObject(Clinic::class.java)
+    }
+
+    override suspend fun deleteClinic(id: String) {
+         clinicRef.document(id).delete().await()
+    }
+
+    override suspend fun updateClinic(clinic: Clinic) {
+        clinicRef.document(clinic.id).set(clinic).await()
+    }
 }

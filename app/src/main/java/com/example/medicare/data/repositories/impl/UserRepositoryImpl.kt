@@ -24,4 +24,9 @@ class UserRepositoryImpl @Inject constructor(
         return currentUserId?.let { usersRef.document(it).get().await().toObject(User::class.java) }
     }
 
+    override suspend fun updateUser(user: User) {
+        currentUserId?.let {
+
+        }
+    }
 }

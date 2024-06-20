@@ -8,4 +8,11 @@ interface ClinicRepository {
     val clinics : Flow<List<Clinic>>
     /** add a new clinic*/
     suspend fun addClinic(clinic: Clinic)
+
+    suspend fun getClinicById(id: String) : Clinic?
+
+    suspend fun deleteClinic(id: String)
+
+    suspend fun updateClinic(clinic: Clinic)
+
 }

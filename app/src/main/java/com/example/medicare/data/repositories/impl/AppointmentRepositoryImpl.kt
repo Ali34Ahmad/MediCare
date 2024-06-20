@@ -15,6 +15,7 @@ class AppointmentRepositoryImpl @Inject constructor(
     database : FirebaseFirestore,
     auth: FirebaseAuth
 ) : AppointmentRepository {
+
     private val currentUserId = auth.currentUser?.uid ?: ""
 
     private val appointmentsRef = database.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
@@ -23,8 +24,32 @@ class AppointmentRepositoryImpl @Inject constructor(
         appointmentsRef.add(appointment).await()
     }
 
+    override suspend fun deleteAppointment(id: String) {
+        appointmentsRef.document(id).delete().await()
+    }
+
     override val appointments: Flow<List<Appointment>>
-        get() = appointmentsRef.whereEqualTo("userId",currentUserId).snapshots().map { snapshot ->
+        get() = appointmentsRef.whereEqualTo("userId", currentUserId).snapshots().map { snapshot ->
             snapshot.toObjects(Appointment::class.java)
         }
+
+    suspend fun isValidInput(appointment: Appointment):Boolean{
+        return 0 == try {
+            appointmentsRef
+                .whereEqualTo("date.year", appointment.date.year)
+                .whereEqualTo("date.month.ordinal", appointment.date.month.ordinal)
+                .whereEqualTo("date.day", appointment.date.day)
+                .whereEqualTo("clinicId", appointment.clinicId)
+                .whereEqualTo("clinicId",appointment.clinicId)
+                .whereEqualTo("timeSocket.time.hour", appointment.timeSocket.time.hour)
+                .whereEqualTo("timeSocket.time.dayPeriod.ordinal", appointment.timeSocket.time.dayPeriod.ordinal)
+                .get()
+                .await()
+                .size()// Get the size of the query result
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., network errors, permission issues)
+            0 // Return 0 in case of errors
+        }
+    }
+
 }

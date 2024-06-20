@@ -7,4 +7,6 @@ interface UserRepository {
     suspend fun addNewUser(user: User)
     /** Get a user from the database by its ID*/
     suspend fun getUser() : User?
+    /** Update a user in the database*/
+    suspend fun updateUser(user: User)
 }
