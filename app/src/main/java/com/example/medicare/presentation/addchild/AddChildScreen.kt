@@ -60,6 +60,9 @@ fun AddChildScreen(
         showDialog = uiState.showLoadingDialog,
     )
 
+    if (uiState.isAddChildSuccessful)
+        navigateToChildrenScreen()
+
     Scaffold(
         topBar = {
             MedicareTopAppBar(
@@ -164,9 +167,8 @@ fun AddChildScreen(
                     onChooseChange = { chooseTabState ->
                         updateGenderEvent(chooseTabState)
                     },
-                    errorMessage = stringResource(
-                        uiState.genderErrorMessage ?: R.string.blank
-                    )
+                    errorMessage =
+                        uiState.genderErrorMessage
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.large))
@@ -187,8 +189,6 @@ fun AddChildScreen(
                     text = R.string.add_child,
                     onClick = {
                         onAddChildClick()
-                        if (uiState.isAddChildSuccessful)
-                            navigateToChildrenScreen()
                     },
                     modifier = Modifier.fillMaxWidth()
                 )

@@ -20,25 +20,26 @@ class ChildrenViewModel @Inject constructor(
     init {
         try {
             updateLoadingDialogVisibilityState(true)
+            updateErrorDialogVisibilityState(false)
         }catch (e:Exception){
             updateLoadingDialogVisibilityState(false)
-            updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState(true)
             Log.e("Get children",e.message.toString())
         }
     }
 
 
-    fun updateErrorDialogVisibilityState() {
+    fun updateErrorDialogVisibilityState(isVisible:Boolean) {
         _uiState.value =
-            _uiState.value.copy(showErrorDialog = !uiState.value.showErrorDialog)
+            _uiState.value.copy(showErrorDialog = isVisible)
     }
     fun updateLoadingDialogVisibilityState(newState:Boolean) {
         _uiState.value =
             _uiState.value.copy(showLoadingDialog = newState)
     }
-    fun updateNoChildAddedYetState() {
+    fun updateNoChildAddedYetState(showNoChildAdded:Boolean) {
         _uiState.value =
-            _uiState.value.copy(showNoChildAdded = !uiState.value.showNoChildAdded)
+            _uiState.value.copy(showNoChildAdded = showNoChildAdded)
     }
 
 }

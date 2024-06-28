@@ -128,4 +128,5 @@
     <string name="blank" />
     <string name="date">Date</string>
     <string name="state">State</string>
+    <string name="available_vaccines">Available vaccines</string>
 </resources>

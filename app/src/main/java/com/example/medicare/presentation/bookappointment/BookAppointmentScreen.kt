@@ -39,12 +39,14 @@ import com.example.dispensary.ui.composables.ClinicInformationCardComponent
 import com.example.dispensary.ui.composables.DatePickerButtonComponent
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.medicare.R
+import com.example.medicare.core.composables.AvailableVaccineList
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.TimeSocketsPager
 import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.FullDate
+import com.example.medicare.data.model.vaccine.Vaccine
 import com.example.medicare.presentation.home.HomeScreenSection
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
@@ -76,10 +78,15 @@ fun BookAppointmentScreen(
     updateChosenTimeSocketIndexEvent:(Int)->Unit,
     updateChosenNameIndexEvent:(Int)->Unit,
     updateNamesMenuVisibilityStateEvent:()->Unit,
+    availableVaccines:List<Vaccine>,
+    onAvailableVaccineListItemClick:(Int)->Unit,
     ) {
     val currentUserName=userName?:"Username"
 
     updateClinicEvent(clinic)
+
+    if(uiState.isBookAppointmentIsSuccessful)
+        navigateToHomeScreen()
 
     val userAndChildrenNames:MutableList<String> = mutableListOf(currentUserName)
     children.forEach { child->
@@ -132,7 +139,6 @@ fun BookAppointmentScreen(
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
                 HomeScreenSection(title = R.string.book_a_date) {
-                    Column {
                         DatePickerButtonComponent(
                             dayOfMonth = uiState.bookedDate.dayOfMonth,
                             month = uiState.bookedDate.month.toString(),
@@ -141,9 +147,21 @@ fun BookAppointmentScreen(
                             },
                             modifier = Modifier.padding(horizontal = Spacing.medium)
                         )
+                }
+                Spacer(modifier = Modifier.height(Spacing.medium))
+
+                if(clinic.name== stringResource(id = R.string.vaccines)){
+                    HomeScreenSection(title = R.string.available_vaccines) {
+                        Column {
+                            AvailableVaccineList(
+                                availableVaccines =availableVaccines,
+                                selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
+                                onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.medium))
+                        }
                     }
                 }
-
 
                 HomeScreenSection(title = R.string.available_times) {
                     TimeSocketsPager(
@@ -187,8 +205,6 @@ fun BookAppointmentScreen(
                     text = R.string.book_now,
                     onClick = {
                         onBookNowButtonClick()
-                        if(uiState.isBookAppointmentIsSuccessful)
-                            navigateToHomeScreen()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -198,6 +214,7 @@ fun BookAppointmentScreen(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -379,6 +396,8 @@ private fun BookAppointmentScreenPreview() {
                 getDaySocketIndex = {0},
                 uiState = BookAppointmentUiState(),
                 userName = "Ali Ahmad",
+                availableVaccines = emptyList(),
+                onAvailableVaccineListItemClick = {}
             )
         }
     }

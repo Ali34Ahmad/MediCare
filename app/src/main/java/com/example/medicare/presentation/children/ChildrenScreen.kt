@@ -33,32 +33,36 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ChildrenScreen(
-    navigateToChildrenScreen: () -> Unit,
+    navigateToAddChildScreen: () -> Unit,
     onNotificationButtonClick: () -> Unit,
-    onChildCardClick: (Child) -> Unit,
+    onChildCardClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     uiState: ChildrenUiState,
     children:List<Child>,
-    updateErrorDialogVisibilityState:()->Unit,
-    updateNoChildAddedYetState:()->Unit,
+    updateErrorDialogVisibilityState:(Boolean)->Unit,
+    updateNoChildAddedYetState:(Boolean)->Unit,
     updateLoadingDialogVisibilityState:(Boolean)->Unit,
 ) {
 
     val coroutineScope = rememberCoroutineScope()
 
 
-    LoadingDialog(showDialog = uiState.showLoadingDialog)
-    ErrorDialog(showDialog = uiState.showErrorDialog,
+    LoadingDialog(
+        showDialog = uiState.showLoadingDialog
+    )
+    ErrorDialog(
+        showDialog = uiState.showErrorDialog,
         onDismissRequest = {
-            updateErrorDialogVisibilityState()
-        }) {
+            updateErrorDialogVisibilityState(false)
+        }
+    ) {
 
     }
 
     LaunchedEffect(key1 = children) {
         coroutineScope.launch {
             delay(3000)
-            updateNoChildAddedYetState()
+            updateNoChildAddedYetState(true)
         }
     }
 
@@ -74,13 +78,13 @@ fun ChildrenScreen(
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
             if (children.isEmpty() && uiState.showNoChildAdded) {
-                NoChildrenAddedYet(onAddChildClick = navigateToChildrenScreen)
+                NoChildrenAddedYet(onAddChildClick = navigateToAddChildScreen)
                 updateLoadingDialogVisibilityState(false)
             } else {
                 AddedChildrenList(
                     children = children,
                     onChildCardClick = onChildCardClick,
-                    modifier = modifier.padding(Spacing.medium)
+                    modifier = modifier.padding(Spacing.medium),
                 )
                 updateLoadingDialogVisibilityState(false)
             }
@@ -121,7 +125,7 @@ private fun ChildrenScreenPreview() {
     MediCareTheme {
         Surface {
             ChildrenScreen(
-                navigateToChildrenScreen = {},
+                navigateToAddChildScreen = {},
                 onChildCardClick = {},
                 onNotificationButtonClick = {},
                 children = listOf(Child(firstName = "Ali", lastName = "Ahmad")),

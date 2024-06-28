@@ -2,6 +2,7 @@ package com.example.medicare.presentation.signup
 
 import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.core.enums.Gender
+import com.example.medicare.data.model.result.AuthState
 
 data class SignUpUiState(
     val email:String="",
@@ -19,5 +20,5 @@ data class SignUpUiState(
     val acceptPrivacyIsChecked:Boolean=false,
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
-    val isSignUpSuccessful:Boolean=false,
+    val isSignUpSuccessful:AuthState=AuthState.Loading,
 )

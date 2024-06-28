@@ -15,10 +15,6 @@ import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
-data class Section(
-    val name:String,
-    @DrawableRes val image:Int
-)
 
 @Composable
 fun SectionsList(
@@ -33,7 +29,7 @@ fun SectionsList(
         ) {
         items(clinics.size){ index->
             SectionCardComponent(
-                imageUrl = "clinic.imageUrl",
+                imageUrl = clinics[index].imageUrl?:"",
                 title = clinics[index].name,
                 onClick ={
                     onClick(index)

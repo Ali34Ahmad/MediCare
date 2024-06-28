@@ -22,7 +22,7 @@ import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun AddedChildrenList(
-    onChildCardClick:(Child)->Unit,
+    onChildCardClick:(String)->Unit,
     modifier: Modifier=Modifier,
     children:List<Child> = emptyList(),
 ) {

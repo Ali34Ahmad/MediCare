@@ -60,7 +60,7 @@ fun MedicareApp(
         screenWhereToShowBottomBar.contains(uiState.value.currentDestination) -> true
         else -> false
     }
-    val showFloatingActionButton = when {
+    var showFloatingActionButton = when {
         navController.currentBackStackEntry?.destination?.route?.contains(
             "children",
             ignoreCase = true
@@ -147,24 +147,23 @@ fun MedicareApp(
                 val homeViewModel: HomeViewModel = hiltViewModel()
                 val homeUiState = homeViewModel.uiState.collectAsState()
 
-                val clinics:List<Clinic> = homeViewModel.clinics.collectAsStateWithLifecycle(initialValue = emptyList()).value
+                val clinics = homeViewModel.clinics.collectAsState(initial = emptyList()).value
                 //val clinics: List<Clinic> = emptyList()
                 Log.v("Clinics", clinics.toString())
 
                 val clinicAppointments: List<Appointment> =
-                    homeViewModel.appointments.collectAsStateWithLifecycle(initialValue = emptyList()).value
-                        .filter { appointment -> appointment.vaccineId.isBlank() }
+                    homeViewModel.clinicsAppointments.collectAsState(initial = emptyList()).value
 
                 val vaccinationAppointments: List<Appointment> =
-                    homeViewModel.appointments.collectAsStateWithLifecycle(initialValue = emptyList()).value
-                        .filter { appointment -> appointment.vaccineId.isNotBlank() }
+                    homeViewModel.vaccinationsAppointments.collectAsState(initial = emptyList()).value
+
                 HomeScreen(
                     uiState=homeUiState.value,
                     clinics = clinics,
                     clinicAppointments = clinicAppointments,
                     vaccinationAppointments = vaccinationAppointments,
-                    navigateToBookAppointment = { clinic ->
-                        navController.navigate(Destination.BookAppointment(clinic.id), viewModel)
+                    navigateToBookAppointment = { clinicId ->
+                        navController.navigate(Destination.BookAppointment(clinicId), viewModel)
                     },
                     navigateToVaccinationAppointment = {
                         navController.navigate(Destination.VaccinationAppointments, viewModel)
@@ -222,14 +221,16 @@ fun MedicareApp(
                 val childrenUiState = childrenViewModel.uiState.collectAsState()
                 val children: List<Child> =
                     childrenViewModel.children.collectAsStateWithLifecycle(initialValue = emptyList()).value
+                if(children.isEmpty())showFloatingActionButton=false
+                else showFloatingActionButton=true
                 ChildrenScreen(
                     uiState =childrenUiState.value,
                     children = children,
-                    navigateToChildrenScreen = {
+                    navigateToAddChildScreen = {
                         navController.navigate(Destination.AddChild, viewModel)
                     },
-                    onChildCardClick = { child ->
-                        navController.navigate(Destination.VaccinationTable(child.id), viewModel)
+                    onChildCardClick = { childId ->
+                        navController.navigate(Destination.VaccinationTable(childId), viewModel)
                     },
                     onNotificationButtonClick = {
                         navController.navigate(Destination.Notification, viewModel)
@@ -245,7 +246,7 @@ fun MedicareApp(
                 val addChildUiState = addChildViewModel.uiState.collectAsState()
                 AddChildScreen(
                     navigateToChildrenScreen = {
-                        navController.navigate(Destination.Children)
+                        navController.navigate(Destination.Children,viewModel)
                     },
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
@@ -321,6 +322,8 @@ fun MedicareApp(
                     navigateToHomeScreen = {
                         navController.navigate(Destination.Home, viewModel)
                     },
+                    availableVaccines = emptyList(),
+                    onAvailableVaccineListItemClick = bookAppointmentViewModel::updateCurrentSelectedIndex
                 )
             }
         }

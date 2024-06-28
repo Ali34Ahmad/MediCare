@@ -1,6 +1,8 @@
 package com.example.medicare.presentation.login
 
 import com.example.medicare.R
+import com.example.medicare.data.model.result.AuthState
+import com.google.rpc.context.AttributeContext.Auth
 
 data class LoginUiState(
     val email:String="",
@@ -11,5 +13,5 @@ data class LoginUiState(
     val acceptPrivacyIsChecked:Boolean=false,
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
-    val isLoginSuccessful:Boolean=false,
+    val authState:AuthState=AuthState.Loading,
 )

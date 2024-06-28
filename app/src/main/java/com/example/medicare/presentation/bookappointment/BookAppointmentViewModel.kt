@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -123,6 +124,10 @@ class BookAppointmentViewModel @Inject constructor(
 
     fun updateClinic(clinic: Clinic) {
         _uiState.value=_uiState.value.copy(clinic=clinic)
+    }
+
+    fun updateCurrentSelectedIndex(index: Int) {
+        _uiState.update { it.copy(currentSelectedVaccineIndex = index) }
     }
 
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.core.enums.Gender
+import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.data.model.user.User
 import com.example.medicare.data.repositories.UserRepository
 import com.example.medicare.data.services.AccountService
@@ -80,7 +81,7 @@ class SignUpViewModel @Inject constructor(
     }
 
 
-    fun signUp(navigateToHomeScreen:()->Unit)=viewModelScope.launch {
+    fun signUp()=viewModelScope.launch {
         _uiState.value =
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
@@ -103,11 +104,10 @@ class SignUpViewModel @Inject constructor(
                             gender = uiState.value.gender ?: Gender.MALE,
                         )
                     )
-                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = true)
                     updateLoadingDialogVisibilityState()
-                    navigateToHomeScreen()
+                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = AuthState.Success)
                 } catch (e: Exception) {
-                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = false)
+                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = AuthState.Error(e))
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
                     Log.e("Sign Up", e.message ?: "Error")
