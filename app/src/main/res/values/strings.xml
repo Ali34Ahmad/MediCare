@@ -130,4 +130,5 @@
     <string name="state">State</string>
     <string name="channel_description">this channel are used for getting chat notification</string>
     <string name="medicare_channel_id">default_channel</string>
+    <string name="available_vaccines">Available vaccines</string>
 </resources>

@@ -27,6 +27,7 @@ import com.example.medicare.R
 import com.example.medicare.core.composables.AppLogo
 import com.example.medicare.core.composables.ErrorDialog
 import com.example.medicare.core.composables.LoadingDialog
+import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
@@ -42,7 +43,7 @@ fun SignUpScreen(
     updatePasswordVisibilityStateEvent:()->Unit,
     updateGenderEvent:(ChooseTabState)->Unit,
     updateCheckStateEvent:(Boolean)->Unit,
-    onSignUpClickEvent:(()->Unit)->Unit,
+    onSignUpClickEvent:()->Unit,
     onLoginClickEvent: () -> Unit
 ) {
 
@@ -58,6 +59,9 @@ fun SignUpScreen(
     LoadingDialog(
         showDialog = uiState.showLoadingDialog,
     )
+
+    if(uiState.isSignUpSuccessful is AuthState.Success)
+        navigateToHomeScreen()
 
     Column(
         modifier = Modifier
@@ -77,7 +81,7 @@ fun SignUpScreen(
                 updateEmailEvent(it)
             },
             hint = R.string.email_hint,
-            errorMessage = uiState.emailErrorMessage?:R.string.blank
+            errorMessage = uiState.emailErrorMessage
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
@@ -94,8 +98,8 @@ fun SignUpScreen(
             },
             hint1 = R.string.first_name_hint,
             hint2 = R.string.second_name_hint,
-            errorMessage1 = uiState.firstNameErrorMessage?:R.string.blank,
-            errorMessage2 = uiState.secondNameErrorMessage?:R.string.blank,
+            errorMessage1 = uiState.firstNameErrorMessage,
+            errorMessage2 = uiState.secondNameErrorMessage,
         )
 
         Spacer(modifier = Modifier.height(Spacing.medium))
@@ -107,7 +111,7 @@ fun SignUpScreen(
                 updatePasswordEvent(it)
             },
             hint = R.string.password,
-            errorMessage = uiState.passwordErrorMessage?:R.string.blank,
+            errorMessage = uiState.passwordErrorMessage,
             showEyeTrailingIcon = true,
             onVisibilityIconClicked = {
                 updatePasswordVisibilityStateEvent()
@@ -125,7 +129,7 @@ fun SignUpScreen(
             onChooseChange = { chooseTabState ->
                 updateGenderEvent(chooseTabState)
             },
-            errorMessage = stringResource(uiState.genderError?:R.string.blank)
+            errorMessage = uiState.genderError
         )
 
         Spacer(modifier = Modifier.height(Spacing.large))
@@ -145,7 +149,7 @@ fun SignUpScreen(
         ElevatedButtonComponent(
             text = R.string.sign_up,
             onClick = {
-                onSignUpClickEvent(navigateToHomeScreen)
+                onSignUpClickEvent()
             },
             modifier = Modifier.fillMaxWidth()
         )

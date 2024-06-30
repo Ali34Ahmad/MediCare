@@ -1,0 +1,140 @@
+<resources>
+    <string name="app_name">Medicare</string>
+
+    <!--Bottom Nav bar texts-->
+    <string name="home">Home</string>
+    <string name="vaccines">Vaccines</string>
+    <string name="appointments">Appt</string>
+    <string name="children">Children</string>
+
+    <!--TextField titles-->
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="number">Number</string>
+    <string name="child_name">Child name</string>
+    <string name="father_name">Father name</string>
+    <string name="mother_name">Mother name</string>
+    <string name="date_of_birth">Date of birth</string>
+
+    <!--TextField hints-->
+    <string name="email_hint">name@email.com</string>
+    <string name="first_name_hint">First</string>
+    <string name="second_name_hint">Last</string>
+    <string name="password_hint">Password</string>
+
+    <!---->
+    <string name="required_field">Reuired field</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="password_at_least_8_letters">Password must contains 8 letters at least</string>
+
+    <!--CheckBox texts-->
+    <string name="checkbox_auth_text1">I acknowledge that my personal information will remain confidential and will solely be used for </string>
+    <string name="checkbox_auth_text2">appointment</string>
+    <string name="checkbox_auth_text3"> scheduling.</string>
+
+    <string name="checkbox_add_child_text1">I acknowledge that my children information will remain confidential and will solely be used for </string>
+    <string name="checkbox_add_child_text2">vaccination</string>
+    <string name="checkbox_add_child_text3"> and</string>
+    <string name="checkbox_add_child_text4"> appointment</string>
+    <string name="checkbox_add_child_text5"> scheduling.</string>
+
+
+    <!--ChooseTab texts-->
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="history">History</string>
+
+    <!--Buttons texts-->
+    <string name="sign_up">Sign up</string>
+    <string name="log_in">Log in</string>
+    <string name="add_child">Add child</string>
+    <string name="book">Book</string>
+    <string name="book_now">Book now</string>
+    <string name="notify_parents">Notify parents</string>
+    <string name="save">Save</string>
+
+    <!--Text text-->
+    <string name="already_have_account_part1">Already have an account?</string>
+    <string name="already_have_account_part2">Log in</string>
+    <string name="do_not_have_account_part1">Don\'t have an account?</string>
+    <string name="do_not_have_account_part2">Sign up</string>
+    <string name="no_children_added">No children have been added yet.</string>
+    <string name="forgot_password">Forgot password?</string>
+
+    <!--Notifications titles-->
+    <string name="vaccination_available">Vaccination Available</string>
+    <string name="upcoming_appointment">Upcoming appointment</string>
+
+    <!--Vaccinations notification state-->
+    <string name="available">Available</string>
+    <string name="soon">Soon</string>
+    <string name="not_available">Not available</string>
+
+    <!--Clinic current state-->
+    <string name="open_now">Open now</string>
+    <string name="closed_now">Closed now</string>
+
+    <!--Testing texts-->
+    <string name="test_vaccines">Vaccines</string>
+    <string name="test_eye">Eye</string>
+    <string name="test_doctor_name">Dr. Ali Mansoura</string>
+    <string name="test_doctor_specialization">Pediatric specialist doctor</string>
+    <string name="test_day_of_month">28</string>
+    <string name="test_month">April</string>
+    <string name="test_day_of_week">Tue</string>
+    <string name="test_patient_name">Ali Ahmad</string>
+    <string name="test_time">09:00 Am</string>
+    <string name="test_vaccine_name">Rubella Vaccine</string>
+    <string name="test_remaining_time">After 2 days</string>
+    <string name="test_child_name">Emad Mehrez</string>
+    <string name="test_date_of_birth">24/1/2023</string>
+    <string name="test_up_number">22</string>
+    <string name="test_dow_number">5</string>
+    <string name="test_father_name">Ali Ahmad</string>
+    <string name="test_mother_name">Tatiana Mahmood</string>
+    <string name="test_availability_start_date">05/06/2024</string>
+    <string name="test_availability_end_date">05/07/2024</string>
+    <string name="test_work_start_time">09:00 AM</string>
+    <string name="test_work_end_time">03:00 PM</string>
+    <string name="book_a_date">Book a day</string>
+    <string name="available_times">Available times</string>
+    <string name="appointment_for">Appointment for</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="visit">Visit</string>
+    <string name="vaccine">Vaccine</string>
+    <string name="ok">OK</string>
+    <string name="choose">Choose</string>
+    <string name="cancel">Cancel</string>
+    <string name="none">None</string>
+    <string name="sending_information">Sending Information …</string>
+    <string name="clinic_name">Clinic name</string>
+    <string name="schedule">Schedule</string>
+    <string name="profile">Profile</string>
+
+    <string name="go_back">Go back</string>
+    <string name="birthday">birth day</string>
+    <string name="number_hint">number hint\n</string>
+    <string name="clinics">clinics</string>
+    <string name="upcoming_vaccinations">upcoming vaccination</string>
+    <string name="see_all">see all</string>
+    <string name="add_clinic">Add clinic</string>
+    <string name="invalid_child_number">Invalid number (Child number should look like this 22/5)</string>
+    <string name="invalid_date_value">Invalid date value</string>
+    <string name="blank" />
+    <string name="date">Date</string>
+    <string name="state">State</string>
+    <string name="upload_a_profile_photo">Upload a profile photo</string>
+    <string name="upload">Upload</string>
+    <string name="reset">Reset</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="upload_clinic_photo">Upload a clinic photo</string>
+    <string name="speciality">Speciality</string>
+    <string name="ophthalmologist">Ophthalmologist</string>
+    <string name="upcoming_appointments">Upcoming Appointments</string>
+    <string name="new_vaccine_available">New vaccine available?</string>
+    <string name="appointment_history">Appointments Histroy</string>
+</resources>

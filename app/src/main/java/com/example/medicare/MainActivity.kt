@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.medicare.presentation.MedicareApp
 import com.example.medicare.ui.theme.MediCareTheme
 import dagger.hilt.android.AndroidEntryPoint
 

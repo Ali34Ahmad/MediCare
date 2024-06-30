@@ -1,6 +1,5 @@
 package com.example.medicare.presentation.login
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,7 @@ import com.example.medicare.R
 import com.example.medicare.core.composables.AppLogo
 import com.example.medicare.core.composables.ErrorDialog
 import com.example.medicare.core.composables.LoadingDialog
+import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
@@ -33,7 +33,7 @@ fun LoginScreen(
     uiState: LoginUiState,
     navigateToHomeScreen: () -> Unit,
     onSignUpClick: () -> Unit,
-    updateErrorDialogVisibilityStateEvent: () -> Unit,
+    updateErrorDialogVisibilityStateEvent: (Boolean) -> Unit,
     updateEmailEvent: (String) -> Unit,
     updatePasswordEvent: (String) -> Unit,
     updatePasswordVisibilityStateEvent: () -> Unit,
@@ -44,15 +44,18 @@ fun LoginScreen(
     ErrorDialog(
         showDialog = uiState.showErrorDialog,
         onDismissRequest = {
-            updateErrorDialogVisibilityStateEvent()
+            updateErrorDialogVisibilityStateEvent(false)
         },
         onConfirmClick = {
-            updateErrorDialogVisibilityStateEvent()
+            updateErrorDialogVisibilityStateEvent(false)
         }
     )
     LoadingDialog(
         showDialog = uiState.showLoadingDialog,
     )
+
+    if(uiState.authState is AuthState.Success)
+        navigateToHomeScreen()
 
     Column(
         modifier = Modifier
@@ -84,7 +87,7 @@ fun LoginScreen(
                 updatePasswordEvent(it)
             },
             hint = R.string.password,
-            errorMessage = uiState.passwordErrorMessage ?: R.string.blank,
+            errorMessage = uiState.passwordErrorMessage ,
             showEyeTrailingIcon = true,
             onVisibilityIconClicked = {
                 updatePasswordVisibilityStateEvent()
@@ -110,11 +113,6 @@ fun LoginScreen(
             text = R.string.log_in,
             onClick = {
                 onLoginClick()
-                Log.e("Log in state screen", "${uiState.isLoginSuccessful}")
-                if (uiState.isLoginSuccessful) {
-                    navigateToHomeScreen()
-                    Log.e("Log in Button Click", "navigateToHomeScreen")
-                }
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -140,7 +138,7 @@ private fun LoginScreenPreview() {
     MediCareTheme {
         Surface {
             LoginScreen(
-                onLoginClick = {},
+                onLoginClick = { AuthState.Loading },
                 onSignUpClick = {},
                 navigateToHomeScreen = {},
                 updateErrorDialogVisibilityStateEvent = {},
@@ -148,7 +146,7 @@ private fun LoginScreenPreview() {
                 updateEmailEvent = {},
                 updatePasswordEvent = {},
                 updateCheckStateEvent = {},
-                uiState = LoginUiState()
+                uiState = LoginUiState(),
             )
         }
     }

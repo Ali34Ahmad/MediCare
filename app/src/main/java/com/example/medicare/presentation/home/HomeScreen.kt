@@ -43,7 +43,7 @@ import com.example.medicare.ui.theme.Spacing
 
 @Composable
 fun HomeScreen(
-    navigateToBookAppointment: (Clinic) -> Unit,
+    navigateToBookAppointment: (String) -> Unit,
     navigateToVaccinationAppointment: () -> Unit,
     navigateToClinicsAppointment: () -> Unit,
     onNotificationClick: () -> Unit,
@@ -90,7 +90,7 @@ fun HomeScreen(
                 )
                 ResponsibleDoctorCardComponent(
                     doctor = if (clinics.isNotEmpty()) clinics[uiState.selectedClinicIndex].responsibleDoctor else Doctor(),
-                    onClick = { if (clinics.isNotEmpty()) navigateToBookAppointment(clinics[uiState.selectedClinicIndex]) },
+                    onClick = { if (clinics.isNotEmpty()) navigateToBookAppointment(clinics[uiState.selectedClinicIndex].id) },
                     modifier = Modifier.padding(
                         horizontal = Spacing.medium,
                         vertical = Spacing.small
@@ -278,7 +278,7 @@ fun HomeScreenPreview() {
                         imageUrl = "",
                         workDays = listOf(
                             WorkDay(
-                                DayOfWeek.SUN,
+                                DayOfWeek.MON,
                                 Time(9,0,DayPeriod.AM),
                                 Time(3,0,DayPeriod.PM),
                             )),

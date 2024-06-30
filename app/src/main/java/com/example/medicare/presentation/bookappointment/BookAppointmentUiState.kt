@@ -2,7 +2,6 @@ package com.example.medicare.presentation.bookappointment
 
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.example.medicare.R
 import com.example.medicare.core.enums.DayPeriod
 import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.data.model.clinic.Clinic
@@ -55,4 +54,5 @@ data class BookAppointmentUiState (
     val chosenNameIndex:Int=0,
     val isNamesMenuVisible:Boolean=false,
     val isBookAppointmentIsSuccessful:Boolean=false,
+    val currentSelectedVaccineIndex:Int=0,
 )

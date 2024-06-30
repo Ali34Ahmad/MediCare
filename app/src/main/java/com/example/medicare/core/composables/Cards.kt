@@ -318,13 +318,13 @@ fun ClinicAppointmentCardComponent(
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "clinicAppointment.clinicId.doctor.fullName",
+                        text = clinicAppointment.clinic.responsibleDoctor.fullName,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = "clinicAppointment.clinicId.doctor.speciality",
+                        text = clinicAppointment.clinic.responsibleDoctor.speciality,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
@@ -337,7 +337,7 @@ fun ClinicAppointmentCardComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildCardComponent(
-    onChildCardClick: (Child) -> Unit,
+    onChildCardClick: (String) -> Unit,
     child: Child,
     modifier: Modifier = Modifier,
 ) {
@@ -350,7 +350,7 @@ fun ChildCardComponent(
         modifier = modifier
             .fillMaxWidth(),
         onClick = {
-            onChildCardClick(child)
+            onChildCardClick(child.id)
         },
         colors = CardDefaults.cardColors(containerColor = secondary_container)
     ) {

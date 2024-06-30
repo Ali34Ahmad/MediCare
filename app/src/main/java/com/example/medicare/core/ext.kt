@@ -41,7 +41,7 @@ fun FullDate.toAge() : Age {
     if(monthDiff > 0 ){
         return Age(monthDiff, AgeUnit.MONTHS)
     }
-    val dayDiff = currentDate.day.toInt() - this.day.toInt()
+    val dayDiff = currentDate.day - this.day
     return Age(dayDiff, AgeUnit.DAYS)
 }
 
@@ -61,16 +61,9 @@ fun Clinic.isOpenNow() : Boolean {
 }
 fun String.getDayOfWeek(): DayOfWeek {
     val dayName = this.uppercase()
-    return when (dayName) {
-        "SUN" -> DayOfWeek.SUN
-        "MON" -> DayOfWeek.MON
-        "TUE" -> DayOfWeek.TUE
-        "WED" -> DayOfWeek.WED
-        "THU" -> DayOfWeek.THU
-        "FRI" -> DayOfWeek.FRI
-        "SAT" -> DayOfWeek.SAT
-        else -> DayOfWeek.SUN
-    }
+
+    return DayOfWeek.values().find { dayName.contains(it.name) }
+        ?: DayOfWeek.SUN
 }
 
 fun Time.toLocalTime():LocalTime{
