@@ -154,7 +154,6 @@ class AddChildViewModel @Inject constructor(
                                 is ChooseTabState.Second -> Gender.FEMALE
                                 else -> throw Exception("You must let the user choose the gender")
                             },
-                            vaccineTable = emptyList(),
                             father = "${uiState.value.fatherFirstName} ${uiState.value.fatherSecondName}",
                             mother = "${uiState.value.motherFirstName} ${uiState.value.motherSecondName}"
                         )

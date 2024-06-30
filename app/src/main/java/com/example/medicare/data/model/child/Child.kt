@@ -16,7 +16,6 @@ data class Child(
     val birthDate : FullDate= FullDate(),
     val gender : Gender=Gender.MALE,
     val childNumber : ChildNumber = ChildNumber(),
-    val vaccineTable : List<VaccineTableItem> = emptyList()
 ){
     private constructor() : this(
         firstName = "no name",
@@ -26,6 +25,5 @@ data class Child(
         birthDate = FullDate(),
         gender = Gender.MALE,
         childNumber = ChildNumber(),
-        vaccineTable = emptyList()
     )
 }

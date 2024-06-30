@@ -10,12 +10,14 @@ data class Appointment(
     val id: String = "",
     val clinicId :String= "",
     val userId : String="",
+    val patientName : String="",
     val date: FullDate= FullDate(),
     val timeSocket: TimeSocket= TimeSocket(),
     val vaccineId : String="",
     val clinic : Clinic= Clinic()
  ){
     private constructor() : this(
+        "",
         "",
         "",
         "",

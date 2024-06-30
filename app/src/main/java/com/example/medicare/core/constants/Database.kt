@@ -1,3 +1,4 @@
+
 package com.example.medicare.core.constants
 
 object DatabaseCollections{
