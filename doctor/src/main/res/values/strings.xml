@@ -137,4 +137,5 @@
     <string name="upcoming_appointments">Upcoming Appointments</string>
     <string name="new_vaccine_available">New vaccine available?</string>
     <string name="appointment_history">Appointments Histroy</string>
+    <string name="medicare_channel_id">default_channel</string>
 </resources>
