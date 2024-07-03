@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 
 data class VaccineTableItem(
     @DocumentId
-    val id : String,
-    val vaccine: Vaccine,
+    val id : String="",
+    val vaccine: Vaccine=Vaccine(),
     val vaccineDate : FullDate?
 ){
     private constructor() : this(

@@ -10,4 +10,5 @@ object DatabaseCollections{
     const val CLINICS_COLLECTION = "clinics"
     const val CHILDREN_COLLECTION = "children"
     const val VACCINES_COLLECTION = "vaccines"
+    const val DEFAULT_VACCINE_TABLE_COLLECTION = "default_table"
 }
