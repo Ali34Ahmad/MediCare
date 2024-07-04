@@ -91,9 +91,8 @@ fun DatePickerButtonComponent(
         Text(
             text = "${date.month.name.convertToProperCase()} ${date.day}",
             modifier=Modifier
-                .padding(vertical = Spacing.extraSmall, horizontal = Spacing.medium)
+                .padding(vertical = Spacing.extraSmall, horizontal = Spacing.small)
         )
-        Spacer(modifier = Modifier.width(Spacing.small))
         Icon(
             imageVector = Icons.Outlined.CalendarToday,
             contentDescription = null,

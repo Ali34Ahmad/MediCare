@@ -5,5 +5,6 @@ import com.example.medicare.data.model.child.VaccineTableItem
 
 
 data class VaccinationTableUiState(
-    val childId:String= ""
+    val childId:String= "",
+    var vaccinationTable:List<VaccineTableItem> = emptyList(),
 )

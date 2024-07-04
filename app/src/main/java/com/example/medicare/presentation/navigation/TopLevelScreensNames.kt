@@ -30,5 +30,5 @@ fun getCurrentDestinationUsingName(navController: NavController): Destination {
 }
 
 fun checkIfRouteContainsScreenName(route: String, destination: Destination): Boolean {
-    return route.contains(screensNames.get(destination) ?: "", ignoreCase = true)
+    return route.contains(screensNames[destination] ?: "", ignoreCase = true)
 }

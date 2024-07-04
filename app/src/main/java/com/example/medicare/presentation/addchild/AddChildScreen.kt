@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ChooseTab
@@ -25,6 +26,8 @@ import com.example.medicare.R
 import com.example.medicare.core.composables.ErrorDialog
 import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.core.composables.MedicareTopAppBar
+import com.example.medicare.core.navigate
+import com.example.medicare.presentation.navigation.Destination
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
@@ -34,7 +37,7 @@ fun AddChildScreen(
     navigateToChildrenScreen: () -> Unit,
     onNavigateUpClick: () -> Unit,
     uiState: AddChildUiState,
-    updateErrorDialogVisibilityState: () -> Unit,
+    updateErrorDialogVisibilityState: (Boolean) -> Unit,
     updateChildNumberEvent: (String) -> Unit,
     updateChildFirstNameEvent: (String) -> Unit,
     updateChildSecondNameEvent: (String) -> Unit,
@@ -50,10 +53,10 @@ fun AddChildScreen(
     ErrorDialog(
         showDialog = uiState.showErrorDialog,
         onDismissRequest = {
-            updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState(false)
         },
         onConfirmClick = {
-            updateErrorDialogVisibilityState()
+            updateErrorDialogVisibilityState(false)
         }
     )
     LoadingDialog(
@@ -154,6 +157,7 @@ fun AddChildScreen(
                         updateDateOfBirthEvent(it)
                     },
                     hint = R.string.birthday,
+                    imeAction = ImeAction.Done,
                     errorMessage = uiState.dateOfBirthErrorMessage ?: R.string.blank
                 )
 

@@ -6,10 +6,10 @@ import com.google.rpc.context.AttributeContext.Auth
 
 data class LoginUiState(
     val email:String="",
-    val emailErrorMessage:Int?= R.string.blank,
+    val emailErrorMessage:Int?= null,
     val password: String="",
     val isPasswordVisible: Boolean=false,
-    val passwordErrorMessage: Int?=R.string.blank,
+    val passwordErrorMessage: Int?=null,
     val acceptPrivacyIsChecked:Boolean=false,
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,

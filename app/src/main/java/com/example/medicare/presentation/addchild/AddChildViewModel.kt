@@ -7,8 +7,10 @@ import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.R
 import com.example.medicare.core.enums.Gender
 import com.example.medicare.core.enums.Month
+import com.example.medicare.data.fake.vaccines
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.child.ChildNumber
+import com.example.medicare.data.model.child.VaccineTableItem
 import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.data.repositories.ChildRepository
 import com.example.medicare.ui.Validator
@@ -109,14 +111,14 @@ class AddChildViewModel @Inject constructor(
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
 
-    fun updateErrorDialogVisibilityState() {
+    fun updateErrorDialogVisibilityState(isVisible:Boolean) {
         _uiState.value =
-            _uiState.value.copy(showErrorDialog = !uiState.value.showErrorDialog)
+            _uiState.value.copy(showErrorDialog = !isVisible)
     }
 
-    fun updateLoadingDialogVisibilityState() {
+    fun updateLoadingDialogVisibilityState(isVisible:Boolean) {
         _uiState.value =
-            _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
+            _uiState.value.copy(showLoadingDialog = isVisible)
     }
 
     fun addChild() {
@@ -133,9 +135,17 @@ class AddChildViewModel @Inject constructor(
                 genderErrorMessage = Validator.checkGender(uiState.value.gender),
             )
         if (checkAllEnteredData()) {
+            val vaccineTable= mutableListOf<VaccineTableItem>()
+            for (vaccine in vaccines)
+                vaccineTable.add(
+                    VaccineTableItem(
+                        vaccine=vaccine,
+                        vaccineDate=null
+                    )
+                )
             viewModelScope.launch {
                 try {
-                    updateLoadingDialogVisibilityState()
+                    updateLoadingDialogVisibilityState(true)
                     val year: Int = extractDateComponents(uiState.value.dateOfBirth).third
                     val month: Month =
                         getMonthByNumber(extractDateComponents(uiState.value.dateOfBirth).second)
@@ -154,15 +164,16 @@ class AddChildViewModel @Inject constructor(
                                 is ChooseTabState.Second -> Gender.FEMALE
                                 else -> throw Exception("You must let the user choose the gender")
                             },
+                            vaccineTable = vaccineTable,
                             father = "${uiState.value.fatherFirstName} ${uiState.value.fatherSecondName}",
                             mother = "${uiState.value.motherFirstName} ${uiState.value.motherSecondName}"
                         )
                     )
-                    updateLoadingDialogVisibilityState()
+                    updateLoadingDialogVisibilityState(false)
                     _uiState.value=_uiState.value.copy(isAddChildSuccessful = true)
                 } catch (e: Exception) {
-                    updateLoadingDialogVisibilityState()
-                    updateErrorDialogVisibilityState()
+                    updateLoadingDialogVisibilityState(false)
+                    updateErrorDialogVisibilityState(true)
                     _uiState.value=_uiState.value.copy(isAddChildSuccessful = false)
                     Log.e("Add Child", e.message ?: "Error")
                 }

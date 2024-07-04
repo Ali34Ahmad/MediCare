@@ -20,11 +20,15 @@ import com.example.dispensary.ui.composables.ResponsibleDoctorCardComponent
 import com.example.dispensary.ui.composables.SpannableTextComponent
 import com.example.medicare.R
 import com.example.medicare.core.composables.MedicareTopAppBar
+import com.example.medicare.core.composables.NoListItemAvailableComponent
 import com.example.medicare.core.enums.DayOfWeek
 import com.example.medicare.core.enums.DayPeriod
 import com.example.medicare.core.enums.Gender
 import com.example.medicare.core.enums.Month
 import com.example.medicare.core.enums.TimeSocketState
+import com.example.medicare.data.fake.appointment1
+import com.example.medicare.data.fake.appointment2
+import com.example.medicare.data.fake.clinic1
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.DaySocket
@@ -49,7 +53,6 @@ fun HomeScreen(
     onNotificationClick: () -> Unit,
     onNavigateUpClick: () -> Unit,
     updateSelectedClinicEvent: (Int) -> Unit,
-    addClinic: (Clinic) -> Unit,
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     clinics: List<Clinic>,
@@ -99,10 +102,13 @@ fun HomeScreen(
                 HomeScreenSection(
                     title = R.string.upcoming_vaccinations,
                     list = {
-                        UpcomingVaccinationAppointmentHorizontalList(
-                            upcomingVaccinationAppointments = vaccinationAppointments,
-                            modifier = Modifier.padding(vertical = Spacing.small)
-                        )
+                        if (vaccinationAppointments.isNotEmpty())
+                            UpcomingVaccinationAppointmentHorizontalList(
+                                upcomingVaccinationAppointments = vaccinationAppointments,
+                                modifier = Modifier.padding(vertical = Spacing.small)
+                            )
+                        else
+                            NoListItemAvailableComponent(text=R.string.no_upcoming_vaccination_appointments)
                     },
                     showSubtext = true,
                     onSubtextClick = {
@@ -115,10 +121,13 @@ fun HomeScreen(
                 HomeScreenSection(
                     title = R.string.upcoming_appointment,
                     list = {
+                        if(clinicAppointments.isNotEmpty())
                         ClinicAppointmentHorizontalList(
                             clinicsAppointments = clinicAppointments,
                             modifier = Modifier.padding(vertical = Spacing.small)
                         )
+                        else
+                            NoListItemAvailableComponent(text=R.string.no_upcoming_appointments)
                     },
                     onSubtextClick = {
                         navigateToClinicsAppointment()
@@ -126,79 +135,6 @@ fun HomeScreen(
                     showSubtext = true,
                     numberOfUpcomingAppointments = clinicAppointments.size,
                     showSeeAllButton = true,
-                )
-
-                ElevatedButtonComponent(
-                    text = R.string.add_clinic,
-                    onClick = {
-                        addClinic(
-                            Clinic(
-                                name = "Cardiac",
-                                workDays = listOf(
-                                    WorkDay(
-                                        DayOfWeek.SUN,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                    WorkDay(
-                                        DayOfWeek.MON,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                    WorkDay(
-                                        DayOfWeek.TUE,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                    WorkDay(
-                                        DayOfWeek.WED,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                    WorkDay(
-                                        DayOfWeek.THU,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                    WorkDay(
-                                        DayOfWeek.FRI,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                    WorkDay(
-                                        DayOfWeek.SAT,
-                                        openingTime = Time(9, 0, DayPeriod.AM),
-                                        closingTime = Time(3, 0, DayPeriod.PM)
-                                    ),
-                                ),
-                                daySockets = listOf(
-                                    DaySocket(
-                                        date = FullDate(
-                                            day = 1,
-                                            month = Month.JUN,
-                                            year = 2024
-                                        ),
-                                        timeSockets = listOfTimeSockets
-                                    ),
-                                    DaySocket(
-                                        date = FullDate(
-                                            day = 2,
-                                            month = Month.JUN,
-                                            year = 2024
-                                        ),
-                                        timeSockets = listOfTimeSockets
-                                    ),
-                                ),
-                                responsibleDoctor = Doctor(
-                                    firstName = "Maya",
-                                    lastName = "Junaid",
-                                    speciality = "Cardiologist",
-                                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/medicare-cfddf.appspot.com/o/images%2FOIP%20(2).jpeg?alt=media&token=de3a4f4c-367f-4ac4-a8f4-099f881dd40a",
-                                    gender = Gender.FEMALE
-                                )
-                            )
-                        )
-                    }
                 )
 
             }
@@ -271,50 +207,27 @@ fun HomeScreenPreview() {
                 onNotificationClick = {},
                 uiState = HomeUiState(),
                 updateSelectedClinicEvent = {},
-                addClinic = {},
                 clinics = listOf(
-                    Clinic(
-                        name = "Eye",
-                        imageUrl = "",
-                        workDays = listOf(
-                            WorkDay(
-                                DayOfWeek.MON,
-                                Time(9,0,DayPeriod.AM),
-                                Time(3,0,DayPeriod.PM),
-                            )),
-                        daySockets = listOf(
-                            DaySocket(
-                                date = FullDate(10,Month.JUN,2024),
-                                timeSockets = listOfTimeSockets
-                            )
-                        ),
-                        responsibleDoctor = Doctor(
-                            firstName = "Ali",
-                            lastName = "Ahmad",
-                            speciality = "Dental",
-                            imageUrl = "",
-                            gender = Gender.MALE
-                        ),
-                        services = listOf("service 1")
-                    ),
+                    clinic1,
+                    clinic1,
+                    clinic1,
+                    clinic1,
+                    clinic1,
+                    clinic1,
                 ),
                 clinicAppointments = listOf(
-                    Appointment(
-                        clinicId = "clinic Id",
-                        userId = "ali",
-                        date = FullDate(10,Month.JUN,2024),
-                        timeSocket = TimeSocket(Time(9, 0, DayPeriod.AM), TimeSocketState.FREE),
-                        vaccineId = ""
-                        )
+                    appointment1,
+                    appointment1,
+                    appointment1,
+                    appointment2,
+                    appointment2,
                 ),
                 vaccinationAppointments = listOf(
-                    Appointment(
-                        clinicId = "clinic Id",
-                        userId = "ali",
-                        date = FullDate(10,Month.JUN,2024),
-                        timeSocket = TimeSocket(Time(9, 0, DayPeriod.AM), TimeSocketState.FREE),
-                        vaccineId = ""
-                    )
+                    appointment1,
+                    appointment1,
+                    appointment1,
+                    appointment2,
+                    appointment2,
                 )
             )
         }

@@ -26,6 +26,7 @@ import com.example.doctor.R
 import com.example.doctor.core.composables.AppLogo
 import com.example.doctor.core.composables.ErrorDialog
 import com.example.doctor.core.composables.LoadingDialog
+import com.example.doctor.core.composables.SpannableTextComponent
 import com.example.doctor.ui.theme.Spacing
 import com.example.doctor.data.model.result.AuthState
 
@@ -124,14 +125,10 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            TextWithMultipleStyles(
+            SpannableTextComponent(
                 text1 = stringResource(id = R.string.do_not_have_account_part1),
-                style1 = TextStyle.Normal,
                 text2 = stringResource(id = R.string.do_not_have_account_part2),
-                style2 = TextStyle.Normal,
-                color2 = MaterialTheme.colorScheme.primary,
-                fontSizeSp = 16,
-                modifier = Modifier.clickable { onSignUpClick() }
+                onCLick = onSignUpClick
             )
         }
     }

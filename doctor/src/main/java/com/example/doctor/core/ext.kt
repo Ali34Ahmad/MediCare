@@ -76,16 +76,9 @@ fun Clinic.isOpenNow() : Boolean {
 }
 fun String.getDayOfWeek(): DayOfWeek {
     val dayName = this.uppercase()
-    return when (dayName) {
-        "SUNDAY" -> DayOfWeek.SUN
-        "MONDAY" -> DayOfWeek.MON
-        "TUESDAY" -> DayOfWeek.TUE
-        "WEDNESDAY" -> DayOfWeek.WED
-        "THURSDAY" -> DayOfWeek.THU
-        "FRIDAY" -> DayOfWeek.FRI
-        "SATURDAY" -> DayOfWeek.SAT
-        else -> DayOfWeek.SUN
-    }
+
+    return DayOfWeek.values().find { dayName.contains(it.name) }
+        ?: DayOfWeek.SUN
 }
 fun Time.toLocalTime():LocalTime{
     val hours=if(dayPeriod== DayPeriod.AM) hour else (hour+12)%24
@@ -101,7 +94,7 @@ fun Appointment.calculateRemainingTime(): RemainingTime {
 
     val duration = currentDateTime.until(targetDateTime, ChronoUnit.MINUTES)
     val MINUTES_IN_DAY=1440
-    val MINUTES_IN_HOUR=1440
+    val MINUTES_IN_HOUR=60
 
     val remainingDays = duration.days/MINUTES_IN_DAY
     val remainingHours = duration.hours/MINUTES_IN_HOUR
@@ -205,4 +198,7 @@ fun FullDate.toLocalDate():LocalDate{
 }
 fun LocalDate.toFullDate():FullDate{
     return FullDate(dayOfMonth,month.getMonthByJavaMonth(),year)
+}
+fun Appointment.isUpcoming(): Boolean {
+    return date.toLocalDate() >= LocalDate.now()&&timeSocket.time.toLocalTime() > LocalTime.now()
 }

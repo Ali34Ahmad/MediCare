@@ -30,7 +30,7 @@ sealed interface Destination {
     object Notification : Destination
 
     @Serializable
-    data class BookAppointment(val clinic:String) : Destination
+    data class BookAppointment(val clinicId:String) : Destination
 
     @Serializable
     data class VaccinationTable(val childId:String)

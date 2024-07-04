@@ -7,6 +7,7 @@ import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.Time
 import com.example.medicare.data.model.date.TimeSocket
+import com.example.medicare.data.model.vaccine.Vaccine
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import java.time.LocalDate
 
@@ -48,11 +49,15 @@ data class BookAppointmentUiState (
     val bookedDate:LocalDate=LocalDate.now(),
     val datePickerState: UseCaseState=UseCaseState(),
     val freeTimes:List<TimeSocket> = emptyList(),
-    val chosenTimeSocketIndex:Int=0,
+    val chosenTimeSocketIndex:Int?=null,
+    val selectedDaySocketIndex:Int=0,
     val pagerState: PagerState= PagerState(currentPage=0, pageCount = {4}),
     val userAndChildrenNames:List<String> = emptyList(),
     val chosenNameIndex:Int=0,
     val isNamesMenuVisible:Boolean=false,
     val isBookAppointmentIsSuccessful:Boolean=false,
-    val currentSelectedVaccineIndex:Int=0,
+    val currentSelectedVaccineIndex:Int?=null,
+    val vaccineId:String?=null,
+    val showLoadingDialog:Boolean=false,
+    val showErrorDialog:Boolean=false,
 )

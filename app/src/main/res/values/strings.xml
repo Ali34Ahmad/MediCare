@@ -4,7 +4,7 @@
 
     <!--Bottom Nav bar texts-->
     <string name="home">Home</string>
-    <string name="vaccines">Vaccine</string>
+    <string name="vaccines">Vaccines</string>
     <string name="appointments">Appt</string>
     <string name="children">Children</string>
 
@@ -118,7 +118,7 @@
 
     <string name="go_back">Go back</string>
     <string name="birthday">birth day</string>
-    <string name="number_hint">number hint\n</string>
+    <string name="number_hint">number hint</string>
     <string name="clinics">clinics</string>
     <string name="upcoming_vaccinations">upcoming vaccination</string>
     <string name="see_all">see all</string>
@@ -131,4 +131,8 @@
     <string name="channel_description">this channel are used for getting chat notification</string>
     <string name="medicare_channel_id">default_channel</string>
     <string name="available_vaccines">Available vaccines</string>
+    <string name="no_appointments_available">No appointments available at this day.</string>
+    <string name="no_upcoming_appointments">No upcoming appointments.</string>
+    <string name="no_upcoming_vaccination_appointments">No upcoming vaccination appointments.</string>
+    <string name="no_available_vaccines">No available vaccines now.</string>
 </resources>
