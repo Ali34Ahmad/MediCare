@@ -1,6 +1,7 @@
 package com.example.doctor.data.repositories
 
 import com.example.doctor.data.model.clinic.Clinic
+import com.example.doctor.data.model.user.Doctor
 import kotlinx.coroutines.flow.Flow
 
 interface ClinicRepository {
@@ -15,4 +16,7 @@ interface ClinicRepository {
 
     suspend fun updateClinic(clinic: Clinic)
 
+    suspend fun getResponsibleDoctor(clinicId: String) : Doctor?
+
+    suspend fun getClinicIdByDoctor(doctorId:String) : String?
 }

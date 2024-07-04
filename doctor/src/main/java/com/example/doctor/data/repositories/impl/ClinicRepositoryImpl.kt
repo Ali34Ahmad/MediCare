@@ -2,6 +2,7 @@ package com.example.doctor.data.repositories.impl
 
 import com.example.doctor.core.constants.DatabaseCollections
 import com.example.doctor.data.model.clinic.Clinic
+import com.example.doctor.data.model.user.Doctor
 import com.example.doctor.data.repositories.ClinicRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
@@ -17,7 +18,7 @@ class ClinicRepositoryImpl @Inject constructor(
     private val clinicRef = database.collection(DatabaseCollections.CLINICS_COLLECTION)
 
     override val clinics: Flow<List<Clinic>>
-        get() = clinicRef.snapshots().map {snapshot ->
+        get() = clinicRef.snapshots().map { snapshot ->
             snapshot.toObjects(Clinic::class.java)
         }
 
@@ -25,15 +26,28 @@ class ClinicRepositoryImpl @Inject constructor(
         clinicRef.add(clinic).await()
     }
 
-    override suspend fun getClinicById(id: String): Clinic?  {
-       return clinicRef.document(id).get().await().toObject(Clinic::class.java)
+    override suspend fun getClinicById(id: String): Clinic? {
+        return clinicRef.document(id).get().await().toObject(Clinic::class.java)
     }
 
     override suspend fun deleteClinic(id: String) {
-         clinicRef.document(id).delete().await()
+        clinicRef.document(id).delete().await()
     }
 
     override suspend fun updateClinic(clinic: Clinic) {
         clinicRef.document(clinic.id).set(clinic).await()
     }
+
+    override suspend fun getResponsibleDoctor(clinicId: String): Doctor? {
+        var doctor: Doctor? = null
+        clinicRef.document(clinicId).get().await().toObject(Clinic::class.java)?.let {
+            doctor = it.responsibleDoctor
+        }
+        return doctor
+    }
+
+    override suspend fun getClinicIdByDoctor(doctorId: String): String? =
+         clinicRef.whereEqualTo("responsibleDoctor.id", doctorId).get()
+            .await().documents.firstOrNull()?.id
+
 }

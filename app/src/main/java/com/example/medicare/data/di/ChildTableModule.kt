@@ -1,7 +1,7 @@
 package com.example.medicare.data.di
 
-import com.example.medicare.data.ChildTable.ChildTable
-import com.example.medicare.data.ChildTable.ChildTableImp
+import com.example.medicare.data.childTable.ChildTable
+import com.example.medicare.data.childTable.ChildTableImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

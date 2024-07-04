@@ -15,4 +15,5 @@ interface ChildRepository {
     suspend fun addVaccineTableItem(vaccineTableItem: VaccineTableItem, childId: String)
     /**Get vaccine table for a child by its Id*/
     suspend fun getVaccineTable(childId: String) :List<VaccineTableItem>
+
 }

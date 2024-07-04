@@ -1,9 +1,21 @@
 package com.example.medicare.presentation
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseInBounce
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.EaseOutBounce
+import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.util.fastCbrt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -91,7 +103,11 @@ fun MedicareApp(
     ) {
 
         NavHost(navController = navController, startDestination = Destination.SignUp) {
-            composable<Destination.SignUp> {
+            composable<Destination.SignUp> (
+                popEnterTransition = {
+                    fadeIn(tween(durationMillis = 300))
+                }
+            ){
                 val signUpViewModel: SignUpViewModel = hiltViewModel()
                 val signUpUiState = signUpViewModel.uiState.collectAsState()
                 SignUpScreen(
@@ -119,11 +135,31 @@ fun MedicareApp(
                     onSignUpClickEvent = signUpViewModel::signUp,
                 )
             }
-            composable<Destination.Login> {
-                val loginViewModel:LoginViewModel = hiltViewModel()
+            composable<Destination.Login>(
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 500,
+                            delayMillis = 50,
+                            easing = EaseOut,
+                        )
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(
+                            durationMillis = 600,
+                            delayMillis = 50,
+                            easing = EaseOut,
+                        )
+                    )
+                }) {
+                val loginViewModel: LoginViewModel = hiltViewModel()
                 val loginUiState = loginViewModel.uiState.collectAsState()
                 LoginScreen(
-                    uiState=loginUiState.value,
+                    uiState = loginUiState.value,
                     navigateToHomeScreen = {
                         navController.popUpToAndNavigate<Destination.SignUp>(
                             destination = Destination.Home,
@@ -140,7 +176,7 @@ fun MedicareApp(
                     updatePasswordVisibilityStateEvent = loginViewModel::updatePasswordVisibilityState,
                     updateErrorDialogVisibilityStateEvent = loginViewModel::updateErrorDialogVisibilityState,
 
-                )
+                    )
             }
 
             composable<Destination.Home> {
@@ -158,7 +194,7 @@ fun MedicareApp(
                     homeViewModel.vaccinationsAppointments.collectAsState(initial = emptyList()).value
 
                 HomeScreen(
-                    uiState=homeUiState.value,
+                    uiState = homeUiState.value,
                     clinics = clinics,
                     clinicAppointments = clinicAppointments,
                     vaccinationAppointments = vaccinationAppointments,
@@ -183,31 +219,37 @@ fun MedicareApp(
             }
 
             composable<Destination.VaccinationAppointments> {
-                val vaccinationAppointmentViewModel:VaccinationAppointmentViewModel = hiltViewModel()
+                val vaccinationAppointmentViewModel: VaccinationAppointmentViewModel =
+                    hiltViewModel()
                 val childrenUiState = vaccinationAppointmentViewModel.uiState.collectAsState()
 
-                val vaccinationAppointments:List<Appointment> =vaccinationAppointmentViewModel.vaccinationAppointments.collectAsStateWithLifecycle(initialValue = emptyList()).value
-                    .filter { appointment ->  appointment.vaccineId.isNotBlank()}
+                val vaccinationAppointments: List<Appointment> =
+                    vaccinationAppointmentViewModel.vaccinationAppointments.collectAsStateWithLifecycle(
+                        initialValue = emptyList()
+                    ).value
+                        .filter { appointment -> appointment.vaccineId.isNotBlank() }
 
                 VaccinationAppointmentsScreen(
                     onNotificationIconButtonClick = {
                         navController.navigate(Destination.Notification, viewModel)
                     },
                     uiState = childrenUiState.value,
-                    vaccinationAppointments=vaccinationAppointments,
+                    vaccinationAppointments = vaccinationAppointments,
                     updateSelectedFilter = vaccinationAppointmentViewModel::updateSelectedFilter
                 )
             }
 
             composable<Destination.ClinicAppointments> {
-                val clinicAppointmentsViewModel:ClinicAppointmentsViewModel = hiltViewModel()
+                val clinicAppointmentsViewModel: ClinicAppointmentsViewModel = hiltViewModel()
                 val childrenUiState = clinicAppointmentsViewModel.uiState.collectAsState()
                 val clinicAppointments: List<Appointment> =
-                    clinicAppointmentsViewModel.appointments.collectAsStateWithLifecycle(initialValue = emptyList()).value
+                    clinicAppointmentsViewModel.appointments.collectAsStateWithLifecycle(
+                        initialValue = emptyList()
+                    ).value
                         .filter { appointment -> appointment.vaccineId.isBlank() }
 
                 ClinicAppointmentsScreen(
-                    uiState=childrenUiState.value,
+                    uiState = childrenUiState.value,
                     clinicAppointments = clinicAppointments,
                     onNotificationIconButtonClick = {
                         navController.navigate(Destination.Notification, viewModel)
@@ -221,10 +263,10 @@ fun MedicareApp(
                 val childrenUiState = childrenViewModel.uiState.collectAsState()
                 val children: List<Child> =
                     childrenViewModel.children.collectAsStateWithLifecycle(initialValue = emptyList()).value
-                if(children.isEmpty())showFloatingActionButton=false
-                else showFloatingActionButton=true
+                if (children.isEmpty()) showFloatingActionButton = false
+                else showFloatingActionButton = true
                 ChildrenScreen(
-                    uiState =childrenUiState.value,
+                    uiState = childrenUiState.value,
                     children = children,
                     navigateToAddChildScreen = {
                         navController.navigate(Destination.AddChild, viewModel)
@@ -246,7 +288,7 @@ fun MedicareApp(
                 val addChildUiState = addChildViewModel.uiState.collectAsState()
                 AddChildScreen(
                     navigateToChildrenScreen = {
-                        navController.navigate(Destination.Children,viewModel)
+                        navController.navigate(Destination.Children, viewModel)
                     },
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
@@ -268,24 +310,24 @@ fun MedicareApp(
             }
 
             composable<Destination.VaccinationTable> {
-                val vaccinationTableViewModel:VaccinationTableViewModel = hiltViewModel()
+                val vaccinationTableViewModel: VaccinationTableViewModel = hiltViewModel()
                 val vaccinationTableUiState = vaccinationTableViewModel.uiState.collectAsState()
-                val vaccinationTable=vaccinationTableViewModel.vaccinationTable
+                val vaccinationTable = vaccinationTableViewModel.vaccinationTable
 
                 val args = it.toRoute<Destination.VaccinationTable>()
                 VaccinationTableScreen(
-                    childId=args.childId,
+                    childId = args.childId,
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
                     },
-                    uiState=vaccinationTableUiState.value,
+                    uiState = vaccinationTableUiState.value,
                     updateVaccinationTable = vaccinationTableViewModel::updateVaccinationTable,
                     vaccinationTable = vaccinationTable
                 )
             }
 
             composable<Destination.Notification> {
-                val notificationViewModel:NotificationViewModel = hiltViewModel()
+                val notificationViewModel: NotificationViewModel = hiltViewModel()
                 val notificationUiState = notificationViewModel.uiState.collectAsState()
                 NotificationScreen(
                     onNavigateUpClick = {

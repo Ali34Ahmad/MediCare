@@ -1,4 +1,4 @@
-package com.example.medicare.data.ChildTable
+package com.example.medicare.data.childTable
 
 import com.example.medicare.data.model.child.VaccineTableItem
 

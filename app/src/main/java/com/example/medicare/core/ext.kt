@@ -1,18 +1,21 @@
 package com.example.medicare.core
 
+
 import androidx.navigation.NavController
-import com.example.medicare.data.model.child.Child
-import com.example.medicare.data.model.date.Age
-import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.core.enums.AgeUnit
 import com.example.medicare.core.enums.DayOfWeek
+import com.example.medicare.core.enums.DayPeriod
 import com.example.medicare.core.enums.Month
 import com.example.medicare.core.enums.TimeUnit
 import com.example.medicare.data.model.appointment.Appointment
+import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.clinic.Clinic
+import com.example.medicare.data.model.date.Age
+import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.data.model.date.RemainingTime
 import com.example.medicare.data.model.date.Time
 import com.example.medicare.data.model.date.TimeSocket
+import com.example.medicare.data.model.date.WorkDay
 import com.example.medicare.presentation.MedicareAppViewModel
 import com.example.medicare.presentation.navigation.Destination
 import com.example.medicare.presentation.navigation.getCurrentDestinationUsingName
@@ -45,59 +48,77 @@ fun FullDate.toAge() : Age {
     return Age(dayDiff, AgeUnit.DAYS)
 }
 
+fun FullDate.getDayOfWeek(): DayOfWeek {
+    val localDate = java.time.LocalDate.of(year, month.ordinal, day)
+    val dayOfWeek = localDate.dayOfWeek
+
+    return dayOfWeek.toString().getDayOfWeek()
+}
+fun String.convertToProperCase(): String {
+    val lowercase = this.lowercase()
+    return lowercase.replaceFirstChar { it.uppercase() }
+}
+
 fun Child.getAge() : Age = this.birthDate.toAge()
 
 fun Clinic.isOpenNow() : Boolean {
-    val today = LocalDate.now()
+    val today = java.time.LocalDate.now()
     val dayName = today.dayOfWeek.name
     val workDayIndex = workDays.indexOfFirst { it.day == dayName.getDayOfWeek() }
     if (workDayIndex==-1) return false
-    val currentTime = LocalTime.now()
-    if (
-        currentTime < this.workDays[workDayIndex].openingTime.toLocalTime() ||
-        currentTime > this.workDays[workDayIndex].closingTime.toLocalTime()
-        ) return false
-   return true
+    val currentTime = java.time.LocalTime.now()
+    return !(currentTime < this.workDays[workDayIndex].openingTime.toLocalTime() ||
+            currentTime > this.workDays[workDayIndex].closingTime.toLocalTime())
 }
 fun String.getDayOfWeek(): DayOfWeek {
     val dayName = this.uppercase()
-
-    return DayOfWeek.values().find { dayName.contains(it.name) }
-        ?: DayOfWeek.SUN
+    return when (dayName) {
+        "SUNDAY" -> DayOfWeek.SUN
+        "MONDAY" -> DayOfWeek.MON
+        "TUESDAY" -> DayOfWeek.TUE
+        "WEDNESDAY" -> DayOfWeek.WED
+        "THURSDAY" -> DayOfWeek.THU
+        "FRIDAY" -> DayOfWeek.FRI
+        "SATURDAY" -> DayOfWeek.SAT
+        else -> DayOfWeek.SUN
+    }
 }
-
 fun Time.toLocalTime():LocalTime{
-    return LocalTime.of(hour,minute)
+    val hours=if(dayPeriod== DayPeriod.AM) hour else (hour+12)%24
+    return java.time.LocalTime.of(hours,minute)
 }
 
 fun Appointment.calculateRemainingTime(targetDate: FullDate, targetTime: TimeSocket): RemainingTime {
     val currentDateTime= LocalDateTime.now()
     val targetDateTime = LocalDateTime.of(targetDate.year, targetDate.month.ordinal, targetDate.day.toInt(), targetTime.time.hour, targetTime.time.minute)
 
-    val duration = currentDateTime.until(targetDateTime, ChronoUnit.MINUTES)
-    val remainingDays = duration.days
-    val remainingHours = duration.hours
+    val duration = currentDateTime.until(targetDateTime, java.time.temporal.ChronoUnit.MINUTES)
+    val MINUTES_IN_DAY=1440
+    val MINUTES_IN_HOUR=1440
+
+    val remainingDays = duration.days/MINUTES_IN_DAY
+    val remainingHours = duration.hours/MINUTES_IN_HOUR
     val remainingMinutes = duration.minutes
 
     // Determine the largest remaining time unit
     val timeUnit = when {
-        remainingDays.toInt(DurationUnit.DAYS) > 0 -> TimeUnit.DAY
-        remainingHours.toInt(DurationUnit.HOURS) > 0 -> TimeUnit.HOUR
+        remainingDays.toInt(kotlin.time.DurationUnit.DAYS) > 0 -> TimeUnit.DAY
+        remainingHours.toInt(kotlin.time.DurationUnit.HOURS) > 0 -> TimeUnit.HOUR
         else -> TimeUnit.MINUTE
     }
-    var durationUnit: DurationUnit
+    val durationUnit: DurationUnit
 
     val remainingTime = when (timeUnit) {
         TimeUnit.DAY ->{
-            durationUnit= DurationUnit.DAYS
+            durationUnit= kotlin.time.DurationUnit.DAYS
             remainingDays
         }
         TimeUnit.HOUR -> {
-            durationUnit= DurationUnit.HOURS
+            durationUnit= kotlin.time.DurationUnit.HOURS
             remainingHours
         }
         TimeUnit.MINUTE -> {
-            durationUnit= DurationUnit.MINUTES
+            durationUnit= kotlin.time.DurationUnit.MINUTES
             remainingMinutes
         }
     }
@@ -107,19 +128,41 @@ fun Appointment.calculateRemainingTime(targetDate: FullDate, targetTime: TimeSoc
 
 fun FullDate.formatDate():String{
     val day= if(this.day.toString().length==1)
-        "0${this.day}/"
+        "0${this.day}"
     else
-        "${this.day}/"
+        "${this.day}"
 
     val month= if((this.month.ordinal+1).toString().length==1)
-        "0${this.month.ordinal+1}/"
+        "0${this.month.ordinal+1}"
     else
-        "${this.month.ordinal+1}/"
+        "${this.month.ordinal+1}"
 
     val year= this.year
 
     return  "$day/$month/$year"
 }
+fun Time.formatTime():String{
+    val hours= if(this.hour.toString().length==1)
+        "0${this.hour}:"
+    else
+        "${this.hour}:"
+
+    val minutes= if(this.minute.toString().length==1)
+        "0${this.minute}"
+    else
+        "${this.minute}"
+
+    return  "$hours:$minutes ${dayPeriod.name}"
+}
+
+fun java.time.Month.getMonthByJavaMonth(): Month {
+    val values = Month.entries.toTypedArray()
+    return if (this.ordinal in values.indices) {
+        values[this.ordinal]
+    }else
+        values[0]
+}
+
 
 
 fun <T : Any> NavController.navigate(destination: T, viewModel: MedicareAppViewModel) {
@@ -146,3 +189,13 @@ fun NavController.navigateUp(viewModel: MedicareAppViewModel) {
     viewModel.updateCurrentDestination(getCurrentDestinationUsingName(this))
 }
 
+fun DayOfWeek.isNotWorkDay(workDays:List<WorkDay>):Boolean{
+    val workDayIndex = workDays.indexOfFirst { it.day == this }
+    return workDayIndex==-1
+}
+fun FullDate.toLocalDate():LocalDate{
+    return java.time.LocalDate.of(year,month.ordinal,day)
+}
+fun LocalDate.toFullDate():FullDate{
+    return FullDate(dayOfMonth,month.getMonthByJavaMonth(),year)
+}
