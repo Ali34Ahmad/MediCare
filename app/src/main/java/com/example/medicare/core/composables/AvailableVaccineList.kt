@@ -25,7 +25,7 @@ import com.example.medicare.ui.theme.Spacing
 fun AvailableVaccineList(
     modifier: Modifier=Modifier,
     availableVaccines: List<Vaccine>,
-    selectedVaccineIndex:Int,
+    selectedVaccineIndex:Int?,
     onAvailableVaccineListItemClick:(Int)->Unit,
 ) {
     LazyRow(
@@ -81,7 +81,7 @@ private fun AvailableVaccineListPreview() {
                 Vaccine(name = "Vaccine 2"),
                 Vaccine(name = "Vaccine 3"),
                 Vaccine(name = "Vaccine 4"),
-            ), selectedVaccineIndex = 0) {
+            ), selectedVaccineIndex = null) {
 
             }
         }

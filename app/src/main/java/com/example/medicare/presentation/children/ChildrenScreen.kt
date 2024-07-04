@@ -43,10 +43,6 @@ fun ChildrenScreen(
     updateNoChildAddedYetState:(Boolean)->Unit,
     updateLoadingDialogVisibilityState:(Boolean)->Unit,
 ) {
-
-    val coroutineScope = rememberCoroutineScope()
-
-
     LoadingDialog(
         showDialog = uiState.showLoadingDialog
     )
@@ -54,17 +50,11 @@ fun ChildrenScreen(
         showDialog = uiState.showErrorDialog,
         onDismissRequest = {
             updateErrorDialogVisibilityState(false)
+        },
+        onConfirmClick = {
+            updateErrorDialogVisibilityState(false)
         }
-    ) {
-
-    }
-
-    LaunchedEffect(key1 = children) {
-        coroutineScope.launch {
-            delay(3000)
-            updateNoChildAddedYetState(true)
-        }
-    }
+    )
 
     Scaffold(
         topBar = {
@@ -77,16 +67,14 @@ fun ChildrenScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
-            if (children.isEmpty() && uiState.showNoChildAdded) {
+            if (children.isEmpty()) {
                 NoChildrenAddedYet(onAddChildClick = navigateToAddChildScreen)
-                updateLoadingDialogVisibilityState(false)
             } else {
                 AddedChildrenList(
                     children = children,
                     onChildCardClick = onChildCardClick,
                     modifier = modifier.padding(Spacing.medium),
                 )
-                updateLoadingDialogVisibilityState(false)
             }
         }
     }

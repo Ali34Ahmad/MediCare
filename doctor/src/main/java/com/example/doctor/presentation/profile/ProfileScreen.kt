@@ -22,14 +22,13 @@ import com.example.doctor.core.composables.DatePickerButtonComponent
 import com.example.doctor.core.composables.DaySocketHorizontalList
 import com.example.doctor.core.composables.ElevatedButtonComponent
 import com.example.doctor.core.composables.MedicareTopAppBar
-import com.example.doctor.core.convertToProperCase
+import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.fake.clinic1
 import com.example.doctor.data.fake.listOfAppointments
 import com.example.doctor.data.fake.vaccinesClinic
 import com.example.doctor.data.model.appointment.Appointment
 import com.example.doctor.presentation.schedule.HomeScreenSection
-import com.example.doctor.presentation.schedule.MyDatePickerDialog
 import com.example.doctor.ui.theme.MediCareTheme
 import com.example.doctor.ui.theme.Spacing
 import java.time.LocalDate
@@ -47,7 +46,8 @@ fun ProfileScreen(
             updateBookedDateEvent(date)
             uiState.datePickerState.hide()
         },
-        datePickerState = uiState.datePickerState
+        datePickerState = uiState.datePickerState,
+        startDayBeforeToday = 60
     )
 
     Scaffold(
@@ -87,9 +87,10 @@ fun ProfileScreen(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(Spacing.small))
+
                 HomeScreenSection(title = R.string.appointment_history) {
                     Column {
-                        Spacer(modifier = Modifier.height(Spacing.small))
                         DatePickerButtonComponent(
                             date = uiState.bookedDate.toFullDate(),
                             onClick = {
@@ -97,15 +98,17 @@ fun ProfileScreen(
                             },
                             modifier = Modifier.padding(horizontal = Spacing.medium),
                         )
+                        Spacer(modifier = Modifier.height(Spacing.medium))
+
+                        DaySocketHorizontalList(
+                            workDays = uiState.clinic.workDays,
+                            selectedIndex = uiState.selectedDaySocketIndex,
+                            updateSelectedIndex = updateBookedDateEvent,
+                            startDayBeforeToday=60,
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.height(Spacing.medium))
 
-                DaySocketHorizontalList(
-                    workDays = uiState.clinic.workDays,
-                    selectedIndex = uiState.selectedDaySocketIndex,
-                    updateSelectedIndex = updateBookedDateEvent
-                )
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
                 ClinicAppointmentVerticalList(

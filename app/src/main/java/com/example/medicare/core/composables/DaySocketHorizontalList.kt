@@ -1,4 +1,4 @@
-package com.example.doctor.core.composables
+package com.example.medicare.core.composables
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -9,17 +9,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.doctor.core.getDayOfWeek
-import com.example.doctor.core.getMonthByJavaMonth
-import com.example.doctor.core.isNotWorkDay
-import com.example.doctor.core.toLocalDate
-import com.example.doctor.data.fake.listOfDaySockets
-import com.example.doctor.data.fake.listOfWorkDays
-import com.example.doctor.data.model.date.DaySocket
-import com.example.doctor.data.model.date.FullDate
-import com.example.doctor.data.model.date.WorkDay
-import com.example.doctor.ui.theme.MediCareTheme
-import com.example.doctor.ui.theme.Spacing
+import com.example.dispensary.ui.composables.DateCardComponent
+import com.example.medicare.data.fake.listOfWorkDays
+import com.example.medicare.core.getDayOfWeek
+import com.example.medicare.core.getMonthByJavaMonth
+import com.example.medicare.core.isNotWorkDay
+import com.example.medicare.core.toLocalDate
+import com.example.medicare.data.model.date.FullDate
+import com.example.medicare.data.model.date.WorkDay
+import com.example.medicare.ui.theme.MediCareTheme
+import com.example.medicare.ui.theme.Spacing
 import java.time.LocalDate
 
 @Composable
@@ -28,9 +27,8 @@ fun DaySocketHorizontalList(
     workDays:List<WorkDay>,
     selectedIndex:Int,
     updateSelectedIndex:(LocalDate)->Unit,
-    startDayBeforeToday:Int=0,
 ) {
-    val dates=generateDaySocketsList(startDayBeforeToday = startDayBeforeToday)
+    val dates=generateDaySocketsList()
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = Spacing.medium)
@@ -49,15 +47,11 @@ fun DaySocketHorizontalList(
     }
 }
 
-fun generateDaySocketsList(startDayBeforeToday:Int):List<FullDate>{
+fun generateDaySocketsList():List<FullDate>{
     val daySockets:MutableList<FullDate> = mutableListOf()
 
     val currentDate = LocalDate.now()
 
-    for (i in startDayBeforeToday downTo  startDayBeforeToday-60) {
-        val nextDate = currentDate.minusDays(i.toLong())
-        daySockets.add(FullDate(nextDate.dayOfMonth, nextDate.month.getMonthByJavaMonth(), nextDate.year))
-    }
     for (i in 0..30) {
         val nextDate = currentDate.plusDays(i.toLong())
         daySockets.add(FullDate(nextDate.dayOfMonth, nextDate.month.getMonthByJavaMonth(), nextDate.year))
@@ -75,8 +69,7 @@ private fun DaySocketHorizontalListPreview() {
                 modifier = Modifier.fillMaxWidth(),
                 selectedIndex = 0,
                 updateSelectedIndex = {},
-                workDays = listOfWorkDays,
-                startDayBeforeToday=0,
+                workDays = listOfWorkDays
             )
         }
     }

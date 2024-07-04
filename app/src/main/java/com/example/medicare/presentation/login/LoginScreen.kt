@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
@@ -92,6 +93,7 @@ fun LoginScreen(
             onVisibilityIconClicked = {
                 updatePasswordVisibilityStateEvent()
             },
+            imeAction = ImeAction.Done,
             isPasswordVisible = uiState.isPasswordVisible
         )
 
@@ -129,6 +131,7 @@ fun LoginScreen(
                 onCLick = onSignUpClick
             )
         }
+        Spacer(modifier = Modifier.height(Spacing.large))
     }
 }
 

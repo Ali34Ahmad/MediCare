@@ -25,6 +25,7 @@ import com.example.doctor.core.composables.ClinicAppointmentVerticalList
 import com.example.doctor.core.composables.DatePickerButtonComponent
 import com.example.doctor.core.composables.DaySocketHorizontalList
 import com.example.doctor.core.composables.MedicareTopAppBar
+import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.composables.SpannableTextComponent
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.fake.listOfAppointments
@@ -83,7 +84,8 @@ fun ScheduleScreen(
                 DaySocketHorizontalList(
                     workDays = uiState.clinic.workDays,
                     selectedIndex = uiState.selectedDaySocketIndex,
-                    updateSelectedIndex = updateBookedDateEvent
+                    updateSelectedIndex = updateBookedDateEvent,
+                    startDayBeforeToday=0,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
@@ -96,24 +98,6 @@ fun ScheduleScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyDatePickerDialog(
-    onConfirmButtonClick: (LocalDate) -> Unit,
-    datePickerState: UseCaseState
-) {
-    val currentDate = LocalDate.now()
-
-    CalendarDialog(
-        state = datePickerState,
-        config = CalendarConfig(
-            boundary =LocalDate.now()..currentDate.plusDays(30)
-        ),
-        selection = CalendarSelection.Date { date ->
-            onConfirmButtonClick(date)
-        }
-    )
-}
 
 @Composable
 fun HomeScreenSection(

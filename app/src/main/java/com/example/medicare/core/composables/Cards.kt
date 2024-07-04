@@ -33,9 +33,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.medicare.R
 import com.example.medicare.core.calculateRemainingTime
+import com.example.medicare.core.convertToProperCase
 import com.example.medicare.core.enums.DayPeriod
+import com.example.medicare.core.enums.Month
 import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.core.enums.TimeUnit
+import com.example.medicare.core.formatTime
+import com.example.medicare.core.getDayOfWeek
 import com.example.medicare.core.isOpenNow
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.child.Child
@@ -171,17 +175,8 @@ fun VaccinationAppointmentCardComponent(
         else
             "${vaccinationAppointment.timeSocket.time.minute}"
 
-    val monthNumber =
-        if (vaccinationAppointment.date.month.ordinal.toString().length == 1)
-            "0${vaccinationAppointment.date.month.ordinal}"
-        else
-            "${vaccinationAppointment.date.month.ordinal}"
 
-    val remainingTime = vaccinationAppointment
-        .calculateRemainingTime(
-            vaccinationAppointment.date,
-            vaccinationAppointment.timeSocket
-        )
+    val remainingTime = vaccinationAppointment.calculateRemainingTime()
 
 
     Card(
@@ -206,7 +201,7 @@ fun VaccinationAppointmentCardComponent(
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Text(
-                        text = monthNumber,
+                        text = vaccinationAppointment.date.getDayOfWeek().name.convertToProperCase(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -217,23 +212,27 @@ fun VaccinationAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = vaccinationAppointment.userId,
+                    text = "Ali Ahmad"/*vaccinationAppointment.userId*/,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "$hours:$minutes ${vaccinationAppointment.timeSocket.time.dayPeriod.name}",
+                        text =
+                        "$hours:$minutes ${vaccinationAppointment.timeSocket.time.dayPeriod.name}",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = "${remainingTime.remainingTime} ${remainingTime.timeUnit.name.lowercase()}",
+                        text = if (remainingTime.remainingTime <= 0)
+                            ""
+                        else
+                            "${remainingTime.remainingTime} ${remainingTime.timeUnit.name.lowercase()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
                 }
                 Text(
-                    text = vaccinationAppointment.vaccineId,
+                    text = "vaccineName",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -267,13 +266,9 @@ fun ClinicAppointmentCardComponent(
             else
                 "${clinicAppointment.timeSocket.time.minute}"
 
-        val remainingTime = clinicAppointment
-            .calculateRemainingTime(
-                clinicAppointment.date,
-                clinicAppointment.timeSocket
-            )
+        val remainingTime = clinicAppointment.calculateRemainingTime()
 
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(Spacing.small)) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = tertiary)
             ) {
@@ -287,12 +282,10 @@ fun ClinicAppointmentCardComponent(
                     Text(
                         text = clinicAppointment.date.day.toString(),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Text(
-                        text = clinicAppointment.date.month.name,
+                        text = clinicAppointment.date.getDayOfWeek().name.convertToProperCase(),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onTertiary,
                     )
                 }
             }
@@ -301,7 +294,7 @@ fun ClinicAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = clinicAppointment.userId,
+                    text = "Ali Ahmad"/*clinicAppointment.userId*/,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -311,7 +304,10 @@ fun ClinicAppointmentCardComponent(
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = "${remainingTime.remainingTime} ${remainingTime.timeUnit.name.lowercase()}",
+                        text = if (remainingTime.remainingTime <= 0)
+                            ""
+                        else
+                            "${remainingTime.remainingTime} ${remainingTime.timeUnit.name.lowercase()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
@@ -524,21 +520,29 @@ fun AppointmentReminderNotificationCardComponent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateCardComponent(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    dayOfMonth: String,
-    dayOfWeek: DayOfWeek,
-    isSelected: Boolean = false,
+    date: FullDate,
+    isSelected: Boolean,
+    isDisabled: Boolean,
 ) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = if (!isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary,
+            containerColor =
+            if (isDisabled)
+                MaterialTheme.colorScheme.outlineVariant
+            else if (!isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.primary,
         ),
-        onClick = onClick,
+        onClick = {
+            if (!isDisabled)
+                onClick()
+        },
     ) {
         Column(
             modifier = Modifier
@@ -548,17 +552,23 @@ fun DateCardComponent(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = dayOfMonth,
+                text = "${date.day}",
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (!isSelected)
+                color =
+                if (isDisabled)
+                    MaterialTheme.colorScheme.inverseOnSurface
+                else if (!isSelected)
                     MaterialTheme.colorScheme.onPrimaryContainer
                 else
                     MaterialTheme.colorScheme.onSecondary,
             )
             Text(
-                text = dayOfWeek.name,
+                text = date.getDayOfWeek().name.convertToProperCase(),
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (!isSelected)
+                color =
+                if (isDisabled)
+                    MaterialTheme.colorScheme.inverseOnSurface
+                else if (!isSelected)
                     MaterialTheme.colorScheme.onPrimaryContainer
                 else
                     MaterialTheme.colorScheme.onSecondary,
@@ -616,6 +626,7 @@ fun ClinicInformationCardComponent(
     clinic: Clinic,
     modifier: Modifier = Modifier,
 ) {
+
     Card(modifier = modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(16.dp)) {
             Box(contentAlignment = Alignment.BottomEnd) {
@@ -639,11 +650,13 @@ fun ClinicInformationCardComponent(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "${clinic.workDays[0].openingTime} - ${clinic.workDays[0].openingTime}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
+                if (clinic.workDays.isNotEmpty()) {
+                    Text(
+                        text = "${clinic.workDays[0].openingTime.formatTime()} - ${clinic.workDays[0].closingTime.formatTime()}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
                 Text(
                     text = if (clinic.isOpenNow()) stringResource(id = R.string.open_now)
                     else stringResource(id = R.string.closed_now),
@@ -786,15 +799,16 @@ private fun DateCardComponentPreview() {
                 DateCardComponent(
                     modifier = Modifier,
                     onClick = {},
-                    dayOfMonth = stringResource(id = R.string.test_day_of_month),
-                    dayOfWeek = DayOfWeek.SUNDAY,
+                    date = FullDate(10, Month.AUG, 2024),
+                    isSelected = false,
+                    isDisabled = false
                 )
                 DateCardComponent(
                     modifier = Modifier,
                     onClick = {},
-                    dayOfMonth = stringResource(id = R.string.test_day_of_month),
-                    dayOfWeek = DayOfWeek.SUNDAY,
-                    isSelected = true
+                    date = FullDate(10, Month.AUG, 2024),
+                    isSelected = true,
+                    isDisabled = false
                 )
             }
 

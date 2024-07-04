@@ -51,7 +51,7 @@ fun UpcomingVaccinationAppointmentVerticalList(
         items(upcomingVaccinationAppointments) { upcomingVaccinationAppointment ->
             VaccinationAppointmentCardComponent(
                 onClick = { /*TODO*/ },
-                vaccinationAppointment = Appointment(),
+                vaccinationAppointment = upcomingVaccinationAppointment,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(Spacing.extraSmall))

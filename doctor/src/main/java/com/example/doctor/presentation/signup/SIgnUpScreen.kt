@@ -31,6 +31,7 @@ import com.example.doctor.core.composables.ImagePickerDialog
 import com.example.doctor.core.composables.LoadingDialog
 import com.example.doctor.core.composables.OutlinedTextFieldComponent
 import com.example.doctor.core.composables.OutlinedTextFieldWithTwoFieldsComponent
+import com.example.doctor.core.composables.SpannableTextComponent
 import com.example.doctor.core.composables.TextStyle
 import com.example.doctor.core.composables.TextWithMultipleStyles
 import com.example.doctor.ui.theme.MediCareTheme
@@ -227,14 +228,10 @@ fun SignUpScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                TextWithMultipleStyles(
+                SpannableTextComponent(
                     text1 = stringResource(id = R.string.already_have_account_part1),
-                    style1 = TextStyle.Normal,
                     text2 = stringResource(id = R.string.already_have_account_part2),
-                    style2 = TextStyle.Normal,
-                    color2 = MaterialTheme.colorScheme.primary,
-                    fontSizeSp = 16,
-                    modifier = Modifier.clickable { onLoginClickEvent() }
+                    onCLick = onSignUpClickEvent
                 )
             }
         }

@@ -54,7 +54,10 @@ fun VaccinationTableListItem(
     vaccineTableItem: VaccineTableItem,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         VaccinationTableCellItem(
             modifier=Modifier.weight(0.4f),
             text = vaccineTableItem.vaccine.visitNumber.toString()
@@ -110,13 +113,23 @@ fun VaccinationTableCellItem(
 ){
     Box(
         modifier = modifier
-            .border(width = 1.dp, shape = RectangleShape, color = Color.Gray),
+            .border(
+                width = 1.dp,
+                shape = RectangleShape,
+                color = Color.Gray
+            )
+            .height(34.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             modifier = Modifier
-                .padding(vertical = Spacing.small)
+                .padding(
+                    vertical = Spacing.small,
+                    horizontal = Spacing.extraSmall
+                ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

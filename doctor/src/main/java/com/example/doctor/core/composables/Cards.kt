@@ -163,14 +163,7 @@ fun VaccinationAppointmentCardComponent(
         else
             "${vaccinationAppointment.timeSocket.time.minute}"
 
-    val monthNumber =
-        if (vaccinationAppointment.date.month.ordinal.toString().length == 1)
-            "0${vaccinationAppointment.date.month.ordinal}"
-        else
-            "${vaccinationAppointment.date.month.ordinal}"
-
     val remainingTime = vaccinationAppointment.calculateRemainingTime()
-
 
     Card(
         modifier = modifier,
@@ -194,7 +187,7 @@ fun VaccinationAppointmentCardComponent(
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Text(
-                        text = monthNumber,
+                        text = vaccinationAppointment.date.getDayOfWeek().name.convertToProperCase(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -469,9 +462,6 @@ fun TimeSocketCardComponent(
 ) {
     Box(
         modifier = modifier
-            .clickable {
-                onClick(currentIndex)
-            }
             .background(
                 color = color,
                 shape = MaterialTheme.shapes.small
@@ -480,7 +470,10 @@ fun TimeSocketCardComponent(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = MaterialTheme.shapes.small
-            ),
+            )
+            .clickable {
+                onClick(currentIndex)
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
