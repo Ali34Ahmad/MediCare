@@ -24,6 +24,7 @@ import com.example.doctor.core.composables.ElevatedButtonComponent
 import com.example.doctor.core.composables.MedicareTopAppBar
 import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.toFullDate
+import com.example.doctor.data.fake.appointment1
 import com.example.doctor.data.fake.clinic1
 import com.example.doctor.data.fake.listOfAppointments
 import com.example.doctor.data.fake.vaccinesClinic
@@ -37,7 +38,7 @@ import java.time.LocalDate
 fun ProfileScreen(
     uiState: ProfileUiState,
     modifier: Modifier = Modifier,
-    clinicsAppointments: List<Appointment>,
+    clinicsAppointments: Map<Appointment,Int>,
     updateBookedDateEvent: (LocalDate) -> Unit,
 ) {
 
@@ -131,7 +132,7 @@ private fun ProfileScreenPreview1() {
                     clinic = clinic1,
                 ),
                 updateBookedDateEvent = {},
-                clinicsAppointments = listOfAppointments
+                clinicsAppointments = mapOf(appointment1 to 2,appointment1 to 5,)
             )
         }
     }
@@ -147,7 +148,7 @@ private fun ProfileScreenPreview2() {
                     clinic = vaccinesClinic,
                 ),
                 updateBookedDateEvent = {},
-                clinicsAppointments = listOfAppointments
+                clinicsAppointments = mapOf(appointment1 to 2,appointment1 to 5,)
             )
         }
     }

@@ -17,6 +17,7 @@ import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -164,11 +165,12 @@ class AddChildViewModel @Inject constructor(
                                 is ChooseTabState.Second -> Gender.FEMALE
                                 else -> throw Exception("You must let the user choose the gender")
                             },
-                            vaccineTable = vaccineTable,
                             father = "${uiState.value.fatherFirstName} ${uiState.value.fatherSecondName}",
                             mother = "${uiState.value.motherFirstName} ${uiState.value.motherSecondName}"
                         )
                     )
+                    val children=childRepository.children
+
                     updateLoadingDialogVisibilityState(false)
                     _uiState.value=_uiState.value.copy(isAddChildSuccessful = true)
                 } catch (e: Exception) {

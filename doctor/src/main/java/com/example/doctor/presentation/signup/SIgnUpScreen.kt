@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.doctor.R
 import com.example.doctor.core.composables.AppLogo
@@ -184,6 +185,7 @@ fun SignUpScreen(
                     updatePasswordVisibilityStateEvent()
                 },
                 isPasswordVisible = uiState.isPasswordVisible,
+                imeAction = ImeAction.Done,
             )
 
             Spacer(modifier = Modifier.height(Spacing.medium))
@@ -231,7 +233,7 @@ fun SignUpScreen(
                 SpannableTextComponent(
                     text1 = stringResource(id = R.string.already_have_account_part1),
                     text2 = stringResource(id = R.string.already_have_account_part2),
-                    onCLick = onSignUpClickEvent
+                    onCLick = onLoginClickEvent
                 )
             }
         }

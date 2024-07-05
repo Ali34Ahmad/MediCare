@@ -30,7 +30,8 @@ fun ClinicAppointmentHorizontalList(
             ClinicAppointmentCardComponent(
                 onClick = { /*TODO*/ },
                 clinicAppointment=clinicAppointment,
-                modifier = Modifier.width(300.dp)
+                modifier = Modifier.width(300.dp),
+                numberOfVisits = 2
             )
             Spacer(modifier = Modifier.width(Spacing.medium))
         }
@@ -40,7 +41,7 @@ fun ClinicAppointmentHorizontalList(
 
 @Composable
 fun ClinicAppointmentVerticalList(
-    clinicsAppointments: List<Appointment> = emptyList(),
+    clinicsAppointments: Map<Appointment,Int> = emptyMap(),
     modifier: Modifier = Modifier,
 ) {
 
@@ -48,11 +49,12 @@ fun ClinicAppointmentVerticalList(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = Spacing.medium)
     ) {
-        items(clinicsAppointments) { clinicAppointment ->
+        items(clinicsAppointments.toList()) { clinicAppointment ->
             ClinicAppointmentCardComponent(
                 onClick = { /*TODO*/ },
-                clinicAppointment=clinicAppointment,
-                modifier = Modifier.fillMaxWidth()
+                clinicAppointment=clinicAppointment.first,
+                modifier = Modifier.fillMaxWidth(),
+                numberOfVisits=clinicAppointment.second
             )
             Spacer(modifier = Modifier.height(Spacing.extraSmall))
         }
@@ -64,7 +66,9 @@ fun ClinicAppointmentVerticalList(
 private fun ClinicAppointmentHorizontalListPreview() {
     MediCareTheme {
         Surface {
-            ClinicAppointmentHorizontalList(emptyList())
+            ClinicAppointmentHorizontalList(
+                emptyList(),
+            )
         }
     }
 }

@@ -200,5 +200,11 @@ fun LocalDate.toFullDate():FullDate{
     return FullDate(dayOfMonth,month.getMonthByJavaMonth(),year)
 }
 fun Appointment.isUpcoming(): Boolean {
-    return date.toLocalDate() >= LocalDate.now()&&timeSocket.time.toLocalTime() > LocalTime.now()
+    return if(date.toLocalDate() > LocalDate.now()) {
+        true
+    }else if (date.toLocalDate() == LocalDate.now()) {
+        timeSocket.time.toLocalTime() > LocalTime.now()
+    }
+    else
+        false
 }

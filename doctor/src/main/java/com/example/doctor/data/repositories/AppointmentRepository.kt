@@ -1,6 +1,7 @@
 package com.example.doctor.data.repositories
 
 import com.example.doctor.data.model.appointment.Appointment
+import com.example.doctor.data.model.date.FullDate
 import kotlinx.coroutines.flow.Flow
 
 interface AppointmentRepository {
@@ -13,4 +14,10 @@ interface AppointmentRepository {
     val appointments : Flow<List<Appointment>>
     /**Delete the appointment with the given id*/
     suspend fun deleteAppointment(id: String)
+
+    /**get the number of appointments for a user*/
+    suspend fun getNumberOfAppointments(userId: String): Int
+
+    /**get appointments by data*/
+    suspend fun getAppointmentsByDate(date : FullDate): Flow<List<Appointment>>
 }

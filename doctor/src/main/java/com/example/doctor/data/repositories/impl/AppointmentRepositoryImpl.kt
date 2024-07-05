@@ -2,6 +2,7 @@ package com.example.doctor.data.repositories.impl
 
 import com.example.doctor.core.constants.DatabaseCollections
 import com.example.doctor.data.model.appointment.Appointment
+import com.example.doctor.data.model.date.FullDate
 import com.example.doctor.data.repositories.AppointmentRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,6 +51,22 @@ class AppointmentRepositoryImpl @Inject constructor(
             // Handle exceptions (e.g., network errors, permission issues)
             0 // Return 0 in case of errors
         }
+    }
+
+    override suspend fun getNumberOfAppointments(userId: String): Int {
+        return appointmentsRef
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
+            .size()
+    }
+    override suspend fun getAppointmentsByDate(date: FullDate): Flow<List<Appointment>> {
+        return appointments
+            .map { appointments ->
+                appointments.filter { appointment ->
+                    appointment.date == date
+                }
+            }
     }
 
 }

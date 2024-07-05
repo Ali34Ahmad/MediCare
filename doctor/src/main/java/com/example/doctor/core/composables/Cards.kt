@@ -46,6 +46,7 @@ import com.example.doctor.core.enums.TimeSocketState
 import com.example.doctor.core.formatTime
 import com.example.doctor.core.getDayOfWeek
 import com.example.doctor.core.isOpenNow
+import com.example.doctor.data.fake.appointment1
 import com.example.doctor.data.model.appointment.Appointment
 import com.example.doctor.data.model.child.Child
 import com.example.doctor.data.model.clinic.Clinic
@@ -228,6 +229,7 @@ fun VaccinationAppointmentCardComponent(
 fun ClinicAppointmentCardComponent(
     onClick: () -> Unit,
     clinicAppointment: Appointment,
+    numberOfVisits:Int,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -299,15 +301,10 @@ fun ClinicAppointmentCardComponent(
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "clinicAppointment.clinic.visitNumber",
+                        text = numberOfVisits.toString(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.weight(1f)
-                    )
-                    Text(
-                        text = clinicAppointment.clinic.responsibleDoctor.speciality,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.outline,
                     )
                 }
             }
@@ -623,27 +620,8 @@ private fun ClinicCardAppointmentComponentPreview() {
             ClinicAppointmentCardComponent(
                 modifier = Modifier,
                 onClick = {},
-                clinicAppointment = Appointment(
-                    clinic = Clinic(
-                        name = "Clinic Name",
-                        imageUrl = "",
-                        workDays = emptyList(),
-                        daySockets = emptyList(),
-                        responsibleDoctor = Doctor(
-                            firstName = "Ali",
-                            lastName = "Ahmad",
-                            speciality = "Dental",
-                            imageUrl = "",
-                            gender = Gender.MALE,
-                        ),
-                        services = emptyList()
-                    ),
-                    clinicId = "",
-                    userId = "Emad Mehrez",
-                    date = FullDate(24, Month.JUL, 2024),
-                    timeSocket = TimeSocket(Time(11, 50, DayPeriod.AM), TimeSocketState.OCCUPIED),
-                    vaccineId = ""
-                )
+                clinicAppointment = appointment1,
+                numberOfVisits = 2
             )
         }
     }

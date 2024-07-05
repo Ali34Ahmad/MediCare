@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VaccinationTableViewModel @Inject constructor(
-   private val childRepository: ChildRepository
+    private val childRepository: ChildRepository,
 ): ViewModel(){
     private val _uiState= MutableStateFlow(VaccinationTableUiState())
     val uiState=_uiState.asStateFlow()
