@@ -23,6 +23,8 @@
     <string name="first_name_hint">First</string>
     <string name="second_name_hint">Last</string>
     <string name="password_hint">Password</string>
+    <string name="child_number_hint">22/5</string>
+    <string name="birthday_hint">24/01/2024</string>
 
     <!---->
     <string name="required_field">Reuired field</string>
@@ -117,7 +119,7 @@
     <string name="profile">Profile</string>
 
     <string name="go_back">Go back</string>
-    <string name="birthday">birth day</string>
+    <string name="birthday">Birthday</string>
     <string name="number_hint">number hint</string>
     <string name="clinics">clinics</string>
     <string name="upcoming_vaccinations">upcoming vaccination</string>

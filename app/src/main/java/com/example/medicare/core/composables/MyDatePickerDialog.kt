@@ -14,14 +14,14 @@ import java.time.LocalDate
 @Composable
 fun MyDatePickerDialog(
     onConfirmButtonClick: (LocalDate) -> Unit,
-    datePickerState: UseCaseState
+    datePickerState: UseCaseState,
+    range:ClosedRange<LocalDate> =LocalDate.now()..LocalDate.now().plusDays(30)
 ) {
-    val currentDate = LocalDate.now()
 
     CalendarDialog(
         state = datePickerState,
         config = CalendarConfig(
-            boundary =LocalDate.now()..currentDate.plusDays(30)
+            boundary =range
         ),
         selection = CalendarSelection.Date { date ->
             onConfirmButtonClick(date)

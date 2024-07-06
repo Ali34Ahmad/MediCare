@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
@@ -31,8 +33,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicare.R
+import com.example.medicare.core.formatDate
+import com.example.medicare.core.toFullDate
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
+import java.time.LocalDate
 
 @Composable
 fun OutlinedTextFieldComponent(
@@ -47,7 +52,7 @@ fun OutlinedTextFieldComponent(
     isRequired: Boolean = true,
     onVisibilityIconClicked: () -> Unit = {},
     imeAction: ImeAction = ImeAction.Next,
-    ) {
+) {
     var isFocused by remember {
         mutableStateOf(false)
     }
@@ -85,7 +90,7 @@ fun OutlinedTextFieldComponent(
                         )
                     }
             },
-            visualTransformation = if (isPasswordVisible||!showEyeTrailingIcon) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (isPasswordVisible || !showEyeTrailingIcon) VisualTransformation.None else PasswordVisualTransformation(),
         )
 
         Spacer(modifier = Modifier.height(Spacing.extraSmall))
@@ -98,6 +103,93 @@ fun OutlinedTextFieldComponent(
         }
 
     }
+}
+
+@Composable
+fun DatePickerTextField(
+    title: String?,
+    localDate: LocalDate?,
+    onValueChange: (String) -> Unit,
+    @StringRes hint: Int,
+    modifier: Modifier = Modifier,
+    errorMessage: Int?,
+    isRequired: Boolean = true,
+    onOpenCalendarClick: () -> Unit,
+    clearTextFieldValue: () -> Unit,
+    imeAction: ImeAction = ImeAction.Done,
+) {
+    var isFocused by remember {
+        mutableStateOf(false)
+    }
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = if (title == null) {
+                ""
+            } else {
+                if (isRequired) "$title*" else title
+            },
+            style = MaterialTheme.typography.titleMedium
+        )
+        OutlinedTextField(
+            value = localDate?.toFullDate()?.formatDate() ?: "",
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = if (!isFocused && localDate == null)
+                        stringResource(id = hint) else "",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            keyboardOptions = KeyboardOptions(imeAction = imeAction),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusEvent { focusState ->
+                    isFocused = focusState.isFocused
+                },
+            maxLines = 1,
+            trailingIcon = {
+                IconButton(onClick = {
+                    if (localDate == null)
+                        onOpenCalendarClick()
+                    else
+                        clearTextFieldValue()
+                }) {
+                    Icon(
+                        imageVector = if (localDate == null)
+                            Icons.Outlined.CalendarToday
+                        else
+                            Icons.Outlined.Clear,
+                        contentDescription = null
+                    )
+                }
+            },
+        )
+
+        Spacer(modifier = Modifier.height(Spacing.extraSmall))
+        if (errorMessage != null) {
+            Text(
+                text = stringResource(errorMessage),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DatePickerTextFieldPreview() {
+    DatePickerTextField(
+        title = stringResource(id = R.string.birthday),
+        localDate = LocalDate.now(),
+        onValueChange = {},
+        hint = R.string.birthday_hint,
+        errorMessage = null,
+        modifier = Modifier.padding(Spacing.medium),
+        clearTextFieldValue={},
+        onOpenCalendarClick = {}
+    )
 }
 
 @Composable

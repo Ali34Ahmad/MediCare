@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.dispensary.ui.composables.CheckBoxComponent
 import com.example.dispensary.ui.composables.ChooseTab
 import com.example.dispensary.ui.composables.ChooseTabState
+import com.example.dispensary.ui.composables.DatePickerTextField
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldComponent
 import com.example.dispensary.ui.composables.OutlinedTextFieldWithTwoFieldsComponent
@@ -26,10 +27,12 @@ import com.example.medicare.R
 import com.example.medicare.core.composables.ErrorDialog
 import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.core.composables.MedicareTopAppBar
+import com.example.medicare.core.composables.MyDatePickerDialog
 import com.example.medicare.core.navigate
 import com.example.medicare.presentation.navigation.Destination
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
+import java.time.LocalDate
 
 @Composable
 fun AddChildScreen(
@@ -45,11 +48,22 @@ fun AddChildScreen(
     updateFatherSecondNameEvent: (String) -> Unit,
     updateMotherFirstNameEvent: (String) -> Unit,
     updateMotherSecondNameEvent: (String) -> Unit,
-    updateDateOfBirthEvent: (String) -> Unit,
     updateGenderEvent: (ChooseTabState) -> Unit,
     updateCheckStateEvent: (Boolean) -> Unit,
     onAddChildClick: () -> Unit,
+    clearTextFieldValue:()->Unit,
+    updateBookedDateEvent:(LocalDate)->Unit,
 ) {
+
+    MyDatePickerDialog(
+        onConfirmButtonClick = { date ->
+            updateBookedDateEvent(date)
+            uiState.datePickerState.hide()
+        },
+        datePickerState = uiState.datePickerState,
+        range = LocalDate.MIN..LocalDate.MAX
+    )
+
     ErrorDialog(
         showDialog = uiState.showErrorDialog,
         onDismissRequest = {
@@ -108,8 +122,8 @@ fun AddChildScreen(
                     },
                     hint1 = R.string.first_name_hint,
                     hint2 = R.string.second_name_hint,
-                    errorMessage1 = uiState.childSecondNameErrorMessage ?: R.string.blank,
-                    errorMessage2 = uiState.childSecondNameErrorMessage ?: R.string.blank,
+                    errorMessage1 = uiState.childSecondNameErrorMessage ,
+                    errorMessage2 = uiState.childSecondNameErrorMessage ,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
@@ -126,8 +140,8 @@ fun AddChildScreen(
                     },
                     hint1 = R.string.first_name_hint,
                     hint2 = R.string.second_name_hint,
-                    errorMessage1 = uiState.fatherFirstNameErrorMessage ?: R.string.blank,
-                    errorMessage2 = uiState.fatherSecondNameErrorMessage ?: R.string.blank,
+                    errorMessage1 = uiState.fatherFirstNameErrorMessage,
+                    errorMessage2 = uiState.fatherSecondNameErrorMessage,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
@@ -144,21 +158,21 @@ fun AddChildScreen(
                     },
                     hint1 = R.string.first_name_hint,
                     hint2 = R.string.second_name_hint,
-                    errorMessage1 = uiState.motherFirstNameErrorMessage ?: R.string.blank,
-                    errorMessage2 = uiState.motherSecondNameErrorMessage ?: R.string.blank,
+                    errorMessage1 = uiState.motherFirstNameErrorMessage ,
+                    errorMessage2 = uiState.motherSecondNameErrorMessage,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
-                OutlinedTextFieldComponent(
+                DatePickerTextField(
                     title = stringResource(id = R.string.date_of_birth),
-                    textFieldValue = uiState.dateOfBirth,
-                    onValueChange = {
-                        updateDateOfBirthEvent(it)
-                    },
-                    hint = R.string.birthday,
+                    localDate = uiState.dateOfBirth,
+                    onValueChange = {},
+                    hint = R.string.birthday_hint,
                     imeAction = ImeAction.Done,
-                    errorMessage = uiState.dateOfBirthErrorMessage ?: R.string.blank
+                    errorMessage = uiState.dateOfBirthErrorMessage,
+                    onOpenCalendarClick = {uiState.datePickerState.show()},
+                    clearTextFieldValue =clearTextFieldValue,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
@@ -219,11 +233,12 @@ private fun AddChildScreenPreview() {
                 updateGenderEvent = {},
                 updateChildFirstNameEvent = {},
                 updateChildNumberEvent = {},
-                updateDateOfBirthEvent = {},
                 updateFatherFirstNameEvent = {},
                 updateMotherFirstNameEvent = {},
                 navigateToChildrenScreen = {},
-                uiState = AddChildUiState()
+                uiState = AddChildUiState(),
+                clearTextFieldValue={},
+                updateBookedDateEvent = {}
             )
         }
     }

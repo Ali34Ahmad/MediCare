@@ -2,6 +2,8 @@ package com.example.medicare.presentation.addchild
 
 import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.data.model.date.FullDate
+import com.maxkeppeker.sheets.core.models.base.UseCaseState
+import java.time.LocalDate
 
 data class AddChildUiState(
     val upNumber: Int?=null,
@@ -20,7 +22,7 @@ data class AddChildUiState(
     val motherFirstNameErrorMessage:Int?=null,
     val motherSecondName: String="",
     val motherSecondNameErrorMessage:Int?=null,
-    val dateOfBirth: String ="",
+    val dateOfBirth: LocalDate? =null,
     val dateOfBirthErrorMessage:Int?=null,
     val gender: ChooseTabState?=null,
     val genderErrorMessage:Int?=null,
@@ -28,4 +30,5 @@ data class AddChildUiState(
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
     val isAddChildSuccessful:Boolean=false,
+    val datePickerState: UseCaseState = UseCaseState(),
 )

@@ -2,6 +2,7 @@ package com.example.medicare.ui
 
 import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.R
+import java.time.LocalDate
 
 object Validator {
 
@@ -19,6 +20,12 @@ object Validator {
         if(text.equals("")) return R.string.required_field
         return null
     }
+    fun checkRequiredBirthday(localDate: LocalDate?):Int?{
+        if(localDate==null) return R.string.required_field
+        return null
+    }
+
+
     fun checkPassword(password:String):Int?{
         if(password.equals("")) return checkRequiredTextField(password)
         if(password.length<8) return R.string.password_at_least_8_letters

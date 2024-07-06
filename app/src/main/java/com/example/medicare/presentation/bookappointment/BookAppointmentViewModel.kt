@@ -137,10 +137,7 @@ class BookAppointmentViewModel @Inject constructor(
                             ),
                             timeSocket = uiState.value.freeTimes[selectedTimeSocketIndex],
                             vaccineId = uiState.value.vaccineId ?: "",
-                            clinic = Clinic(
-                                name = uiState.value.clinic.name,
-                                responsibleDoctor = uiState.value.clinic.responsibleDoctor
-                            )
+                            clinic = uiState.value.clinic
                         )
                     )
                     _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = true)

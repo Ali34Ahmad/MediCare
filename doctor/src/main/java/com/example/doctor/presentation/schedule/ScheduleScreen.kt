@@ -42,7 +42,7 @@ import java.time.LocalDate
 fun ScheduleScreen(
     modifier:Modifier=Modifier,
     uiState: ScheduleUiState,
-    clinicsAppointments:List<Appointment>,
+    clinicsAppointments:Map<Appointment,Int>,
     updateBookedDateEvent:(LocalDate)->Unit,
 ) {
 
@@ -158,7 +158,7 @@ private fun ScheduleScreenPreview() {
         Surface {
             ScheduleScreen(
                 uiState = ScheduleUiState(),
-                clinicsAppointments = listOfAppointments,
+                clinicsAppointments = mapOf(),
                 updateBookedDateEvent = {}
             )
         }

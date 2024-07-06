@@ -122,10 +122,13 @@ fun MedicareApp(
             composable<Destination.Schedule> {
                 val scheduleViewModel: ScheduleViewModel = hiltViewModel()
                 val scheduleUiState = scheduleViewModel.uiState.collectAsState()
-                val appointments=scheduleViewModel.appointments.collectAsState(initial = emptyList())
+                //val appointments=scheduleViewModel.appointments.collectAsState(initial = emptyList())
+
+                val appointmentsWithVisitNumber= scheduleViewModel.appointmentsToNumberOfVisits
+
                 ScheduleScreen(
                     uiState = scheduleUiState.value,
-                    clinicsAppointments = appointments.value,
+                    clinicsAppointments = appointmentsWithVisitNumber,
                     updateBookedDateEvent = scheduleViewModel::updateBookedDate
                 )
             }
@@ -133,10 +136,10 @@ fun MedicareApp(
             composable<Destination.Profile> {
                 val profileViewModel: ProfileViewModel = hiltViewModel()
                 val profileUiState = profileViewModel.uiState.collectAsState()
-                val appointments=profileViewModel.appointments.collectAsState(initial = emptyList())
+                /*val appointments=profileViewModel.appointments.collectAsState(initial = emptyList())
                     .value.filter { appointment ->
                         appointment.isUpcoming()
-                    }
+                    }*/
                 val appointmentsWithVisitNumber= profileViewModel.appointmentsToNumberOfVisits
 
                 ProfileScreen(

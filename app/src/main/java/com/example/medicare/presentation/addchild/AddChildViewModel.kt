@@ -17,8 +17,9 @@ import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -96,11 +97,11 @@ class AddChildViewModel @Inject constructor(
                 motherSecondNameErrorMessage = null
             )
     }
-
-    fun updateDateOfBirth(newDateOfBirth: String) {
+    fun updateDateOfBirth(newDateOfBirth: LocalDate) {
         _uiState.value =
             _uiState.value.copy(dateOfBirth = newDateOfBirth, dateOfBirthErrorMessage = null)
     }
+
 
     fun updateGender(newGender: ChooseTabState) {
         _uiState.value =
@@ -132,7 +133,7 @@ class AddChildViewModel @Inject constructor(
                 fatherSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.fatherSecondName),
                 motherFirstNameErrorMessage = Validator.checkRequiredTextField(uiState.value.motherFirstName),
                 motherSecondNameErrorMessage = Validator.checkRequiredTextField(uiState.value.motherSecondName),
-                dateOfBirthErrorMessage = Validator.checkRequiredTextField(uiState.value.dateOfBirth),
+                dateOfBirthErrorMessage = Validator.checkRequiredBirthday(uiState.value.dateOfBirth),
                 genderErrorMessage = Validator.checkGender(uiState.value.gender),
             )
         if (checkAllEnteredData()) {
@@ -147,10 +148,10 @@ class AddChildViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     updateLoadingDialogVisibilityState(true)
-                    val year: Int = extractDateComponents(uiState.value.dateOfBirth).third
+                    val year: Int = uiState.value.dateOfBirth?.year?:2024
                     val month: Month =
-                        getMonthByNumber(extractDateComponents(uiState.value.dateOfBirth).second)
-                    val day: Int = extractDateComponents(uiState.value.dateOfBirth).first
+                        getMonthByNumber(uiState.value.dateOfBirth?.month?.ordinal?:1)
+                    val day: Int = uiState.value.dateOfBirth?.dayOfMonth?:1
                     childRepository.addChild(
                         Child(
                             firstName = uiState.value.childFirstName,
@@ -228,4 +229,7 @@ class AddChildViewModel @Inject constructor(
         return Month.entries[monthNumber - 1]
     }
 
+    fun clearBirthDayTextFieldValue() {
+        _uiState.update { it.copy(dateOfBirth = null) }
+    }
 }

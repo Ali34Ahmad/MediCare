@@ -194,6 +194,7 @@ class SignUpViewModel @Inject constructor(
                     )
                     _uiState.update { it.copy(clinicImageUrl = imageUrl) }
 
+                    Log.v("currentId",accountService.currentUserId)
                     clinicRepository.addClinic(
                         Clinic(
                             name = uiState.value.clinicName,
@@ -201,6 +202,7 @@ class SignUpViewModel @Inject constructor(
                             workDays = listOfWorkDays,
                             daySockets = listOfDaySockets,
                             responsibleDoctor = Doctor(
+                                id=accountService.currentUserId,
                                 firstName = uiState.value.firstName,
                                 lastName = uiState.value.secondName,
                                 speciality = uiState.value.speciality,

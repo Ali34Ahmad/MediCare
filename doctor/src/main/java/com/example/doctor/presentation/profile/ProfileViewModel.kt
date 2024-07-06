@@ -7,8 +7,10 @@ import com.example.doctor.core.enums.Month
 import com.example.doctor.core.getMonthByJavaMonth
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.model.appointment.Appointment
+import com.example.doctor.data.model.clinic.Clinic
 import com.example.doctor.data.model.date.FullDate
 import com.example.doctor.data.repositories.AppointmentRepository
+import com.example.doctor.data.repositories.ClinicRepository
 import com.example.doctor.data.services.AccountService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
@@ -24,6 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val appointmentRepository: AppointmentRepository,
+    private val clinicRepository: ClinicRepository,
+    private val accountService: AccountService,
 ): ViewModel() {
     private val _uiState= MutableStateFlow(ProfileUiState())
     val uiState=_uiState.asStateFlow()
@@ -32,9 +36,17 @@ class ProfileViewModel @Inject constructor(
     val appointmentsToNumberOfVisits= mutableMapOf<Appointment,Int>()
 
     init {
+        updateClinic()
         getNumberOfVisits()
     }
     fun updateClinic(){
+        viewModelScope.launch {
+            val clinicId=clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
+            val clinic=clinicRepository.getClinicById(clinicId?:"")
+            _uiState.update { it.copy(clinic=clinic?: Clinic()) }
+        }
+    }
+    fun getClinic(){
 
     }
 
