@@ -1,6 +1,7 @@
-package com.example.medicare.data.childTable
+package com.example.doctor.data.childTable
 
-import com.example.medicare.data.model.child.VaccineTableItem
+import com.example.doctor.data.model.child.VaccineTableItem
+
 
 interface ChildTable {
     /**Initialize the table with the default rows*/

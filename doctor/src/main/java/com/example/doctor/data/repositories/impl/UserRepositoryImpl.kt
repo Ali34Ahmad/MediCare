@@ -17,7 +17,9 @@ class UserRepositoryImpl @Inject constructor(
     private val currentUserId = auth.currentUser?.uid
 
     override suspend fun addNewUser(user: User) {
-           currentUserId?.let {usersRef.document(it).set(user).await()}
+        currentUserId?.let {
+            usersRef.document(it).set(user).await()
+        }
     }
 
     override suspend fun getUser(): User? {

@@ -1,6 +1,7 @@
 package com.example.doctor.core.constants
 
 object DatabaseCollections{
+    const val DEFAULT_VACCINE_TABLE_COLLECTION = "default_table"
     const val NOTIFICATIONS_COLLECTION = "notifications"
     const val USERS_COLLECTION = "users"
     const val DOCTORS_COLLECTION = "doctors"

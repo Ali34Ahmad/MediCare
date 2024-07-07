@@ -16,6 +16,7 @@ class DoctorRepositoryImpl @Inject constructor(
     private val doctorRef = database.collection(DatabaseCollections.DOCTORS_COLLECTION)
 
     override suspend fun addDoctor(doctor: Doctor) {
-        doctorRef.document(currentUserId).set(doctor).await()
+        val currentDoctor = doctor.copy(id=currentUserId)
+        doctorRef.document(currentUserId).set(currentDoctor).await()
     }
 }

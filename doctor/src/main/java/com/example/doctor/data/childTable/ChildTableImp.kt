@@ -1,6 +1,6 @@
-package com.example.medicare.data.childTable
-import com.example.medicare.core.constants.DatabaseCollections
-import com.example.medicare.data.model.child.VaccineTableItem
+package com.example.doctor.data.childTable
+import com.example.doctor.core.constants.DatabaseCollections
+import com.example.doctor.data.model.child.VaccineTableItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -25,7 +25,7 @@ class ChildTableImp @Inject constructor(
     override suspend fun initTable(childId: String) {
         val vaccines = defaultTableRef.get().await().toObjects(VaccineTableItem::class.java)
         vaccines.forEach { vaccine ->
-            childRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)?.add(vaccine)
+            childRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)?.add(vaccine)?.await()
         }
     }
 

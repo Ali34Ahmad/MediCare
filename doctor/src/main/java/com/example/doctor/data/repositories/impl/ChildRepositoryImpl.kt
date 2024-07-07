@@ -1,6 +1,7 @@
 package com.example.doctor.data.repositories.impl
 
 import com.example.doctor.core.constants.DatabaseCollections
+import com.example.doctor.data.childTable.ChildTable
 import com.example.doctor.data.model.child.Child
 import com.example.doctor.data.model.child.VaccineTableItem
 import com.example.doctor.data.repositories.ChildRepository
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 class ChildRepositoryImpl @Inject constructor(
     database: FirebaseFirestore,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    private val childTable: ChildTable
 ) : ChildRepository {
 
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
@@ -22,7 +24,8 @@ class ChildRepositoryImpl @Inject constructor(
     private val childrenRef = usersRef.document(currentUserId).collection(DatabaseCollections.CHILDREN_COLLECTION)
 
     override suspend fun addChild(child: Child) {
-        childrenRef.add(child).await()
+        val id = childrenRef.add(child).await().id
+        childTable.initTable(id)
     }
 
     override suspend fun getVaccineTable(childId: String): List<VaccineTableItem> {

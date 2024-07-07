@@ -5,7 +5,6 @@ import com.google.firebase.firestore.DocumentId
 import kotlinx.serialization.Serializable
 
 data class Doctor(
-    @DocumentId
     val id : String ="",
     val firstName : String="",
     val lastName : String="",
