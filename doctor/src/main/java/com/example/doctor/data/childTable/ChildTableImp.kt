@@ -7,25 +7,28 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ChildTableImp @Inject constructor(
-    database: FirebaseFirestore,
-    auth: FirebaseAuth
+    private val database: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : ChildTable {
 
-    private val currentUserId = auth.currentUser?.uid
-    private val childRef = currentUserId?.let { id ->
+    private val currentUserId :String?
+        get() = auth.currentUser?.uid
+    private val childRef
+    get() = currentUserId?.let { id ->
         database
             .collection(DatabaseCollections.USERS_COLLECTION)
             .document(id)
             .collection(DatabaseCollections.CHILDREN_COLLECTION)
     }
 
-    private val defaultTableRef =
+    private val defaultTableRef
+        get() =
         database.collection(DatabaseCollections.DEFAULT_VACCINE_TABLE_COLLECTION)
 
     override suspend fun initTable(childId: String) {
         val vaccines = defaultTableRef.get().await().toObjects(VaccineTableItem::class.java)
         vaccines.forEach { vaccine ->
-            childRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)?.add(vaccine)?.await()
+            childRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)?.add(vaccine)
         }
     }
 

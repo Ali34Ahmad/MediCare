@@ -1,7 +1,6 @@
 package com.example.doctor.data.model.user
 
 import com.example.doctor.core.enums.Gender
-import com.google.firebase.firestore.DocumentId
 
 data class Doctor(
     val id : String ="",

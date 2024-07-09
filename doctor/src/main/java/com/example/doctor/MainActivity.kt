@@ -9,12 +9,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.doctor.presentation.MedicareApp
 import com.example.doctor.presentation.fake.AliViewModel
 import com.example.doctor.presentation.fake.Screen
 import com.example.doctor.ui.theme.MediCareTheme

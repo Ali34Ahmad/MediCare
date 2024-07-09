@@ -9,12 +9,12 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    database : FirebaseFirestore,
-    auth : FirebaseAuth
+    private val database : FirebaseFirestore,
+    private val auth : FirebaseAuth
 ) : UserRepository {
 
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
-    private val currentUserId = auth.currentUser?.uid
+    private val currentUserId :String? get()= auth.currentUser?.uid
 
     override suspend fun addNewUser(user: User) {
         currentUserId?.let {

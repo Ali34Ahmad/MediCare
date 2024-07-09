@@ -13,15 +13,16 @@ import javax.inject.Inject
 
 class NotificationServiceImpl @Inject constructor(
     database: FirebaseFirestore,
-    auth: FirebaseAuth
+    private val auth: FirebaseAuth
 ): NotificationService {
     //get the notification reference
     private val notificationsRef = database.collection(
         DatabaseCollections.NOTIFICATIONS_COLLECTION
     )
-    private val currentUserId = auth.currentUser?.uid
+    private val currentUserId :String?
+        get() = auth.currentUser?.uid
     override val notifications: Flow<List<Notification>>
-        get() = notificationsRef.whereEqualTo("userId",currentUserId)
+        get() = notificationsRef.whereEqualTo("userId",currentUserId?:"")
             .snapshots()
             .map {
                 it.toObjects(Notification::class.java)

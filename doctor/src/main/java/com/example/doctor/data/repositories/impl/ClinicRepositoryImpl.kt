@@ -13,22 +13,25 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ClinicRepositoryImpl @Inject constructor(
-    database: FirebaseFirestore,
-    auth: FirebaseAuth
+    private val database: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : ClinicRepository {
 
     private val clinicRef = database.collection(DatabaseCollections.CLINICS_COLLECTION)
-    private val currentUserId = auth.currentUser?.uid ?: "0"
+    private val currentUserId :String? get()= auth.currentUser?.uid
     override val clinics: Flow<List<Clinic>>
         get() = clinicRef.snapshots().map { snapshot ->
             snapshot.toObjects(Clinic::class.java)
         }
-
     override suspend fun addClinic(clinic: Clinic) {
-        val currentClinic = clinic.copy(
-            responsibleDoctor = clinic.responsibleDoctor.copy(id = currentUserId)
-        )
-        clinicRef.add(currentClinic).await()
+        val currentClinic = currentUserId?.let { clinic.responsibleDoctor.copy(id = it) }?.let {
+            clinic.copy(
+                responsibleDoctor = it
+            )
+        }
+        if (currentClinic != null) {
+            clinicRef.add(currentClinic).await()
+        }
     }
 
     override suspend fun getClinicById(id: String): Clinic? {

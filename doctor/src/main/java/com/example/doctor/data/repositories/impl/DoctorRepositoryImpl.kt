@@ -9,16 +9,20 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DoctorRepositoryImpl @Inject constructor(
-    database: FirebaseFirestore,
-    auth: FirebaseAuth
+    private val database: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ): DoctorRepository {
 
-    private val currentUserId = auth.currentUser?.uid ?: ""
+    private val currentUserId :String? get()= auth.currentUser?.uid
 
     private val doctorRef = database.collection(DatabaseCollections.DOCTORS_COLLECTION)
 
     override suspend fun addDoctor(doctor: Doctor) {
-        val currentDoctor = doctor.copy(id=currentUserId)
-        doctorRef.document(currentUserId).set(currentDoctor).await()
+        val currentDoctor = currentUserId?.let { doctor.copy(id= it) }
+        currentUserId?.let {
+            if (currentDoctor != null) {
+                doctorRef.document(it).set(currentDoctor).await()
+            }
+        }
     }
 }

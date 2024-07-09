@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class VaccineRepositoryImpl @Inject constructor(
-    database: FirebaseFirestore
+    private val database: FirebaseFirestore
 ): VaccineRepository {
 
     private val vaccinesRef = database.collection(
@@ -25,6 +25,3 @@ class VaccineRepositoryImpl @Inject constructor(
             it.toObjects(Vaccine::class.java)
         }
 }
-
-
-//vaccinesRef.document("MyUniqueID").set(vaccine)

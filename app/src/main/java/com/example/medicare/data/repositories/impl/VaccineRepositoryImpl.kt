@@ -25,6 +25,3 @@ class VaccineRepositoryImpl @Inject constructor(
             it.toObjects(Vaccine::class.java)
         }
 }
-
-
-//vaccinesRef.document("MyUniqueID").set(vaccine)

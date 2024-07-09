@@ -13,11 +13,12 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AppointmentRepositoryImpl @Inject constructor(
-    database : FirebaseFirestore,
-    auth: FirebaseAuth
+    private val database : FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : AppointmentRepository {
 
-    private val currentUserId = auth.currentUser?.uid ?: ""
+    private val currentUserId :String?
+    get() = auth.currentUser?.uid
 
     private val appointmentsRef = database.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
 
@@ -30,7 +31,7 @@ class AppointmentRepositoryImpl @Inject constructor(
     }
 
     override val appointments: Flow<List<Appointment>>
-        get() = appointmentsRef.whereEqualTo("userId", currentUserId).snapshots().map { snapshot ->
+        get() = appointmentsRef.whereEqualTo("userId", currentUserId?:"").snapshots().map { snapshot ->
             snapshot.toObjects(Appointment::class.java)
         }
 

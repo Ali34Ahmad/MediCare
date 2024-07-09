@@ -8,10 +8,11 @@ import javax.inject.Inject
 
 class ChildTableImp @Inject constructor(
     database: FirebaseFirestore,
-    auth: FirebaseAuth
+    private val auth: FirebaseAuth
 ) : ChildTable {
 
-    private val currentUserId = auth.currentUser?.uid
+    private val currentUserId :String?
+        get() = auth.currentUser?.uid
     private val childRef = currentUserId?.let { id ->
         database
             .collection(DatabaseCollections.USERS_COLLECTION)

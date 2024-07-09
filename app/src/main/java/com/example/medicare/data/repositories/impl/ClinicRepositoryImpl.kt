@@ -39,6 +39,6 @@ class ClinicRepositoryImpl @Inject constructor(
     }
 
     suspend fun updateTimeSocketState(appointment: Appointment){
-
+        TODO("Update the time socket state")
     }
 }

@@ -10,13 +10,18 @@ import javax.inject.Inject
 
 class DoctorRepositoryImpl @Inject constructor(
     database: FirebaseFirestore,
-    auth: FirebaseAuth
+    private val auth: FirebaseAuth
 ): DoctorRepository {
-    private val currentUserId = auth.currentUser?.uid ?: ""
+
+    private val currentUserId :String?
+        get() = auth.currentUser?.uid
+
     private val doctorRef = database.collection(DatabaseCollections.DOCTORS_COLLECTION)
 
     override suspend fun addDoctor(doctor: Doctor) {
-        val currentDoctor = doctor.copy(id=currentUserId)
-        doctorRef.document(currentUserId).set(currentDoctor).await()
+        currentUserId?.let {
+            val currentDoctor = doctor.copy(id = currentUserId!!)
+            doctorRef.document(currentUserId!!).set(currentDoctor).await()
+        }
     }
 }

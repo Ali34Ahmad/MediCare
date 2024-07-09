@@ -15,49 +15,51 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class StorageServiceImpl @Inject constructor(
-    firestore: FirebaseFirestore,
-    auth: FirebaseAuth,
+    private val database: FirebaseFirestore,
+    private val auth: FirebaseAuth,
     storage : FirebaseStorage
 ) : StorageService {
     // Get the current user's ID
-    private val currentUserId = auth.currentUser?.uid ?:"0"
+    private val currentUserId :String? get()= auth.currentUser?.uid
     // Get references for all collections
-    private val usersRef = firestore.collection(DatabaseCollections.USERS_COLLECTION)
-    private val childrenRef = usersRef.document(currentUserId).collection(DatabaseCollections.CHILDREN_COLLECTION)
-    private val vaccinesRef = firestore.collection(DatabaseCollections.VACCINES_COLLECTION)
-    private val doctorRef = firestore.collection(DatabaseCollections.DOCTORS_COLLECTION)
-    private val clinicRef = firestore.collection(DatabaseCollections.CLINICS_COLLECTION)
-    private val appointmentsRef = firestore.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
+    private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
+    private val childrenRef get()= currentUserId?.let { usersRef.document(it).collection(DatabaseCollections.CHILDREN_COLLECTION) }
+    private val vaccinesRef = database.collection(DatabaseCollections.VACCINES_COLLECTION)
+    private val doctorRef = database.collection(DatabaseCollections.DOCTORS_COLLECTION)
+    private val clinicRef = database.collection(DatabaseCollections.CLINICS_COLLECTION)
+    private val appointmentsRef = database.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
     private val storageRef = storage.reference
+
     override suspend fun addNewUser(user: User) {
-        usersRef.document(currentUserId).set(user).await()
+        currentUserId?.let { usersRef.document(it).set(user).await() }
     }
 
     override suspend fun getUser(): User? {
-        return usersRef.document(currentUserId).get().await().toObject(User::class.java)
+        return currentUserId?.let { usersRef.document(it).get().await().toObject(User::class.java) }
     }
 
     override suspend fun addChild(child: Child) {
-       childrenRef.add(child).await()
+        childrenRef?.add(child)?.await()
     }
     override suspend fun getVaccineTable(childId: String): List<VaccineTableItem> {
-       return childrenRef.document(childId).collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
-           .get().await().toObjects(VaccineTableItem::class.java)
+       return childrenRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
+           ?.get()?.await()?.toObjects(VaccineTableItem::class.java) ?: emptyList()
     }
 
     override val children: Flow<List<Child>>
-        get() = childrenRef.snapshots().map { snapshot->
+        get() = childrenRef?.snapshots()?.map { snapshot->
             snapshot.toObjects(Child::class.java)
-        }
+        }?: flowOf(emptyList())
 
     override suspend fun addVaccineTableItem(vaccineTableItem: VaccineTableItem, childId: String) {
-        childrenRef.document(childId).collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
-            .document(vaccineTableItem.vaccine.id).set(vaccineTableItem).await()
+        childrenRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
+            ?.document(vaccineTableItem.vaccine.id)?.set(vaccineTableItem)?.await()
     }
 
     override suspend fun addVaccine(vaccine: Vaccine) {
