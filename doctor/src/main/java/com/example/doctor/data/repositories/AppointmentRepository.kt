@@ -12,6 +12,8 @@ interface AppointmentRepository {
     suspend fun addAppointment(appointment: Appointment)
     /**Get all the user appointments*/
     val appointments : Flow<List<Appointment>>
+    /**Get number of appointments for the doctor*/
+    val appointmentNumber : Flow<Int>
     /**Delete the appointment with the given id*/
     suspend fun deleteAppointment(id: String)
 

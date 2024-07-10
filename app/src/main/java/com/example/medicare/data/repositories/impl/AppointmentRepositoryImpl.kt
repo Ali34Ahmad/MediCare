@@ -23,6 +23,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     private val appointmentsRef = database.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
 
+
     override suspend fun addAppointment(appointment: Appointment) {
         appointmentsRef.add(appointment).await()
     }
@@ -57,14 +58,5 @@ class AppointmentRepositoryImpl @Inject constructor(
             .get()
             .await()
             .size()
-    }
-
-    override suspend fun getAppointmentsByDate(date: FullDate): Flow<List<Appointment>> {
-        return appointments
-            .map { appointments ->
-                appointments.filter { appointment ->
-                    appointment.date == date
-                }
-            }
     }
 }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AccountService {
 
-    val currentUserId: String?
+    val currentUserId: String
 
     val isSignedIn: Boolean
 
