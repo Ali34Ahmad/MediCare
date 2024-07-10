@@ -16,8 +16,8 @@ class AccountServiceImpl @Inject constructor(
     private val database : FirebaseFirestore
 ) : AccountService {
 
-    override val currentUserId: String?
-        get() = auth.currentUser?.uid
+    override val currentUserId: String
+        get() = auth.currentUser?.uid?:""
 
     override val isSignedIn: Boolean
         get() = auth.currentUser != null
