@@ -5,6 +5,8 @@ import com.example.medicare.data.model.user.User
 import com.example.medicare.data.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -37,5 +39,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getVisitNumber(id: String): Int {
         return 0
+    }
+    override val user: Flow<User?> = flow {
+        currentUserId?.let { userId ->
+            val user = usersRef.document(userId).
+            get().await().toObject(User::class.java)
+            emit(user)
+        } ?: emit(null)
     }
 }

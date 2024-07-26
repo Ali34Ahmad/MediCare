@@ -1,6 +1,7 @@
 package com.example.medicare.data.repositories
 
 import com.example.medicare.data.model.user.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     /** Add a new user to the database with the same ID as the current user*/
@@ -13,4 +14,6 @@ interface UserRepository {
     suspend fun getUserById(id:String) : User?
     /** This function just for the doctor: get the visit number of a user*/
     suspend fun getVisitNumber(id:String) : Int
+    /**Get the current user*/
+    val user: Flow<User?>
 }

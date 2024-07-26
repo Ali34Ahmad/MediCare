@@ -25,19 +25,16 @@ class ChildRepositoryImpl @Inject constructor(
     private val childrenRef get()= currentUserId?.let {
         usersRef.document(it).collection(DatabaseCollections.CHILDREN_COLLECTION)
     }
-
     override suspend fun addChild(child: Child) {
         val id = childrenRef?.add(child)?.await()?.id
         if (id != null) {
             childTable.initTable(id)
         }
     }
-
     override suspend fun getVaccineTable(childId: String): List<VaccineTableItem> {
         return childrenRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
             ?.get()?.await()?.toObjects(VaccineTableItem::class.java) ?: emptyList()
     }
-
     override val children: Flow<List<Child>>
         get() = childrenRef?.snapshots()?.map { snapshot->
             snapshot.toObjects(Child::class.java)

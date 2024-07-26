@@ -1,6 +1,7 @@
 package com.example.doctor.data.repositories.impl
 
 import com.example.doctor.core.constants.DatabaseCollections
+import com.example.doctor.data.model.child.VaccineTableItem
 import com.example.doctor.data.model.vaccine.Vaccine
 import com.example.doctor.data.repositories.VaccineRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,11 +18,20 @@ class VaccineRepositoryImpl @Inject constructor(
     private val vaccinesRef = database.collection(
         DatabaseCollections.VACCINES_COLLECTION
     )
+
+    private val defaultVaccineTableRef = database.collection(
+        DatabaseCollections.DEFAULT_VACCINE_TABLE_COLLECTION
+    )
+
     override suspend fun addVaccine(vaccine: Vaccine) {
         vaccinesRef.add(vaccine).await()
     }
     override val vaccines: Flow<List<Vaccine>>
         get() = vaccinesRef.snapshots().map{
             it.toObjects(Vaccine::class.java)
+        }
+    override val defaultVaccines  : Flow<List<VaccineTableItem>>
+        get() = defaultVaccineTableRef.snapshots().map {
+            it.toObjects(VaccineTableItem::class.java)
         }
 }

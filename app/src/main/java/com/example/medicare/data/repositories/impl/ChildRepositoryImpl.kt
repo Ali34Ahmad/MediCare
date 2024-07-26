@@ -30,9 +30,9 @@ class ChildRepositoryImpl @Inject constructor(
 
 
     override suspend fun addChild(child: Child) {
-        currentUserId?.let {
-            childrenRef!!.add(child).await()
-            childTable.initTable(child.id)
+        val id = childrenRef?.add(child)?.await()?.id
+        if (id != null) {
+            childTable.initTable(id)
         }
     }
 

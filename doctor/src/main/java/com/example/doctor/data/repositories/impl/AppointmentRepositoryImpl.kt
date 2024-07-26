@@ -58,9 +58,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     override suspend fun getAppointmentsByDate(date: FullDate): Flow<List<Appointment>> =
         callbackFlow {
-
             var snapshotListener: ListenerRegistration? = null
-
             snapshotListener = appointmentsRef.addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error) // Close the flow with the error
