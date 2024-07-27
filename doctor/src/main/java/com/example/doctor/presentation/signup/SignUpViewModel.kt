@@ -26,6 +26,7 @@ import com.example.doctor.data.model.result.AuthState
 import com.example.doctor.data.model.user.Doctor
 import com.example.doctor.data.model.user.User
 import com.example.doctor.data.repositories.ClinicRepository
+import com.example.doctor.data.repositories.DoctorRepository
 import com.example.doctor.data.repositories.UserRepository
 import com.example.doctor.data.services.AccountService
 import com.example.doctor.data.storage.ImageUploader
@@ -44,6 +45,7 @@ class SignUpViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val imageUploader: ImageUploader,
     private val clinicRepository: ClinicRepository,
+    private val doctorRepository: DoctorRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -126,14 +128,17 @@ class SignUpViewModel @Inject constructor(
                     viewModelScope.launch {
                         updateLoadingDialogVisibilityState(true)
                         accountService.signUp(uiState.value.email, uiState.value.password)
-                        userRepository.addNewUser(
-                            User(
-                                email = uiState.value.email,
+
+                        doctorRepository.addDoctor(
+                            Doctor(
                                 firstName = uiState.value.firstName,
                                 lastName = uiState.value.secondName,
                                 gender = uiState.value.gender ?: Gender.MALE,
+                                speciality = uiState.value.speciality,
+                                imageUrl = uiState.value.doctorImageUrl
                             )
                         )
+
                         updateLoadingDialogVisibilityState(false)
                         _uiState.update { it.copy(authState = AuthState.Success) }
                         updateDoctorImagePickerDialogVisibilityState(true)
@@ -202,7 +207,6 @@ class SignUpViewModel @Inject constructor(
                             workDays = listOfWorkDays,
                             daySockets = listOfDaySockets,
                             responsibleDoctor = Doctor(
-                                id=accountService.currentUserId,
                                 firstName = uiState.value.firstName,
                                 lastName = uiState.value.secondName,
                                 speciality = uiState.value.speciality,

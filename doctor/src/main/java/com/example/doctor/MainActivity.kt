@@ -13,8 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.doctor.presentation.fake.AliViewModel
-import com.example.doctor.presentation.fake.Screen
+import com.example.doctor.presentation.MedicareApp
 import com.example.doctor.ui.theme.MediCareTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,15 +22,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val viewModel = hiltViewModel<AliViewModel>()
             askForNotificationPermission()
             MediCareTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Screen(viewModel)
-                   // MedicareApp()
+                    MedicareApp()
                 }
             }
         }

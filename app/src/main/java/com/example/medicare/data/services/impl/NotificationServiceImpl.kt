@@ -22,7 +22,7 @@ class NotificationServiceImpl @Inject constructor(
     private val currentUserId :String?
         get() = auth.currentUser?.uid
     override val notifications: Flow<List<Notification>>
-        get() = notificationsRef.whereEqualTo("userId",currentUserId?:"")
+        get() = notificationsRef
             .snapshots()
             .map {
                 it.toObjects(Notification::class.java)

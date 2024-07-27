@@ -9,4 +9,5 @@ data class ProfileUiState(
     val bookedDate: LocalDate = LocalDate.now(),
     val datePickerState: UseCaseState = UseCaseState(),
     val selectedDaySocketIndex: Int=0,
+    val currentSelectedVaccineIndex: Int?=null,
 )

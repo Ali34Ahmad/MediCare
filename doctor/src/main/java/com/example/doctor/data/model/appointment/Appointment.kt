@@ -11,6 +11,7 @@ data class Appointment(
     val clinicId :String= "",
     val userId : String="",
     val date: FullDate = FullDate(),
+    val patientName : String="",
     val timeSocket: TimeSocket = TimeSocket(),
     val vaccineId : String="",
     val clinic : Clinic = Clinic()
@@ -20,6 +21,7 @@ data class Appointment(
         "",
         "",
         FullDate(),
+        "",
         TimeSocket(),
         vaccineId = "",
         Clinic()

@@ -254,7 +254,7 @@ fun ClinicAppointmentCardComponent(
 
         val appointmentHasPassed = remainingTime.remainingTime < 0
 
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(Spacing.small)) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = tertiary)
             ) {
@@ -282,7 +282,7 @@ fun ClinicAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = clinicAppointment.userId,
+                    text = clinicAppointment.patientName,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -301,7 +301,7 @@ fun ClinicAppointmentCardComponent(
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = numberOfVisits.toString(),
+                        text = "Visit number: $numberOfVisits",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.weight(1f)

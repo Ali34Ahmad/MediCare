@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.doctor.R
+import com.example.doctor.core.composables.DefaultVaccineTableList
 import com.example.doctor.core.composables.ClinicAppointmentVerticalList
 import com.example.doctor.core.composables.ClinicInformationCardComponent
 import com.example.doctor.core.composables.DatePickerButtonComponent
@@ -24,11 +25,10 @@ import com.example.doctor.core.composables.ElevatedButtonComponent
 import com.example.doctor.core.composables.MedicareTopAppBar
 import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.toFullDate
-import com.example.doctor.data.fake.appointment1
 import com.example.doctor.data.fake.clinic1
-import com.example.doctor.data.fake.listOfAppointments
 import com.example.doctor.data.fake.vaccinesClinic
 import com.example.doctor.data.model.appointment.Appointment
+import com.example.doctor.data.model.vaccine.Vaccine
 import com.example.doctor.presentation.schedule.HomeScreenSection
 import com.example.doctor.ui.theme.MediCareTheme
 import com.example.doctor.ui.theme.Spacing
@@ -38,17 +38,19 @@ import java.time.LocalDate
 fun ProfileScreen(
     uiState: ProfileUiState,
     modifier: Modifier = Modifier,
-    clinicsAppointments: Map<Appointment,Int>,
+    clinicsAppointments: List<Appointment>,
+    appointmentsVisitNumbers:List<Int>,
     updateBookedDateEvent: (LocalDate) -> Unit,
+    pushNotificationEvent:()->Unit,
+    defaultVaccineTable:List<Vaccine>,
+    onAvailableVaccineListItemClick:(Int)->Unit,
 ) {
-
     MyDatePickerDialog(
         onConfirmButtonClick = { date ->
             updateBookedDateEvent(date)
             uiState.datePickerState.hide()
         },
         datePickerState = uiState.datePickerState,
-        startDayBeforeToday = 60
     )
 
     Scaffold(
@@ -73,21 +75,38 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(Spacing.small))
 
                 if (uiState.clinic.name == stringResource(id = R.string.vaccines)) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Spacing.medium),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = stringResource(id = R.string.new_vaccine_available))
-                        Spacer(modifier = Modifier.weight(1f))
-                        ElevatedButtonComponent(
-                            text = R.string.notify_parents,
-                            onClick = { },
-                            isDisabled = false
-                        )
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = Spacing.medium),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = stringResource(id = R.string.new_vaccine_available))
+                            Spacer(modifier = Modifier.weight(1f))
+                            ElevatedButtonComponent(
+                                text = R.string.notify_parents,
+                                onClick = pushNotificationEvent,
+                                isDisabled = false
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(Spacing.small))
+
+
+                        HomeScreenSection(title = R.string.blank) {
+                            Column {
+                                DefaultVaccineTableList(
+                                    defaultVaccineTable = defaultVaccineTable,
+                                    selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
+                                    onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
+                                )
+                                Spacer(modifier = Modifier.height(Spacing.medium))
+                            }
+                        }
                     }
                 }
+
+
                 Spacer(modifier = Modifier.height(Spacing.small))
 
                 HomeScreenSection(title = R.string.appointment_history) {
@@ -113,7 +132,8 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
                 ClinicAppointmentVerticalList(
-                    clinicsAppointments = clinicsAppointments
+                    clinicsAppointments = clinicsAppointments,
+                    appointmentsVisitNumbers=appointmentsVisitNumbers
                 )
 
 
@@ -132,7 +152,11 @@ private fun ProfileScreenPreview1() {
                     clinic = clinic1,
                 ),
                 updateBookedDateEvent = {},
-                clinicsAppointments = mapOf(appointment1 to 2,appointment1 to 5,)
+                clinicsAppointments = emptyList(),
+                appointmentsVisitNumbers = emptyList(),
+                pushNotificationEvent = {},
+                onAvailableVaccineListItemClick = {},
+                defaultVaccineTable = emptyList()
             )
         }
     }
@@ -148,7 +172,11 @@ private fun ProfileScreenPreview2() {
                     clinic = vaccinesClinic,
                 ),
                 updateBookedDateEvent = {},
-                clinicsAppointments = mapOf(appointment1 to 2,appointment1 to 5,)
+                clinicsAppointments = emptyList(),
+                appointmentsVisitNumbers = emptyList(),
+                pushNotificationEvent = {},
+                onAvailableVaccineListItemClick = {},
+                defaultVaccineTable = emptyList(),
             )
         }
     }

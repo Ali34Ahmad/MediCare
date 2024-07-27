@@ -18,19 +18,10 @@ fun NotificationList(
 ) {
     LazyColumn(modifier = modifier) {
         items(notifications) { notification ->
-            when {
-                 notification.doctorName.isBlank() ->
-                    AppointmentReminderNotificationCardComponent(
-                        notification=notification,
-                        onClick = {}
-                    )
-                notification.vaccine==null->{
-                    AvailableVaccinationNotificationCardComponent(
-                        onClick = {},
-                        notification=notification,
-                    )
-                }
-            }
+            AvailableVaccinationNotificationCardComponent(
+                onClick = {},
+                notification = notification,
+            )
             Spacer(modifier = Modifier.height(Spacing.small))
         }
     }

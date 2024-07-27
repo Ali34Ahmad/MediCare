@@ -76,7 +76,7 @@ fun Time.formatTime(): String {
 fun String.getDayOfWeek(): DayOfWeek {
     val dayName = this.uppercase()
 
-    return DayOfWeek.values().find { dayName.contains(it.name) }
+    return DayOfWeek.entries.find { dayName.contains(it.name.uppercase()) }
         ?: DayOfWeek.SUN
 }
 

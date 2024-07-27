@@ -1,5 +1,6 @@
 package com.example.medicare.presentation.addchild
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -77,6 +78,7 @@ fun AddChildScreen(
         showDialog = uiState.showLoadingDialog,
     )
 
+    Log.v("AddChild",uiState.isAddChildSuccessful.toString())
     if (uiState.isAddChildSuccessful)
         navigateToChildrenScreen()
 

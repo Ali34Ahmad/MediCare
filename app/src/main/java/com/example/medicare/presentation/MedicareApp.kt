@@ -346,11 +346,15 @@ fun MedicareApp(
             composable<Destination.Notification> {
                 val notificationViewModel: NotificationViewModel = hiltViewModel()
                 val notificationUiState = notificationViewModel.uiState.collectAsState()
+
+                val listOfNotifications=notificationViewModel.notifications.collectAsState(initial = emptyList())
+
                 NotificationScreen(
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
                     },
                     uiState = notificationUiState.value,
+                    listOfNotifications = listOfNotifications.value
                 )
             }
 
@@ -376,8 +380,6 @@ fun MedicareApp(
                     updateChosenTimeSocketIndexEvent = bookAppointmentViewModel::updateChosenTimeSocketIndex,
                     updateChosenNameIndexEvent = bookAppointmentViewModel::updateChosenNameIndex,
                     updateBookedDateEvent = bookAppointmentViewModel::updateBookedDate,
-                    getDaySocketIndex = bookAppointmentViewModel::getDaySocketIndex,
-                    getMonthByJavaMonth = bookAppointmentViewModel::getMonthByJavaMonth,
                     slideToPreviousPageEvent = bookAppointmentViewModel::slideToPreviousPage,
                     slideToNextPageEvent = bookAppointmentViewModel::slideToNextPage,
                     navigateToHomeScreen = {

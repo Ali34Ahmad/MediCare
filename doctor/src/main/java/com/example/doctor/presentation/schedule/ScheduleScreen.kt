@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,24 +25,19 @@ import com.example.doctor.core.composables.MedicareTopAppBar
 import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.composables.SpannableTextComponent
 import com.example.doctor.core.toFullDate
-import com.example.doctor.data.fake.listOfAppointments
 import com.example.doctor.data.model.appointment.Appointment
 import com.example.doctor.ui.theme.MediCareTheme
 import com.example.doctor.ui.theme.Spacing
-import com.maxkeppeker.sheets.core.models.base.UseCaseState
-import com.maxkeppeler.sheets.calendar.CalendarDialog
-import com.maxkeppeler.sheets.calendar.models.CalendarConfig
-import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import java.time.LocalDate
 
 @Composable
 fun ScheduleScreen(
-    modifier:Modifier=Modifier,
+    modifier: Modifier = Modifier,
     uiState: ScheduleUiState,
-    clinicsAppointments:Map<Appointment,Int>,
-    updateBookedDateEvent:(LocalDate)->Unit,
+    clinicsAppointments: List<Appointment>,
+    updateBookedDateEvent: (LocalDate) -> Unit,
+    appointmentsVisitNumbers: MutableList<Int>,
 ) {
-
     MyDatePickerDialog(
         onConfirmButtonClick = { date ->
             updateBookedDateEvent(date)
@@ -91,7 +83,8 @@ fun ScheduleScreen(
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
                 ClinicAppointmentVerticalList(
-                    clinicsAppointments=clinicsAppointments
+                    clinicsAppointments=clinicsAppointments,
+                    appointmentsVisitNumbers=appointmentsVisitNumbers,
                 )
             }
         }
@@ -158,8 +151,9 @@ private fun ScheduleScreenPreview() {
         Surface {
             ScheduleScreen(
                 uiState = ScheduleUiState(),
-                clinicsAppointments = mapOf(),
-                updateBookedDateEvent = {}
+                clinicsAppointments = emptyList(),
+                updateBookedDateEvent = {},
+                appointmentsVisitNumbers = mutableListOf()
             )
         }
     }

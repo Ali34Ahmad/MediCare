@@ -53,7 +53,7 @@ fun FullDate.toAge(): Age {
 }
 
 fun FullDate.getDayOfWeek(): DayOfWeek {
-    val localDate = LocalDate.of(year, month.ordinal, day)
+    val localDate = LocalDate.of(year, month.ordinal+1, day)
     val dayOfWeek = localDate.dayOfWeek
 
     return dayOfWeek.toString().getDayOfWeek()
@@ -79,7 +79,7 @@ fun Clinic.isOpenNow(): Boolean {
 fun String.getDayOfWeek(): DayOfWeek {
     val dayName = this.uppercase()
 
-    return DayOfWeek.values().find { dayName.contains(it.name) }
+    return DayOfWeek.entries.find { dayName.contains(it.name.uppercase()) }
         ?: DayOfWeek.SUN
 }
 

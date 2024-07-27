@@ -97,6 +97,7 @@ class AddChildViewModel @Inject constructor(
                 motherSecondNameErrorMessage = null
             )
     }
+
     fun updateDateOfBirth(newDateOfBirth: LocalDate) {
         _uiState.value =
             _uiState.value.copy(dateOfBirth = newDateOfBirth, dateOfBirthErrorMessage = null)
@@ -113,14 +114,12 @@ class AddChildViewModel @Inject constructor(
             _uiState.value.copy(acceptPrivacyIsChecked = newState)
     }
 
-    fun updateErrorDialogVisibilityState(isVisible:Boolean) {
-        _uiState.value =
-            _uiState.value.copy(showErrorDialog = !isVisible)
+    fun updateErrorDialogVisibilityState(isVisible: Boolean) {
+        _uiState.update { it.copy(showErrorDialog = !isVisible) }
     }
 
-    fun updateLoadingDialogVisibilityState(isVisible:Boolean) {
-        _uiState.value =
-            _uiState.value.copy(showLoadingDialog = isVisible)
+    fun updateLoadingDialogVisibilityState(isVisible: Boolean) {
+        _uiState.update { it.copy(showLoadingDialog = isVisible) }
     }
 
     fun addChild() {
@@ -137,21 +136,13 @@ class AddChildViewModel @Inject constructor(
                 genderErrorMessage = Validator.checkGender(uiState.value.gender),
             )
         if (checkAllEnteredData()) {
-            val vaccineTable= mutableListOf<VaccineTableItem>()
-            for (vaccine in vaccines)
-                vaccineTable.add(
-                    VaccineTableItem(
-                        vaccine=vaccine,
-                        vaccineDate=null
-                    )
-                )
-            viewModelScope.launch {
-                try {
+            try {
+                viewModelScope.launch {
                     updateLoadingDialogVisibilityState(true)
-                    val year: Int = uiState.value.dateOfBirth?.year?:2024
+                    val year: Int = uiState.value.dateOfBirth?.year ?: 2024
                     val month: Month =
-                        getMonthByNumber(uiState.value.dateOfBirth?.month?.ordinal?:1)
-                    val day: Int = uiState.value.dateOfBirth?.dayOfMonth?:1
+                        getMonthByNumber(uiState.value.dateOfBirth?.month?.ordinal ?: 1)
+                    val day: Int = uiState.value.dateOfBirth?.dayOfMonth ?: 1
                     childRepository.addChild(
                         Child(
                             firstName = uiState.value.childFirstName,
@@ -170,16 +161,18 @@ class AddChildViewModel @Inject constructor(
                             mother = "${uiState.value.motherFirstName} ${uiState.value.motherSecondName}"
                         )
                     )
-                    val children=childRepository.children
 
                     updateLoadingDialogVisibilityState(false)
-                    _uiState.value=_uiState.value.copy(isAddChildSuccessful = true)
-                } catch (e: Exception) {
-                    updateLoadingDialogVisibilityState(false)
-                    updateErrorDialogVisibilityState(true)
-                    _uiState.value=_uiState.value.copy(isAddChildSuccessful = false)
-                    Log.e("Add Child", e.message ?: "Error")
+                    Log.v("Loading",uiState.value.showLoadingDialog.toString())
+                    _uiState.update {
+                        it.copy(isAddChildSuccessful = true)
+                    }
                 }
+            } catch (e: Exception) {
+                updateLoadingDialogVisibilityState(false)
+                updateErrorDialogVisibilityState(true)
+                _uiState.update { it.copy(isAddChildSuccessful = false) }
+                Log.e("Add Child", e.message ?: "Error")
             }
         }
     }

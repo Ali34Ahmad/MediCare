@@ -1,5 +1,6 @@
 package com.example.doctor.presentation.schedule
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctor.core.getMonthByJavaMonth
@@ -12,8 +13,10 @@ import com.example.doctor.data.repositories.ClinicRepository
 import com.example.doctor.data.services.AccountService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,8 +32,8 @@ class ScheduleViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState = _uiState.asStateFlow()
 
-    val appointments = appointmentRepository.appointments
-    val appointmentsToNumberOfVisits = mutableMapOf<Appointment, Int>()
+    var appointments=appointmentRepository.appointments
+    val appointmentsToNumberOfVisits:MutableList<Int> = mutableListOf()
 
     init {
         updateClinic()
@@ -40,7 +43,9 @@ class ScheduleViewModel @Inject constructor(
     fun updateClinic() {
         viewModelScope.launch {
             val clinicId = clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
-            val clinic = clinicRepository.getClinicById(clinicId ?: "")
+            Log.v("currentUserId",accountService.currentUserId)
+            if(clinicId==null) throw Exception("The clinicId is null")
+            val clinic = clinicRepository.getClinicById(clinicId)
             _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
         }
     }
@@ -67,17 +72,16 @@ class ScheduleViewModel @Inject constructor(
 
     fun getNumberOfVisits() {
         val job = viewModelScope.async {
+            appointments=appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
+
             appointments.map { appointments ->
-                appointments.forEach { appointment ->
-                    appointmentsToNumberOfVisits.put(
-                        appointment,
-                        appointmentRepository.getNumberOfAppointments(appointment.userId)
-                    )
+                appointments.forEach { appt->
+                    appointmentsToNumberOfVisits.add(
+                            appointmentRepository.getNumberOfAppointments(appt.userId)
+                            )
                 }
             }
         }
-        viewModelScope.launch {
-            job.await()
-        }
+        //Log.v("AppointmentsWithVisitNumber",appointmentsToNumberOfVisits.toString())
     }
 }

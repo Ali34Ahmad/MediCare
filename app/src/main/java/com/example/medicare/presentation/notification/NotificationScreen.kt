@@ -1,6 +1,7 @@
 package com.example.medicare.presentation.notification
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.medicare.R
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.NotificationList
+import com.example.medicare.data.model.notification.Notification
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 
@@ -22,6 +24,7 @@ fun NotificationScreen(
     onNavigateUpClick: () -> Unit,
     modifier: Modifier = Modifier,
     uiState: NotificationUiState,
+    listOfNotifications:List<Notification>
 ) {
 
     Scaffold(
@@ -35,12 +38,14 @@ fun NotificationScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
-            Spacer(modifier = Modifier.height(Spacing.medium))
+            Column {
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-            NotificationList(
-                notifications = uiState.notificationList,
-                modifier = modifier.padding(horizontal = Spacing.medium)
-            )
+                NotificationList(
+                    notifications = listOfNotifications,
+                    modifier = modifier.padding(horizontal = Spacing.medium)
+                )
+            }
         }
     }
 }
@@ -52,7 +57,8 @@ private fun NotificationScreenPreview() {
         Surface {
             NotificationScreen(
                 onNavigateUpClick = { /*TODO*/ },
-                uiState = NotificationUiState()
+                uiState = NotificationUiState(),
+                listOfNotifications = emptyList()
                 )
         }
     }

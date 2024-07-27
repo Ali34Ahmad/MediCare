@@ -45,19 +45,19 @@ class BookAppointmentViewModel @Inject constructor(
 
     var userName: String? = null
         private set
-    var listOfChildren: Flow<List<Child>> = flow { emptyList<Child>() }
+    var listOfChildren: Flow<List<Child>> = childRepository.children
 
     var vaccines: Flow<List<Vaccine>> = vaccineRepository.vaccines
 
     init {
-        /*try {
-            listOfChildren=childRepository.children
+        try {
             viewModelScope.launch {
                 userName="${userRepository.getUser()?.firstName}"
+                Log.v("Username",userName.toString())
             }
         }catch (e:Exception){
             Log.e("Book Appointment ViewModel","Error getting children")
-        }*/
+        }
     }
 
     fun updateUserAndChildrenNames(userAndChildrenNames: List<String>) {
