@@ -16,7 +16,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,8 +34,8 @@ class ScheduleViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState = _uiState.asStateFlow()
 
-    var appointments=appointmentRepository.appointments
-    val appointmentsToNumberOfVisits:MutableList<Int> = mutableListOf()
+    var appointments = appointmentRepository.appointments
+    val appointmentsToNumberOfVisits: MutableList<Int> = mutableListOf()
 
     init {
         updateClinic()
@@ -43,8 +45,8 @@ class ScheduleViewModel @Inject constructor(
     fun updateClinic() {
         viewModelScope.launch {
             val clinicId = clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
-            Log.v("currentUserId",accountService.currentUserId)
-            if(clinicId==null) throw Exception("The clinicId is null")
+            Log.v("currentUserId", accountService.currentUserId)
+            if (clinicId == null) throw Exception("The clinicId is null")
             val clinic = clinicRepository.getClinicById(clinicId)
             _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
         }
@@ -71,17 +73,20 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun getNumberOfVisits() {
-        val job = viewModelScope.async {
-            appointments=appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
+        Log.v("NumberOfVisits1",appointmentsToNumberOfVisits.toString())
 
+        viewModelScope.launch {
             appointments.map { appointments ->
-                appointments.forEach { appt->
+                Log.v("NumberOfVisits2",appointmentsToNumberOfVisits.toString())
+                appointments.forEach { appt ->
+                    Log.v("NumberOfVisits3",appointmentsToNumberOfVisits.toString())
                     appointmentsToNumberOfVisits.add(
-                            appointmentRepository.getNumberOfAppointments(appt.userId)
-                            )
+                        appointmentRepository.getNumberOfAppointments(appt.userId)
+                    )
+                    Log.v("NumberOfVisits4",appointmentsToNumberOfVisits.toString())
                 }
             }
+            Log.v("AppointmentsWithVisitNumber", appointmentsToNumberOfVisits.toString())
         }
-        //Log.v("AppointmentsWithVisitNumber",appointmentsToNumberOfVisits.toString())
     }
 }

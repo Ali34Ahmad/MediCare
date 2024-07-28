@@ -71,8 +71,7 @@ fun BookAppointmentScreen(
     clinicId: String,
     modifier: Modifier = Modifier,
     uiState: BookAppointmentUiState,
-    userName: String?,
-    children: List<Child>,
+    userAndChildrenNames:List<String>,
     updateClinicEvent: (String) -> Unit,
     updateUserAndChildrenNamesEvent: (List<String>) -> Unit,
     updateBookedDateEvent: (LocalDate) -> Unit,
@@ -84,15 +83,14 @@ fun BookAppointmentScreen(
     availableVaccines: List<Vaccine>,
     onAvailableVaccineListItemClick: (Int) -> Unit,
 ) {
-    val currentUserName = userName ?: "Username"
-
-    updateClinicEvent(clinicId)
-
-    val userAndChildrenNames: MutableList<String> = mutableListOf(currentUserName)
-    children.forEach { child ->
-        userAndChildrenNames.add(child.firstName)
+    try {
+        updateClinicEvent(clinicId)
+        updateUserAndChildrenNamesEvent(userAndChildrenNames)
+    }catch (e:Exception){
+        e.printStackTrace()
     }
-    updateUserAndChildrenNamesEvent(userAndChildrenNames)
+
+
 
 
     val timeSockets =
@@ -401,12 +399,11 @@ private fun BookAppointmentScreenPreview() {
                 updateClinicEvent = {},
                 updateNamesMenuVisibilityStateEvent = {},
                 updateUserAndChildrenNamesEvent = {},
-                children = listOf(Child()),
+                userAndChildrenNames = listOf(),
                 navigateToHomeScreen = {},
                 slideToNextPageEvent = {},
                 slideToPreviousPageEvent = {},
                 uiState = BookAppointmentUiState(),
-                userName = "Ali Ahmad",
                 availableVaccines = emptyList(),
                 onAvailableVaccineListItemClick = {},
                 updateErrorDialogVisibilityState = {}

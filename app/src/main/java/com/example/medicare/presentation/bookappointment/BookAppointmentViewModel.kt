@@ -43,22 +43,12 @@ class BookAppointmentViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BookAppointmentUiState())
     val uiState = _uiState.asStateFlow()
 
-    var userName: String? = null
-        private set
+    var user = userRepository.user
+
     var listOfChildren: Flow<List<Child>> = childRepository.children
 
     var vaccines: Flow<List<Vaccine>> = vaccineRepository.vaccines
 
-    init {
-        try {
-            viewModelScope.launch {
-                userName="${userRepository.getUser()?.firstName}"
-                Log.v("Username",userName.toString())
-            }
-        }catch (e:Exception){
-            Log.e("Book Appointment ViewModel","Error getting children")
-        }
-    }
 
     fun updateUserAndChildrenNames(userAndChildrenNames: List<String>) {
         _uiState.value = _uiState.value.copy(userAndChildrenNames = userAndChildrenNames)
@@ -137,7 +127,8 @@ class BookAppointmentViewModel @Inject constructor(
                             ),
                             timeSocket = uiState.value.freeTimes[selectedTimeSocketIndex],
                             vaccineId = uiState.value.vaccineId ?: "",
-                            clinic = uiState.value.clinic
+                            clinic = uiState.value.clinic,
+                            patientName =uiState.value.userAndChildrenNames[uiState.value.chosenNameIndex]
                         )
                     )
                     _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = true)

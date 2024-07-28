@@ -55,7 +55,10 @@ fun ClinicAppointmentVerticalList(
                 onClick = { /*TODO*/ },
                 clinicAppointment=clinicsAppointments[index],
                 modifier = Modifier.fillMaxWidth(),
-                numberOfVisits=appointmentsVisitNumbers[index]
+                numberOfVisits=
+                if(appointmentsVisitNumbers.isNotEmpty())
+                    appointmentsVisitNumbers[index]
+                else 0
             )
             Spacer(modifier = Modifier.height(Spacing.extraSmall))
         }
