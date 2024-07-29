@@ -38,8 +38,4 @@ data class Vaccine(
             VaccineState.NOT_AVAILABLE
         }
     }
-
-    fun isAvailableNow() {
-
-    }
 }

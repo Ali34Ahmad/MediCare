@@ -71,12 +71,9 @@ fun BookAppointmentScreen(
     clinicId: String,
     modifier: Modifier = Modifier,
     uiState: BookAppointmentUiState,
-    userName: String?,
-    children: List<Child>,
+    userAndChildrenNames:List<String>,
     updateClinicEvent: (String) -> Unit,
     updateUserAndChildrenNamesEvent: (List<String>) -> Unit,
-    getMonthByJavaMonth: (Month) -> com.example.medicare.core.enums.Month,
-    getDaySocketIndex: (FullDate) -> Int,
     updateBookedDateEvent: (LocalDate) -> Unit,
     slideToPreviousPageEvent: () -> Unit,
     slideToNextPageEvent: () -> Unit,
@@ -86,15 +83,14 @@ fun BookAppointmentScreen(
     availableVaccines: List<Vaccine>,
     onAvailableVaccineListItemClick: (Int) -> Unit,
 ) {
-    val currentUserName = userName ?: "Username"
-
-    updateClinicEvent(clinicId)
-
-    val userAndChildrenNames: MutableList<String> = mutableListOf(currentUserName)
-    children.forEach { child ->
-        userAndChildrenNames.add(child.firstName)
+    try {
+        updateClinicEvent(clinicId)
+        updateUserAndChildrenNamesEvent(userAndChildrenNames)
+    }catch (e:Exception){
+        e.printStackTrace()
     }
-    updateUserAndChildrenNamesEvent(userAndChildrenNames)
+
+
 
 
     val timeSockets =
@@ -397,20 +393,17 @@ private fun BookAppointmentScreenPreview() {
                 onBookNowButtonClick = {},
                 clinicId = "",
                 onNavigateUpClick = {},
-                getMonthByJavaMonth = { com.example.medicare.core.enums.Month.JUN },
                 updateBookedDateEvent = {},
                 updateChosenNameIndexEvent = {},
                 updateChosenTimeSocketIndexEvent = {},
                 updateClinicEvent = {},
                 updateNamesMenuVisibilityStateEvent = {},
                 updateUserAndChildrenNamesEvent = {},
-                children = listOf(Child()),
+                userAndChildrenNames = listOf(),
                 navigateToHomeScreen = {},
                 slideToNextPageEvent = {},
                 slideToPreviousPageEvent = {},
-                getDaySocketIndex = { 0 },
                 uiState = BookAppointmentUiState(),
-                userName = "Ali Ahmad",
                 availableVaccines = emptyList(),
                 onAvailableVaccineListItemClick = {},
                 updateErrorDialogVisibilityState = {}

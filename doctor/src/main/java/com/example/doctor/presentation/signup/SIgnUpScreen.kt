@@ -53,7 +53,6 @@ fun SignUpScreen(
     updateCheckStateEvent: (Boolean) -> Unit,
     updateErrorDialogVisibilityState: (Boolean) -> Unit,
     onSignUpClickEvent: () -> Unit,
-
     navigateToScheduleScreen: () -> Unit,
     onDoctorImageSaveButtonClick: () -> Unit,
     updateDoctorImageUri: (Uri?) -> Unit,

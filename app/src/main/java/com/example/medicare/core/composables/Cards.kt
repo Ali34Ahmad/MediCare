@@ -38,6 +38,7 @@ import com.example.medicare.core.enums.DayPeriod
 import com.example.medicare.core.enums.Month
 import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.core.enums.TimeUnit
+import com.example.medicare.core.formatDate
 import com.example.medicare.core.formatTime
 import com.example.medicare.core.getDayOfWeek
 import com.example.medicare.core.isOpenNow
@@ -441,18 +442,18 @@ fun AvailableVaccinationNotificationCardComponent(
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "${notification.vaccine?.availabilityStartDate} - ${notification.vaccine?.lastAvailableDate}",
+                        text = "${notification.vaccine?.availabilityStartDate?.formatDate()} - ${notification.vaccine?.lastAvailableDate?.formatDate()}",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.outline,
                     )
                     Text(
-                        text = "notification.vaccine.isAvailableNow()",
+                        text = notification.vaccine?.getVaccineState().toString().convertToProperCase(),
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 Text(
-                    text = notification.vaccine?.name ?: ""/*notification.doctorName*/,
+                    text = notification.vaccine?.name ?: "",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )

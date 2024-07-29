@@ -30,7 +30,7 @@ fun DaySocketHorizontalList(
     updateSelectedIndex:(LocalDate)->Unit,
     startDayBeforeToday:Int=0,
 ) {
-    val dates=generateDaySocketsList(startDayBeforeToday = startDayBeforeToday)
+    val dates=generateDaySocketsList()
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = Spacing.medium)
@@ -49,15 +49,11 @@ fun DaySocketHorizontalList(
     }
 }
 
-fun generateDaySocketsList(startDayBeforeToday:Int):List<FullDate>{
+fun generateDaySocketsList():List<FullDate>{
     val daySockets:MutableList<FullDate> = mutableListOf()
 
     val currentDate = LocalDate.now()
 
-    for (i in startDayBeforeToday downTo  startDayBeforeToday-60) {
-        val nextDate = currentDate.minusDays(i.toLong())
-        daySockets.add(FullDate(nextDate.dayOfMonth, nextDate.month.getMonthByJavaMonth(), nextDate.year))
-    }
     for (i in 0..30) {
         val nextDate = currentDate.plusDays(i.toLong())
         daySockets.add(FullDate(nextDate.dayOfMonth, nextDate.month.getMonthByJavaMonth(), nextDate.year))

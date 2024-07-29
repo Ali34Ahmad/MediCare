@@ -1,17 +1,15 @@
 package com.example.doctor.presentation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.doctor.core.composables.MainScaffold
-import com.example.doctor.core.isUpcoming
 import com.example.doctor.core.navigate
 import com.example.doctor.core.popUpToAndNavigate
-import com.example.doctor.data.model.appointment.Appointment
 import com.example.doctor.presentation.login.LoginScreen
 import com.example.doctor.presentation.login.LoginViewModel
 import com.example.doctor.presentation.navigation.Destination
@@ -21,7 +19,6 @@ import com.example.doctor.presentation.schedule.ScheduleScreen
 import com.example.doctor.presentation.schedule.ScheduleViewModel
 import com.example.doctor.presentation.signup.SignUpScreen
 import com.example.doctor.presentation.signup.SignUpViewModel
-import kotlinx.coroutines.coroutineScope
 
 val screenWhereToShowBottomBar = listOf(
     Destination.Schedule,
@@ -122,30 +119,37 @@ fun MedicareApp(
             composable<Destination.Schedule> {
                 val scheduleViewModel: ScheduleViewModel = hiltViewModel()
                 val scheduleUiState = scheduleViewModel.uiState.collectAsState()
-                //val appointments=scheduleViewModel.appointments.collectAsState(initial = emptyList())
+                val appointments=scheduleViewModel.appointments.collectAsState(initial = emptyList())
 
-                val appointmentsWithVisitNumber= scheduleViewModel.appointmentsToNumberOfVisits
+                val appointmentsVisitNumbers= scheduleViewModel.appointmentsToNumberOfVisits
 
+
+                Log.v("Visit",appointmentsVisitNumbers.toString())
                 ScheduleScreen(
                     uiState = scheduleUiState.value,
-                    clinicsAppointments = appointmentsWithVisitNumber,
-                    updateBookedDateEvent = scheduleViewModel::updateBookedDate
+                    clinicsAppointments = appointments.value,
+                    appointmentsVisitNumbers=appointmentsVisitNumbers,
+                    updateBookedDateEvent = scheduleViewModel::updateBookedDate,
                 )
             }
 
             composable<Destination.Profile> {
                 val profileViewModel: ProfileViewModel = hiltViewModel()
                 val profileUiState = profileViewModel.uiState.collectAsState()
-                /*val appointments=profileViewModel.appointments.collectAsState(initial = emptyList())
-                    .value.filter { appointment ->
-                        appointment.isUpcoming()
-                    }*/
-                val appointmentsWithVisitNumber= profileViewModel.appointmentsToNumberOfVisits
+                val appointments=profileViewModel.appointments.collectAsState(initial = emptyList())
+                val appointmentsVisitNumbers= profileViewModel.appointmentsToNumberOfVisits
+                val defaultVaccineTable= profileViewModel.defaultVaccineTable.collectAsState(initial = emptyList())
+
+                Log.v("Visit",appointmentsVisitNumbers.toString())
 
                 ProfileScreen(
                     uiState =profileUiState.value,
-                    clinicsAppointments =appointmentsWithVisitNumber,
-                    updateBookedDateEvent = profileViewModel::updateBookedDate
+                    clinicsAppointments =appointments.value,
+                    updateBookedDateEvent = profileViewModel::updateBookedDate,
+                    appointmentsVisitNumbers=appointmentsVisitNumbers,
+                    pushNotificationEvent = profileViewModel::pushNotification,
+                    onAvailableVaccineListItemClick = profileViewModel::updateCurrentSelectedIndex,
+                    defaultVaccineTable = defaultVaccineTable.value
                 )
             }
         }

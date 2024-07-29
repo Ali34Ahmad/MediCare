@@ -41,7 +41,8 @@ fun ClinicAppointmentHorizontalList(
 
 @Composable
 fun ClinicAppointmentVerticalList(
-    clinicsAppointments: Map<Appointment,Int> = emptyMap(),
+    clinicsAppointments: List<Appointment>,
+    appointmentsVisitNumbers: List<Int>,
     modifier: Modifier = Modifier,
 ) {
 
@@ -49,12 +50,15 @@ fun ClinicAppointmentVerticalList(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = Spacing.medium)
     ) {
-        items(clinicsAppointments.toList()) { clinicAppointment ->
+        items(clinicsAppointments.size) { index ->
             ClinicAppointmentCardComponent(
                 onClick = { /*TODO*/ },
-                clinicAppointment=clinicAppointment.first,
+                clinicAppointment=clinicsAppointments[index],
                 modifier = Modifier.fillMaxWidth(),
-                numberOfVisits=clinicAppointment.second
+                numberOfVisits=
+                if(appointmentsVisitNumbers.isNotEmpty())
+                    appointmentsVisitNumbers[index]
+                else 0
             )
             Spacer(modifier = Modifier.height(Spacing.extraSmall))
         }

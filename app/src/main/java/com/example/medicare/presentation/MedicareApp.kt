@@ -345,11 +345,15 @@ fun MedicareApp(
             composable<Destination.Notification> {
                 val notificationViewModel: NotificationViewModel = hiltViewModel()
                 val notificationUiState = notificationViewModel.uiState.collectAsState()
+
+                val listOfNotifications=notificationViewModel.notifications.collectAsState(initial = emptyList())
+
                 NotificationScreen(
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
                     },
                     uiState = notificationUiState.value,
+                    listOfNotifications = listOfNotifications.value
                 )
             }
 
@@ -358,6 +362,13 @@ fun MedicareApp(
                 val bookAppointmentUiState = bookAppointmentViewModel.uiState.collectAsState()
                 val children =
                     bookAppointmentViewModel.listOfChildren.collectAsStateWithLifecycle(initialValue = emptyList()).value
+                val user=bookAppointmentViewModel.user.collectAsState(initial = null)
+
+                val userAndChildrenNames: MutableList<String> = mutableListOf(user.value?.firstName?:"Username")
+                children.forEach { child ->
+                    userAndChildrenNames.add(child.firstName)
+                }
+                Log.v("Username",user.value?.firstName.toString())
 
                 val args = it.toRoute<Destination.BookAppointment>()
                 BookAppointmentScreen(
@@ -365,18 +376,14 @@ fun MedicareApp(
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
                     },
-                    children = children,
                     clinicId = args.clinicId,
                     onBookNowButtonClick = bookAppointmentViewModel::bookAppointment,
-                    userName = bookAppointmentViewModel.userName,
                     updateUserAndChildrenNamesEvent = bookAppointmentViewModel::updateUserAndChildrenNames,
                     updateNamesMenuVisibilityStateEvent = bookAppointmentViewModel::updateNamesMenuVisibilityState,
                     updateClinicEvent = bookAppointmentViewModel::updateClinic,
                     updateChosenTimeSocketIndexEvent = bookAppointmentViewModel::updateChosenTimeSocketIndex,
                     updateChosenNameIndexEvent = bookAppointmentViewModel::updateChosenNameIndex,
                     updateBookedDateEvent = bookAppointmentViewModel::updateBookedDate,
-                    getDaySocketIndex = bookAppointmentViewModel::getDaySocketIndex,
-                    getMonthByJavaMonth = bookAppointmentViewModel::getMonthByJavaMonth,
                     slideToPreviousPageEvent = bookAppointmentViewModel::slideToPreviousPage,
                     slideToNextPageEvent = bookAppointmentViewModel::slideToNextPage,
                     navigateToHomeScreen = {
@@ -384,7 +391,8 @@ fun MedicareApp(
                     },
                     availableVaccines = emptyList(),
                     onAvailableVaccineListItemClick = bookAppointmentViewModel::updateCurrentSelectedIndex,
-                    updateErrorDialogVisibilityState = bookAppointmentViewModel::updateErrorDialogVisibilityState
+                    updateErrorDialogVisibilityState = bookAppointmentViewModel::updateErrorDialogVisibilityState,
+                    userAndChildrenNames=userAndChildrenNames
                 )
             }
         }
