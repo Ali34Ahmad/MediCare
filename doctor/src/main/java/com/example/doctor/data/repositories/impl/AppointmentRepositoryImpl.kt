@@ -49,8 +49,10 @@ class AppointmentRepositoryImpl @Inject constructor(
         appointmentsRef.document(id).delete().await()
     }
 
-    override suspend fun getNumberOfAppointments(userId: String): Int {
+    override suspend fun getNumberOfAppointments(userId: String,clinicId: String): Int {
         return appointmentsRef
+            .whereEqualTo("userId",userId)
+            .whereEqualTo("clinicId",clinicId)
             .get()
             .await()
             .size()

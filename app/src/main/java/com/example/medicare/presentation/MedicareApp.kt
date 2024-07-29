@@ -15,11 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.dispensary.ui.composables.ChooseTabState
-import com.example.medicare.presentation.addchild.AddChildScreen
-import com.example.medicare.presentation.children.ChildrenScreen
-import com.example.medicare.presentation.clinicappointments.ClinicAppointmentsScreen
-import com.example.medicare.presentation.home.HomeScreen
-import com.example.medicare.presentation.login.LoginScreen
 import com.example.medicare.core.composables.MainScaffold
 import com.example.medicare.core.isUpcoming
 import com.example.medicare.core.navigate
@@ -29,12 +24,17 @@ import com.example.medicare.core.navigateUp
 import com.example.medicare.core.popUpToAndNavigate
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.child.Child
+import com.example.medicare.presentation.addchild.AddChildScreen
 import com.example.medicare.presentation.addchild.AddChildViewModel
 import com.example.medicare.presentation.bookappointment.BookAppointmentScreen
 import com.example.medicare.presentation.bookappointment.BookAppointmentViewModel
+import com.example.medicare.presentation.children.ChildrenScreen
 import com.example.medicare.presentation.children.ChildrenViewModel
+import com.example.medicare.presentation.clinicappointments.ClinicAppointmentsScreen
 import com.example.medicare.presentation.clinicappointments.ClinicAppointmentsViewModel
+import com.example.medicare.presentation.home.HomeScreen
 import com.example.medicare.presentation.home.HomeViewModel
+import com.example.medicare.presentation.login.LoginScreen
 import com.example.medicare.presentation.login.LoginViewModel
 import com.example.medicare.presentation.navigation.Destination
 import com.example.medicare.presentation.notification.NotificationScreen
@@ -193,7 +193,6 @@ fun MedicareApp(
                         .filter {
                             it.isUpcoming() && it.vaccineId.isNotBlank()
                         }
-
                 HomeScreen(
                     uiState = homeUiState.value,
                     clinics = clinics,

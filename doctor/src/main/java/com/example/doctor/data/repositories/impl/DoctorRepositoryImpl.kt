@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DoctorRepositoryImpl @Inject constructor(
-    private val database: FirebaseFirestore,
+    database: FirebaseFirestore,
     private val auth: FirebaseAuth
 ): DoctorRepository {
 

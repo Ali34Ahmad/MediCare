@@ -12,8 +12,6 @@ interface UserRepository {
     suspend fun updateUser(user: User)
     /** This function just for the doctor: get the user by its id*/
     suspend fun getUserById(id:String) : User?
-    /** This function just for the doctor: get the visit number of a user*/
-    suspend fun getVisitNumber(id:String) : Int
     /**Get the current user*/
     val user: Flow<User?>
 }
