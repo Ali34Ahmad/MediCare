@@ -58,3 +58,26 @@ fun LoadingDialog(
         )
     }
 }
+@Composable
+fun SuccessDialog(
+    showDialog: Boolean,
+    onDismissRequest: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismissRequest,
+            confirmButton = {
+                TextButton(onClick = onConfirmClick) {
+                    Text(text = stringResource(id = R.string.ok))
+                }
+            },
+            title={
+                Text(text = stringResource(id = R.string.notification_sent_successfully))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.patients_can_book_for_this_vaccine_now))
+            }
+        )
+    }
+}

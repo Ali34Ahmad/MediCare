@@ -3,6 +3,7 @@ package com.example.doctor.presentation.schedule
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.doctor.core.composables.generateDaySocketsList
 import com.example.doctor.core.getMonthByJavaMonth
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.model.appointment.Appointment
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
@@ -37,9 +39,10 @@ class ScheduleViewModel @Inject constructor(
     var appointments = appointmentRepository.appointments
     val appointmentsToNumberOfVisits: MutableList<Int> = mutableListOf()
 
+    val daySockets = generateDaySocketsList()
+
     init {
         updateClinic()
-        getNumberOfVisits()
     }
 
     fun updateClinic() {
@@ -64,29 +67,25 @@ class ScheduleViewModel @Inject constructor(
 
 
     private fun updateSelectedDaySocketIndex(date: LocalDate) {
-        val index = uiState.value.clinic.daySockets.indexOfFirst {
-            it.date.equals(
+        val index = daySockets.indexOfFirst {
+            it.equals(
                 date.toFullDate()
             )
         }
         _uiState.update { it.copy(selectedDaySocketIndex = index) }
     }
 
-    fun getNumberOfVisits() {
-        Log.v("NumberOfVisits1",appointmentsToNumberOfVisits.toString())
-
+    fun getNumberOfVisits(userId:String) {
+        Log.v("NumberOfVisits1", appointmentsToNumberOfVisits.toString())
         viewModelScope.launch {
-            appointments.map { appointments ->
-                Log.v("NumberOfVisits2",appointmentsToNumberOfVisits.toString())
-                appointments.forEach { appt ->
-                    Log.v("NumberOfVisits3",appointmentsToNumberOfVisits.toString())
-                    appointmentsToNumberOfVisits.add(
-                        appointmentRepository.getNumberOfAppointments(appt.userId)
-                    )
-                    Log.v("NumberOfVisits4",appointmentsToNumberOfVisits.toString())
-                }
-            }
-            Log.v("AppointmentsWithVisitNumber", appointmentsToNumberOfVisits.toString())
+            Log.v("NumberOfVisitsCor1", appointmentsToNumberOfVisits.toString())
+
+            appointmentsToNumberOfVisits.add(
+                appointmentRepository.getNumberOfAppointments(userId)
+            )
+
+            Log.v("NumberOfVisitsCor2", appointmentsToNumberOfVisits.toString())
+
         }
     }
 }

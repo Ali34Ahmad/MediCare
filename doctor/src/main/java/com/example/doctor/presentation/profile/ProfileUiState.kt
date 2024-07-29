@@ -10,4 +10,7 @@ data class ProfileUiState(
     val datePickerState: UseCaseState = UseCaseState(),
     val selectedDaySocketIndex: Int=0,
     val currentSelectedVaccineIndex: Int?=null,
+    val showLoadingDialog:Boolean=false,
+    val showErrorDialog:Boolean=false,
+    val showSuccessDialog:Boolean=false,
 )

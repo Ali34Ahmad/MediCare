@@ -8,8 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.doctor.core.composables.MainScaffold
+import com.example.doctor.core.composables.generateDaySocketsList
 import com.example.doctor.core.navigate
 import com.example.doctor.core.popUpToAndNavigate
+import com.example.doctor.data.model.vaccine.Vaccine
 import com.example.doctor.presentation.login.LoginScreen
 import com.example.doctor.presentation.login.LoginViewModel
 import com.example.doctor.presentation.navigation.Destination
@@ -123,8 +125,13 @@ fun MedicareApp(
 
                 val appointmentsVisitNumbers= scheduleViewModel.appointmentsToNumberOfVisits
 
-
                 Log.v("Visit",appointmentsVisitNumbers.toString())
+
+
+                appointments.value.forEach {
+                    scheduleViewModel.getNumberOfVisits(it.userId)
+                }
+
                 ScheduleScreen(
                     uiState = scheduleUiState.value,
                     clinicsAppointments = appointments.value,
@@ -139,8 +146,15 @@ fun MedicareApp(
                 val appointments=profileViewModel.appointments.collectAsState(initial = emptyList())
                 val appointmentsVisitNumbers= profileViewModel.appointmentsToNumberOfVisits
                 val defaultVaccineTable= profileViewModel.defaultVaccineTable.collectAsState(initial = emptyList())
+                val defaultVaccineTableVaccines= mutableListOf<Vaccine>()
 
                 Log.v("Visit",appointmentsVisitNumbers.toString())
+
+                defaultVaccineTable.value.forEach {
+                    defaultVaccineTableVaccines.add(it.vaccine)
+                }
+
+
 
                 ProfileScreen(
                     uiState =profileUiState.value,
@@ -149,7 +163,9 @@ fun MedicareApp(
                     appointmentsVisitNumbers=appointmentsVisitNumbers,
                     pushNotificationEvent = profileViewModel::pushNotification,
                     onAvailableVaccineListItemClick = profileViewModel::updateCurrentSelectedIndex,
-                    defaultVaccineTable = defaultVaccineTable.value
+                    defaultVaccineTableVaccines = defaultVaccineTableVaccines,
+                    updateErrorDialogVisibilityStateEvent = profileViewModel::updateErrorDialogVisibilityState,
+                    updateSuccessDialogVisibilityStateEvent=profileViewModel::updateSuccessDialogVisibilityState
                 )
             }
         }

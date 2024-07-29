@@ -138,6 +138,8 @@
     <string name="ophthalmologist">Ophthalmologist</string>
     <string name="upcoming_appointments">Upcoming Appointments</string>
     <string name="new_vaccine_available">New vaccine available?</string>
-    <string name="appointment_history">Appointments Histroy</string>
+    <string name="appointment_history">Appointments History</string>
     <string name="medicare_channel_id">default_channel</string>
+    <string name="notification_sent_successfully">Notification sent successfully.</string>
+    <string name="patients_can_book_for_this_vaccine_now">Patients can book for this vaccine now.</string>
 </resources>

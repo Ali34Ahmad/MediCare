@@ -22,12 +22,16 @@ import com.example.doctor.core.composables.ClinicInformationCardComponent
 import com.example.doctor.core.composables.DatePickerButtonComponent
 import com.example.doctor.core.composables.DaySocketHorizontalList
 import com.example.doctor.core.composables.ElevatedButtonComponent
+import com.example.doctor.core.composables.ErrorDialog
+import com.example.doctor.core.composables.LoadingDialog
 import com.example.doctor.core.composables.MedicareTopAppBar
 import com.example.doctor.core.composables.MyDatePickerDialog
+import com.example.doctor.core.composables.SuccessDialog
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.fake.clinic1
 import com.example.doctor.data.fake.vaccinesClinic
 import com.example.doctor.data.model.appointment.Appointment
+import com.example.doctor.data.model.date.FullDate
 import com.example.doctor.data.model.vaccine.Vaccine
 import com.example.doctor.presentation.schedule.HomeScreenSection
 import com.example.doctor.ui.theme.MediCareTheme
@@ -39,12 +43,39 @@ fun ProfileScreen(
     uiState: ProfileUiState,
     modifier: Modifier = Modifier,
     clinicsAppointments: List<Appointment>,
-    appointmentsVisitNumbers:List<Int>,
+    appointmentsVisitNumbers: List<Int>,
     updateBookedDateEvent: (LocalDate) -> Unit,
-    pushNotificationEvent:()->Unit,
-    defaultVaccineTable:List<Vaccine>,
-    onAvailableVaccineListItemClick:(Int)->Unit,
+    pushNotificationEvent: (Vaccine) -> Unit,
+    defaultVaccineTableVaccines: List<Vaccine>,
+    onAvailableVaccineListItemClick: (Int) -> Unit,
+    updateErrorDialogVisibilityStateEvent:(Boolean)->Unit,
+    updateSuccessDialogVisibilityStateEvent:(Boolean)->Unit,
 ) {
+
+
+    ErrorDialog(
+        showDialog = uiState.showErrorDialog,
+        onDismissRequest = {
+            updateErrorDialogVisibilityStateEvent(false)
+        },
+        onConfirmClick = {
+            updateErrorDialogVisibilityStateEvent(false)
+        }
+    )
+    LoadingDialog(
+        showDialog = uiState.showLoadingDialog,
+    )
+    SuccessDialog(
+        showDialog = uiState.showSuccessDialog,
+        onDismissRequest = {
+            updateSuccessDialogVisibilityStateEvent(false)
+        },
+        onConfirmClick = {
+            updateSuccessDialogVisibilityStateEvent(false)
+        }
+    )
+
+
     MyDatePickerDialog(
         onConfirmButtonClick = { date ->
             updateBookedDateEvent(date)
@@ -86,23 +117,22 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.weight(1f))
                             ElevatedButtonComponent(
                                 text = R.string.notify_parents,
-                                onClick = pushNotificationEvent,
+                                onClick = {
+                                    if (uiState.currentSelectedVaccineIndex != null && defaultVaccineTableVaccines.isNotEmpty())
+                                        pushNotificationEvent(
+                                            defaultVaccineTableVaccines[uiState.currentSelectedVaccineIndex]
+                                        )
+                                },
                                 isDisabled = false
                             )
                         }
-                        Spacer(modifier = Modifier.height(Spacing.small))
+                        Spacer(modifier=Modifier.height(Spacing.medium))
 
-
-                        HomeScreenSection(title = R.string.blank) {
-                            Column {
-                                DefaultVaccineTableList(
-                                    defaultVaccineTable = defaultVaccineTable,
-                                    selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
-                                    onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
-                                )
-                                Spacer(modifier = Modifier.height(Spacing.medium))
-                            }
-                        }
+                        DefaultVaccineTableList(
+                            defaultVaccineTable = defaultVaccineTableVaccines,
+                            selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
+                            onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
+                        )
                     }
                 }
 
@@ -124,7 +154,7 @@ fun ProfileScreen(
                             workDays = uiState.clinic.workDays,
                             selectedIndex = uiState.selectedDaySocketIndex,
                             updateSelectedIndex = updateBookedDateEvent,
-                            startDayBeforeToday=60,
+                            startDayBeforeToday = 60,
                         )
                     }
                 }
@@ -133,7 +163,7 @@ fun ProfileScreen(
 
                 ClinicAppointmentVerticalList(
                     clinicsAppointments = clinicsAppointments,
-                    appointmentsVisitNumbers=appointmentsVisitNumbers
+                    appointmentsVisitNumbers = appointmentsVisitNumbers
                 )
 
 
@@ -156,7 +186,9 @@ private fun ProfileScreenPreview1() {
                 appointmentsVisitNumbers = emptyList(),
                 pushNotificationEvent = {},
                 onAvailableVaccineListItemClick = {},
-                defaultVaccineTable = emptyList()
+                defaultVaccineTableVaccines = emptyList(),
+                updateErrorDialogVisibilityStateEvent = {},
+                updateSuccessDialogVisibilityStateEvent={},
             )
         }
     }
@@ -176,7 +208,9 @@ private fun ProfileScreenPreview2() {
                 appointmentsVisitNumbers = emptyList(),
                 pushNotificationEvent = {},
                 onAvailableVaccineListItemClick = {},
-                defaultVaccineTable = emptyList(),
+                defaultVaccineTableVaccines = emptyList(),
+                updateErrorDialogVisibilityStateEvent = {},
+                updateSuccessDialogVisibilityStateEvent={},
             )
         }
     }

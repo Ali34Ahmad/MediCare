@@ -45,6 +45,7 @@ import com.example.medicare.presentation.vaccinationappointments.VaccinationAppo
 import com.example.medicare.presentation.vaccinationappointments.VaccinationAppointmentsScreen
 import com.example.medicare.presentation.vaccinationtable.VaccinationTableScreen
 import com.example.medicare.presentation.vaccinationtable.VaccinationTableViewModel
+import kotlinx.coroutines.flow.collect
 
 val screenWhereToShowBottomBar = listOf(
     Destination.Home,
@@ -360,6 +361,9 @@ fun MedicareApp(
             composable<Destination.BookAppointment> {
                 val bookAppointmentViewModel: BookAppointmentViewModel = hiltViewModel()
                 val bookAppointmentUiState = bookAppointmentViewModel.uiState.collectAsState()
+
+                val availableVaccines=bookAppointmentViewModel.vaccines.collectAsState(initial = emptyList())
+
                 val children =
                     bookAppointmentViewModel.listOfChildren.collectAsStateWithLifecycle(initialValue = emptyList()).value
                 val user=bookAppointmentViewModel.user.collectAsState(initial = null)
@@ -389,7 +393,7 @@ fun MedicareApp(
                     navigateToHomeScreen = {
                         navController.navigate(Destination.Home, viewModel)
                     },
-                    availableVaccines = emptyList(),
+                    availableVaccines = availableVaccines.value,
                     onAvailableVaccineListItemClick = bookAppointmentViewModel::updateCurrentSelectedIndex,
                     updateErrorDialogVisibilityState = bookAppointmentViewModel::updateErrorDialogVisibilityState,
                     userAndChildrenNames=userAndChildrenNames

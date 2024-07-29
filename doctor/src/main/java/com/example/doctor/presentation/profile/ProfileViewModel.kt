@@ -3,6 +3,7 @@ package com.example.doctor.presentation.profile
 import android.icu.util.LocaleData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.doctor.core.composables.generateDaySocketsList
 import com.example.doctor.core.enums.Month
 import com.example.doctor.core.getMonthByJavaMonth
 import com.example.doctor.core.toFullDate
@@ -14,6 +15,7 @@ import com.example.doctor.data.model.notification.Notification
 import com.example.doctor.data.model.vaccine.Vaccine
 import com.example.doctor.data.repositories.AppointmentRepository
 import com.example.doctor.data.repositories.ClinicRepository
+import com.example.doctor.data.repositories.VaccineRepository
 import com.example.doctor.data.services.AccountService
 import com.example.doctor.data.services.NotificationService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,77 +37,99 @@ class ProfileViewModel @Inject constructor(
     private val clinicRepository: ClinicRepository,
     private val accountService: AccountService,
     private val notificationService: NotificationService,
-): ViewModel() {
-    private val _uiState= MutableStateFlow(ProfileUiState())
-    val uiState=_uiState.asStateFlow()
+    private val vaccineRepository: VaccineRepository,
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState = _uiState.asStateFlow()
 
-    var appointments=appointmentRepository.appointments
-    val appointmentsToNumberOfVisits:MutableList<Int> = mutableListOf()
-    val defaultVaccineTable: Flow<List<Vaccine>> = flow {  }
+    var appointments = appointmentRepository.appointments
+    val appointmentsToNumberOfVisits: MutableList<Int> = mutableListOf()
+    val defaultVaccineTable = vaccineRepository.defaultVaccines
+
+    val daySockets = generateDaySocketsList()
+
     init {
         updateClinic()
         getNumberOfVisits()
     }
-    fun updateClinic(){
+
+    fun updateClinic() {
         viewModelScope.launch {
-            val clinicId=clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
-            val clinic=clinicRepository.getClinicById(clinicId?:"")
-            _uiState.update { it.copy(clinic=clinic?: Clinic()) }
+            val clinicId = clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
+            val clinic = clinicRepository.getClinicById(clinicId ?: "")
+            _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
         }
     }
-    fun getClinic(){
+
+    fun getClinic() {
 
     }
 
-    fun updateBookedDate(date: LocalDate){
+    fun updateBookedDate(date: LocalDate) {
         _uiState.update { it.copy(bookedDate = date) }
         updateSelectedDaySocketIndex(date)
         updateAppointments()
     }
-    private fun updateAppointments(){
-        //appointments=appointmentRepository.appointments.at(uiState.value.bookedDate.toFullDate())
+
+    private fun updateAppointments() {
+        viewModelScope.launch {
+            //appointments=appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
+        }
+    }
+    fun updateErrorDialogVisibilityState(isVisible:Boolean) {
+        _uiState.value =
+            _uiState.value.copy(showErrorDialog = isVisible)
+    }
+    fun updateLoadingDialogVisibilityState(isVisible:Boolean) {
+        _uiState.value =
+            _uiState.value.copy(showLoadingDialog = isVisible)
+    }
+    fun updateSuccessDialogVisibilityState(isVisible:Boolean) {
+        _uiState.value =
+            _uiState.value.copy(showSuccessDialog = isVisible)
     }
 
 
-    private fun updateSelectedDaySocketIndex(date: LocalDate){
-        val index=uiState.value.clinic.daySockets.indexOfFirst { it.date.equals(
-            FullDate(
-                date.dayOfMonth,
-                date.month.getMonthByJavaMonth(),
-                year = date.year
+
+    private fun updateSelectedDaySocketIndex(date: LocalDate) {
+        val index = daySockets.indexOfFirst {
+            it.equals(
+                FullDate(
+                    date.dayOfMonth,
+                    date.month.getMonthByJavaMonth(),
+                    year = date.year
+                )
             )
-        ) }
+        }
         _uiState.update { it.copy(selectedDaySocketIndex = index) }
     }
 
     fun getNumberOfVisits() {
-        val job=viewModelScope.async {
-            val job = viewModelScope.async {
-                appointments=appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
 
-                appointments.map { appointments ->
-                    appointments.forEach { appt->
-                        appointmentsToNumberOfVisits.add(
-                            appointmentRepository.getNumberOfAppointments(appt.userId)
-                        )
-                    }
-                }
-            }
-        }
-        viewModelScope.launch {
-            job.await()
-        }
     }
 
-    fun pushNotification() {
-        viewModelScope.launch {
-            notificationService.addNotification(
-                Notification(
-                    message="This is notification.",
-                    vaccine= mmrVaccine
+    fun pushNotification(vaccine: Vaccine) {
+        try {
+            viewModelScope.launch {
+                updateSuccessDialogVisibilityState(false)
+                updateErrorDialogVisibilityState(false)
+                updateLoadingDialogVisibilityState(true)
+                notificationService.addNotification(
+                    Notification(
+                        message = "Book your appointment now.",
+                        vaccine = vaccine
+                    )
                 )
-            )
+                vaccineRepository.addVaccine(vaccine)
+                updateLoadingDialogVisibilityState(false)
+                updateSuccessDialogVisibilityState(true)
+            }
+        }catch (e:Exception){
+            updateLoadingDialogVisibilityState(false)
+            updateErrorDialogVisibilityState(true)
+            updateSuccessDialogVisibilityState(false)
         }
+
 
     }
 

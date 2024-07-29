@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.medicare.core.composables.generateDaySocketsList
 import com.example.medicare.core.enums.Month
+import com.example.medicare.core.getMonthByJavaMonth
 import com.example.medicare.core.toFullDate
 import com.example.medicare.data.fake.mmrVaccine
 import com.example.medicare.data.model.appointment.Appointment
@@ -49,13 +51,27 @@ class BookAppointmentViewModel @Inject constructor(
 
     var vaccines: Flow<List<Vaccine>> = vaccineRepository.vaccines
 
+    val daySockets = generateDaySocketsList()
+
+    init {
+        Log.v("userId",accountService.currentUserId)
+    }
 
     fun updateUserAndChildrenNames(userAndChildrenNames: List<String>) {
         _uiState.value = _uiState.value.copy(userAndChildrenNames = userAndChildrenNames)
     }
 
-    fun updateBookedDate(newDate: LocalDate) {
-        _uiState.value = _uiState.value.copy(bookedDate = newDate)
+    fun updateBookedDate(date: LocalDate) {
+        val index = daySockets.indexOfFirst {
+            it.equals(
+                FullDate(
+                    date.dayOfMonth,
+                    date.month.getMonthByJavaMonth(),
+                    year = date.year
+                )
+            )
+        }
+        _uiState.value = _uiState.value.copy(bookedDate = date, selectedDaySocketIndex = index)
     }
 
     fun updateChosenTimeSocketIndex(newTimeSocketIndex: Int) {
@@ -173,7 +189,7 @@ class BookAppointmentViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentSelectedIndex(index: Int) {
+    fun updateCurrentSelectedIndex(index:Int) {
         _uiState.update { it.copy(currentSelectedVaccineIndex = index) }
     }
     fun updateVaccineId(vaccineId:String) {

@@ -26,6 +26,8 @@ import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.composables.SpannableTextComponent
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.model.appointment.Appointment
+import com.example.doctor.data.model.date.DaySocket
+import com.example.doctor.data.model.date.FullDate
 import com.example.doctor.ui.theme.MediCareTheme
 import com.example.doctor.ui.theme.Spacing
 import java.time.LocalDate
@@ -153,7 +155,7 @@ private fun ScheduleScreenPreview() {
                 uiState = ScheduleUiState(),
                 clinicsAppointments = emptyList(),
                 updateBookedDateEvent = {},
-                appointmentsVisitNumbers = mutableListOf()
+                appointmentsVisitNumbers = mutableListOf(),
             )
         }
     }
