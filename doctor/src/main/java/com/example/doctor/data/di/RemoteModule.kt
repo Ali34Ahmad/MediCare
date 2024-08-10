@@ -21,8 +21,8 @@ object RemoteModule {
     @Provides
     fun bindRemote(): FcmApi {
         val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(50, TimeUnit.SECONDS) // Adjust as needed
-            .writeTimeout(50, TimeUnit.SECONDS)
+            .readTimeout(100, TimeUnit.SECONDS) // Adjust as needed
+            .writeTimeout(100, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder()
             .baseUrl("https://medicareapi-7b5f.onrender.com")

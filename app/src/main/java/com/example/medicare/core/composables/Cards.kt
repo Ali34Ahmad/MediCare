@@ -213,7 +213,7 @@ fun VaccinationAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Ali Ahmad"/*vaccinationAppointment.userId*/,
+                    text = vaccinationAppointment.patientName,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -295,7 +295,7 @@ fun ClinicAppointmentCardComponent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Ali Ahmad"/*clinicAppointment.userId*/,
+                    text = clinicAppointment.patientName,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {

@@ -368,7 +368,7 @@ fun MedicareApp(
                     bookAppointmentViewModel.listOfChildren.collectAsStateWithLifecycle(initialValue = emptyList()).value
                 val user=bookAppointmentViewModel.user.collectAsState(initial = null)
 
-                val userAndChildrenNames: MutableList<String> = mutableListOf(user.value?.firstName?:"Username")
+                val userAndChildrenNames: MutableList<String> = mutableListOf("${user.value?.firstName} ${user.value?.lastName}" )
                 children.forEach { child ->
                     userAndChildrenNames.add("${child.firstName} ${child.lastName}")
                 }
