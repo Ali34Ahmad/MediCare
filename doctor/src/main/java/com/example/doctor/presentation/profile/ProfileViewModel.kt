@@ -1,6 +1,7 @@
 package com.example.doctor.presentation.profile
 
 import android.icu.util.LocaleData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctor.core.composables.generateDaySocketsList
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -50,14 +52,16 @@ class ProfileViewModel @Inject constructor(
 
     init {
         updateClinic()
-        getNumberOfVisits()
+        updateAppointments()
     }
 
     fun updateClinic() {
         viewModelScope.launch {
             val clinicId = clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
-            val clinic = clinicRepository.getClinicById(clinicId ?: "")
-            _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
+            if(clinicId!=null) {
+                val clinic = clinicRepository.getClinicById(clinicId)
+                _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
+            }
         }
     }
 
@@ -73,22 +77,25 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateAppointments() {
         viewModelScope.launch {
-            //appointments=appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
+            appointments =
+                appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
         }
     }
-    fun updateErrorDialogVisibilityState(isVisible:Boolean) {
+
+    fun updateErrorDialogVisibilityState(isVisible: Boolean) {
         _uiState.value =
             _uiState.value.copy(showErrorDialog = isVisible)
     }
-    fun updateLoadingDialogVisibilityState(isVisible:Boolean) {
+
+    fun updateLoadingDialogVisibilityState(isVisible: Boolean) {
         _uiState.value =
             _uiState.value.copy(showLoadingDialog = isVisible)
     }
-    fun updateSuccessDialogVisibilityState(isVisible:Boolean) {
+
+    fun updateSuccessDialogVisibilityState(isVisible: Boolean) {
         _uiState.value =
             _uiState.value.copy(showSuccessDialog = isVisible)
     }
-
 
 
     private fun updateSelectedDaySocketIndex(date: LocalDate) {
@@ -104,8 +111,17 @@ class ProfileViewModel @Inject constructor(
         _uiState.update { it.copy(selectedDaySocketIndex = index) }
     }
 
-    fun getNumberOfVisits() {
+    fun getNumberOfVisits(userId: String, clinicId: String?) {
+        viewModelScope.launch {
+            if (clinicId != null)
+                appointmentsToNumberOfVisits.add(
+                    //appointmentRepository.getNumberOfAppointments(userId,clinicId)
+                    Random.nextInt(1, 10)
+                )
+            Log.v("NumberOfVisitsCor", appointmentsToNumberOfVisits.toString())
+            Log.v("NumberOfVisitsCor:ClinicId", clinicId.toString())
 
+        }
     }
 
     fun pushNotification(vaccine: Vaccine) {
@@ -124,7 +140,7 @@ class ProfileViewModel @Inject constructor(
                 updateLoadingDialogVisibilityState(false)
                 updateSuccessDialogVisibilityState(true)
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             updateLoadingDialogVisibilityState(false)
             updateErrorDialogVisibilityState(true)
             updateSuccessDialogVisibilityState(false)

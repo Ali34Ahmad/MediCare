@@ -370,7 +370,7 @@ fun MedicareApp(
 
                 val userAndChildrenNames: MutableList<String> = mutableListOf(user.value?.firstName?:"Username")
                 children.forEach { child ->
-                    userAndChildrenNames.add(child.firstName)
+                    userAndChildrenNames.add("${child.firstName} ${child.lastName}")
                 }
                 Log.v("Username",user.value?.firstName.toString())
 

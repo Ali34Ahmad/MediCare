@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
@@ -81,7 +82,7 @@ fun BookAppointmentScreen(
     updateChosenNameIndexEvent: (Int) -> Unit,
     updateNamesMenuVisibilityStateEvent: () -> Unit,
     availableVaccines: List<Vaccine>,
-    onAvailableVaccineListItemClick: (Int) -> Unit,
+    onAvailableVaccineListItemClick: (Int,String) -> Unit,
 ) {
     try {
         updateClinicEvent(clinicId)
@@ -342,11 +343,15 @@ fun ChoosePatientNameDropDownMenu(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (listOfNames.isNotEmpty()) listOfNames[chosenNameIndex] else stringResource(
+                text = if (listOfNames.isNotEmpty())
+                    listOfNames[chosenNameIndex]
+                else stringResource(
                     id = R.string.none
                 ),
                 modifier = Modifier
                     .padding(vertical = Spacing.small, horizontal = Spacing.small)
+                    .width(80.dp),
+                overflow = TextOverflow.Ellipsis,
             )
             Icon(
                 imageVector = if (showMenu) Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowDropDown,
@@ -359,11 +364,13 @@ fun ChoosePatientNameDropDownMenu(
         DropdownMenu(
             expanded = showMenu,
             onDismissRequest = onDismissRequest,
-            properties = PopupProperties(focusable = true)
+            properties = PopupProperties(focusable = true),
+            modifier = Modifier.width(116.dp)
         ) {
             listOfNames.forEachIndexed { index, name ->
                 DropdownMenuItem(
-                    text = { Text(name) },
+                    text = { Text(name,
+                        overflow = TextOverflow.Ellipsis) },
                     onClick = {
                         onMenuItemClick(index)
                         onDismissRequest()
@@ -405,7 +412,7 @@ private fun BookAppointmentScreenPreview() {
                 slideToPreviousPageEvent = {},
                 uiState = BookAppointmentUiState(),
                 availableVaccines = emptyList(),
-                onAvailableVaccineListItemClick = {},
+                onAvailableVaccineListItemClick = {int,string->},
                 updateErrorDialogVisibilityState = {}
             )
         }

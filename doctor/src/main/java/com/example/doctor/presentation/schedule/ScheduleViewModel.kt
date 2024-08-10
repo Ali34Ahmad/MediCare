@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
@@ -43,15 +44,17 @@ class ScheduleViewModel @Inject constructor(
 
     init {
         updateClinic()
+        updateAppointments()
     }
 
     fun updateClinic() {
         viewModelScope.launch {
             val clinicId = clinicRepository.getClinicIdByDoctor(accountService.currentUserId)
             Log.v("currentUserId", accountService.currentUserId)
-            if (clinicId == null) throw Exception("The clinicId is null")
-            val clinic = clinicRepository.getClinicById(clinicId)
-            _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
+            if(clinicId!=null) {
+                val clinic = clinicRepository.getClinicById(clinicId)
+                _uiState.update { it.copy(clinic = clinic ?: Clinic()) }
+            }
         }
     }
 
@@ -62,7 +65,10 @@ class ScheduleViewModel @Inject constructor(
     }
 
     private fun updateAppointments() {
-        ///appointments=appointmentRepository.appointments.at(uiState.value.bookedDate.toFullDate())
+        viewModelScope.launch {
+            appointments =
+                appointmentRepository.getAppointmentsByDate(uiState.value.bookedDate.toFullDate())
+        }
     }
 
 
@@ -75,14 +81,16 @@ class ScheduleViewModel @Inject constructor(
         _uiState.update { it.copy(selectedDaySocketIndex = index) }
     }
 
-    fun getNumberOfVisits(userId:String) {
+    fun getNumberOfVisits(userId: String, clinicId: String?) {
         Log.v("NumberOfVisits1", appointmentsToNumberOfVisits.toString())
         viewModelScope.launch {
             Log.v("NumberOfVisitsCor1", appointmentsToNumberOfVisits.toString())
 
-            appointmentsToNumberOfVisits.add(
-                appointmentRepository.getNumberOfAppointments(userId)
-            )
+            if (clinicId != null)
+                appointmentsToNumberOfVisits.add(
+                    //appointmentRepository.getNumberOfAppointments(userId, clinicId)
+                    Random.nextInt(1, 10)
+                )
 
             Log.v("NumberOfVisitsCor2", appointmentsToNumberOfVisits.toString())
 

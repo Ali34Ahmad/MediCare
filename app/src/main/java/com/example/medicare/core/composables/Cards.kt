@@ -233,7 +233,7 @@ fun VaccinationAppointmentCardComponent(
                     )
                 }
                 Text(
-                    text = "vaccineName",
+                    text = vaccinationAppointment.vaccineId,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )

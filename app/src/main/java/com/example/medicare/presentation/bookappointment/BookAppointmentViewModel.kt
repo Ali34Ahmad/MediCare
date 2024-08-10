@@ -142,7 +142,7 @@ class BookAppointmentViewModel @Inject constructor(
                                 day = uiState.value.bookedDate.dayOfMonth
                             ),
                             timeSocket = uiState.value.freeTimes[selectedTimeSocketIndex],
-                            vaccineId = uiState.value.vaccineId ?: "",
+                            vaccineId = uiState.value.vaccineName ?: "",
                             clinic = uiState.value.clinic,
                             patientName =uiState.value.userAndChildrenNames[uiState.value.chosenNameIndex]
                         )
@@ -189,11 +189,12 @@ class BookAppointmentViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentSelectedIndex(index:Int) {
+    fun updateCurrentSelectedIndex(index:Int,vaccineId:String) {
         _uiState.update { it.copy(currentSelectedVaccineIndex = index) }
+        updateVaccineId(vaccineId)
     }
     fun updateVaccineId(vaccineId:String) {
-        _uiState.update { it.copy(vaccineId = vaccineId) }
+        _uiState.update { it.copy(vaccineName = vaccineId) }
     }
 
 }

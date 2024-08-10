@@ -129,7 +129,7 @@ fun MedicareApp(
 
 
                 appointments.value.forEach {
-                    scheduleViewModel.getNumberOfVisits(it.userId)
+                    scheduleViewModel.getNumberOfVisits(it.userId,scheduleUiState.value.clinic.id)
                 }
 
                 ScheduleScreen(
@@ -148,12 +148,13 @@ fun MedicareApp(
                 val defaultVaccineTable= profileViewModel.defaultVaccineTable.collectAsState(initial = emptyList())
                 val defaultVaccineTableVaccines= mutableListOf<Vaccine>()
 
-                Log.v("Visit",appointmentsVisitNumbers.toString())
-
                 defaultVaccineTable.value.forEach {
                     defaultVaccineTableVaccines.add(it.vaccine)
                 }
 
+                appointments.value.forEach {
+                    profileViewModel.getNumberOfVisits(it.userId,profileUiState.value.clinic.id)
+                }
 
 
                 ProfileScreen(

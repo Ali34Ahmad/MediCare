@@ -26,7 +26,7 @@ fun AvailableVaccineList(
     modifier: Modifier=Modifier,
     availableVaccines: List<Vaccine>,
     selectedVaccineIndex:Int?,
-    onAvailableVaccineListItemClick:(Int)->Unit,
+    onAvailableVaccineListItemClick:(Int,String)->Unit,
 ) {
     LazyRow(
         modifier=modifier.fillMaxWidth(),
@@ -36,7 +36,7 @@ fun AvailableVaccineList(
             AvailableVaccineListItem(
                 title = availableVaccines[index].name,
                 onClick ={
-                    onAvailableVaccineListItemClick(index)
+                    onAvailableVaccineListItemClick(index,availableVaccines[index].name)
                 },
                 isSelected = selectedVaccineIndex==index
             )
@@ -81,9 +81,10 @@ private fun AvailableVaccineListPreview() {
                 Vaccine(name = "Vaccine 2"),
                 Vaccine(name = "Vaccine 3"),
                 Vaccine(name = "Vaccine 4"),
-            ), selectedVaccineIndex = null) {
-
-            }
+            ),
+                selectedVaccineIndex = null,
+                onAvailableVaccineListItemClick = {int,string->},
+                )
         }
     }
 
