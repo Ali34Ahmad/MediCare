@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctor.core.composables.generateDaySocketsList
 import com.example.doctor.core.enums.Month
+import com.example.doctor.core.formatDate
 import com.example.doctor.core.getMonthByJavaMonth
 import com.example.doctor.core.toFullDate
 import com.example.doctor.data.fake.mmrVaccine
@@ -151,7 +152,7 @@ class ProfileViewModel @Inject constructor(
                     SendMessageDto(
                         "",
                         "Available Vaccine",
-                        "${vaccine.name} is available from ${vaccine.availabilityStartDate}-${vaccine.lastAvailableDate}")
+                        "${vaccine.name} is available from ${vaccine.availabilityStartDate.formatDate()}-${vaccine.lastAvailableDate.formatDate()}")
                 )
                 vaccineRepository.addVaccine(vaccine)
                 updateLoadingDialogVisibilityState(false)
