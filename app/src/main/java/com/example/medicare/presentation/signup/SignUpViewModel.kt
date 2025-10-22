@@ -90,7 +90,6 @@ class SignUpViewModel @Inject constructor(
             )
 
         if (checkAllEnteredData()) {
-
                 try {
                     updateLoadingDialogVisibilityState()
                     accountService.signUp(uiState.value.email, uiState.value.password)
@@ -104,6 +103,7 @@ class SignUpViewModel @Inject constructor(
                     )
                     updateLoadingDialogVisibilityState()
                     _uiState.value=_uiState.value.copy(signUpState = AuthState.Success)
+                    Log.e("Sign Up", "Successful")
                 } catch (e: Exception) {
                     _uiState.value=_uiState.value.copy(signUpState = AuthState.Error(e))
                     updateLoadingDialogVisibilityState()
