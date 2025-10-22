@@ -112,6 +112,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.firebase.storage)
 
+    //Splash screen
+    implementation(libs.androidx.core.splashscreen)
 
 
 }
