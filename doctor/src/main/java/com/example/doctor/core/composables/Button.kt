@@ -39,13 +39,13 @@ fun ElevatedButtonComponent(
 ) {
     Button(
         onClick = onClick,
-        modifier=modifier,
+        modifier = modifier,
         enabled = !isDisabled
     ) {
         Text(
             text = stringResource(id = text),
             style = MaterialTheme.typography.bodyLarge
-            )
+        )
     }
 }
 
@@ -54,20 +54,17 @@ fun OutlinedButtonComponent(
     @StringRes text: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isDisabled: Boolean=false,
+    isDisabled: Boolean = false,
 ) {
     OutlinedButton(
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colorScheme.outline
-        ),
         enabled = !isDisabled
     ) {
         Text(
             text = stringResource(id = text),
             style = MaterialTheme.typography.bodyMedium
-            )
+        )
     }
 }
 
@@ -75,7 +72,7 @@ fun OutlinedButtonComponent(
 fun DatePickerButtonComponent(
     date: FullDate,
     onClick: () -> Unit,
-    modifier:Modifier=Modifier,
+    modifier: Modifier = Modifier,
 ) {
 
     Row(
@@ -90,41 +87,43 @@ fun DatePickerButtonComponent(
     ) {
         Text(
             text = "${date.month.name.convertToProperCase()} ${date.day}",
-            modifier=Modifier
+            modifier = Modifier
                 .padding(vertical = Spacing.extraSmall, horizontal = Spacing.small)
         )
         Icon(
             imageVector = Icons.Outlined.CalendarToday,
             contentDescription = null,
-            modifier=Modifier.size(18.dp)
+            modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.width(Spacing.small))
 
     }
 }
+
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun ElevatedButtonComponentPreview() {
-    MaterialTheme{
+    MaterialTheme {
         Surface {
             ElevatedButtonComponent(
                 text = R.string.sign_up,
                 onClick = {},
-                modifier=Modifier.padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 isDisabled = false
             )
         }
     }
 }
+
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun OutlinedButtonComponentPreview() {
-    MaterialTheme{
+    MaterialTheme {
         Surface {
             OutlinedButtonComponent(
                 text = R.string.sign_up,
                 onClick = {},
-                modifier=Modifier.padding(16.dp),
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -133,11 +132,11 @@ private fun OutlinedButtonComponentPreview() {
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun DatePickerButtonComponentPreview() {
-    MaterialTheme{
+    MaterialTheme {
         Surface {
             DatePickerButtonComponent(
-                date=LocalDate.now().toFullDate(),
-                modifier=Modifier.padding(16.dp),
+                date = LocalDate.now().toFullDate(),
+                modifier = Modifier.padding(16.dp),
                 onClick = {},
             )
         }

@@ -10,15 +10,11 @@ import com.example.medicare.data.model.result.AuthState
 import com.example.medicare.data.model.user.User
 import com.example.medicare.data.repositories.UserRepository
 import com.example.medicare.data.services.AccountService
-import com.example.medicare.data.services.StorageService
 import com.example.medicare.ui.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -107,9 +103,9 @@ class SignUpViewModel @Inject constructor(
                         )
                     )
                     updateLoadingDialogVisibilityState()
-                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = AuthState.Success)
+                    _uiState.value=_uiState.value.copy(signUpState = AuthState.Success)
                 } catch (e: Exception) {
-                    _uiState.value=_uiState.value.copy(isSignUpSuccessful = AuthState.Error(e))
+                    _uiState.value=_uiState.value.copy(signUpState = AuthState.Error(e))
                     updateLoadingDialogVisibilityState()
                     updateErrorDialogVisibilityState()
                     Log.e("Sign Up", e.message ?: "Error")

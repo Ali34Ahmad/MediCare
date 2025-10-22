@@ -22,15 +22,11 @@ import com.example.medicare.ui.theme.MediCareTheme
 
 @Composable
 fun VaccinationTableScreen(
-    childId: String,
     onNavigateUpClick: () -> Unit,
     modifier: Modifier = Modifier,
     uiState: VaccinationTableUiState,
-    updateVaccinationTable: (String) -> Unit,
     vaccinationTable: List<VaccineTableItem>,
 ) {
-    updateVaccinationTable(childId)
-
     Scaffold(
         topBar = {
             MedicareTopAppBar(
@@ -56,12 +52,10 @@ private fun VaccinationTableScreenPreview() {
     MediCareTheme {
         Surface {
             VaccinationTableScreen(
-                childId = "1",
                 onNavigateUpClick = {},
                 uiState = VaccinationTableUiState(
                     ""
                 ),
-                updateVaccinationTable = {},
                 vaccinationTable = listOf(
                     VaccineTableItem(
                         id = "",

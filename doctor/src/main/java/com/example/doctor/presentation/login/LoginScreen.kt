@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -57,8 +58,10 @@ fun LoginScreen(
         showDialog = uiState.showLoadingDialog,
     )
 
-    if(uiState.authState is AuthState.Success)
-        navigateToScheduleScreen()
+    LaunchedEffect(uiState.authState) {
+        if (uiState.authState is AuthState.Success)
+            navigateToScheduleScreen()
+    }
 
 
     Column(

@@ -35,6 +35,7 @@ fun ClinicAppointmentsScreen(
 ) {
 
     Scaffold(
+        modifier=modifier,
         topBar = {
             MedicareTopAppBar(
                 showNavigateUpIconButton = false,

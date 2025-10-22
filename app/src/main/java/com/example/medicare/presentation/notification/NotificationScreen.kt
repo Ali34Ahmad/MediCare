@@ -56,7 +56,7 @@ private fun NotificationScreenPreview() {
     MediCareTheme {
         Surface {
             NotificationScreen(
-                onNavigateUpClick = { /*TODO*/ },
+                onNavigateUpClick = {  },
                 uiState = NotificationUiState(),
                 listOfNotifications = emptyList()
                 )

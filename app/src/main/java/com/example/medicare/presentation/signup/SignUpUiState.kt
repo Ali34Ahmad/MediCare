@@ -20,5 +20,5 @@ data class SignUpUiState(
     val acceptPrivacyIsChecked:Boolean=false,
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
-    val isSignUpSuccessful:AuthState=AuthState.Loading,
+    val signUpState:AuthState=AuthState.Loading,
 )

@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -125,8 +126,10 @@ fun BookAppointmentScreen(
     )
 
 
-    if (uiState.isBookAppointmentIsSuccessful)
-        navigateToHomeScreen()
+    LaunchedEffect(uiState.isBookAppointmentIsSuccessful){
+        if (uiState.isBookAppointmentIsSuccessful)
+            navigateToHomeScreen()
+    }
 
     Scaffold(
         topBar = {
