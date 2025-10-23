@@ -16,5 +16,5 @@ interface AppointmentRepository {
     suspend fun deleteAppointment(id: String)
     /**get the number of appointments for a user*/
     suspend fun getNumberOfAppointments(userId: String): Int
-
+    fun vaccineAppointments(ids: List<String>): Flow<List<Appointment>>
 }

@@ -23,6 +23,7 @@ class ChildRepositoryImpl @Inject constructor(
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
     private val currentUserId :String?
         get() = auth.currentUser?.uid
+
     private val childrenRef get()= currentUserId?.let {
         usersRef.document(it)
         .collection(DatabaseCollections.CHILDREN_COLLECTION)
@@ -52,5 +53,10 @@ class ChildRepositoryImpl @Inject constructor(
     override suspend fun addVaccineTableItem(vaccineTableItem: VaccineTableItem, childId: String) {
         childrenRef?.document(childId)?.collection(DatabaseCollections.VACCINE_TABLE_COLLECTION)
             ?.document(vaccineTableItem.vaccine.id)?.set(vaccineTableItem)?.await()
+    }
+
+    override suspend fun getChildrenIds() :List<String>{
+        val ids =  childrenRef?.get()?.await()?.toObjects(Child::class.java)?.map { it.id }
+        return ids?:emptyList()
     }
 }

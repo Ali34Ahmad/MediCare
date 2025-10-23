@@ -20,11 +20,11 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     private val usersRef = database.collection(DatabaseCollections.USERS_COLLECTION)
-    private val currentUserId :String?
+    override val currentUserId :String?
         get() = auth.currentUser?.uid
 
     override suspend fun addNewUser(user: User) {
-           currentUserId?.let {usersRef.document(it).set(user).await()}
+        currentUserId?.let {usersRef.document(it).set(user).await()}
     }
 
     override suspend fun getUser(): User? {
