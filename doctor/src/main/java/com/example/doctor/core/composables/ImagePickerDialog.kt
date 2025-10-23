@@ -106,15 +106,13 @@ fun ImagePickerComponent(
             .width(350.dp)
     ) {
         if (bitmap != null) {
-            bitmap.let { btm ->
-                ShowChosenImageComponent(
-                    bitmap = btm,
-                    errorMessage = errorMessage,
-                    onResetButtonClick = { launcher.launch("image/*") },
-                    onSaveButtonClick = onSaveButtonClick,
-                    showProgressBar=showProgressBar
-                )
-            }
+            ShowChosenImageComponent(
+                bitmap = bitmap,
+                errorMessage = errorMessage,
+                onResetButtonClick = { launcher.launch("image/*") },
+                onSaveButtonClick = onSaveButtonClick,
+                showProgressBar=showProgressBar
+            )
         } else {
             UploadImageComponent(
                 onUploadClick = {

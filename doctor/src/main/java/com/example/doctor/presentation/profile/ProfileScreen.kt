@@ -82,6 +82,7 @@ fun ProfileScreen(
             uiState.datePickerState.hide()
         },
         datePickerState = uiState.datePickerState,
+        startDayBeforeToday = 1000
     )
 
     Scaffold(

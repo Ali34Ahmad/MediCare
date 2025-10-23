@@ -331,14 +331,11 @@ fun MedicareApp(
                 val vaccinationTableUiState = vaccinationTableViewModel.uiState.collectAsState()
                 val vaccinationTable = vaccinationTableUiState.value.vaccinationTable
 
-                val args = it.toRoute<Destination.VaccinationTable>()
                 VaccinationTableScreen(
-                    childId = args.childId,
                     onNavigateUpClick = {
                         navController.navigateUp(viewModel)
                     },
                     uiState = vaccinationTableUiState.value,
-                    updateVaccinationTable = vaccinationTableViewModel::updateVaccinationTable,
                     vaccinationTable = vaccinationTable
                 )
             }

@@ -59,8 +59,6 @@ fun HomeScreen(
     clinicAppointments: List<Appointment>,
     vaccinationAppointments: List<Appointment>
 ) {
-
-
     Scaffold(
         topBar = {
             MedicareTopAppBar(

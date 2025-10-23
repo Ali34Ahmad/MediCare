@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -52,8 +53,8 @@ fun AddChildScreen(
     updateGenderEvent: (ChooseTabState) -> Unit,
     updateCheckStateEvent: (Boolean) -> Unit,
     onAddChildClick: () -> Unit,
-    clearTextFieldValue:()->Unit,
-    updateBookedDateEvent:(LocalDate)->Unit,
+    clearTextFieldValue: () -> Unit,
+    updateBookedDateEvent: (LocalDate) -> Unit,
 ) {
 
     MyDatePickerDialog(
@@ -78,9 +79,10 @@ fun AddChildScreen(
         showDialog = uiState.showLoadingDialog,
     )
 
-    Log.v("AddChild",uiState.isAddChildSuccessful.toString())
-    if (uiState.isAddChildSuccessful)
-        navigateToChildrenScreen()
+    LaunchedEffect(uiState.isAddChildSuccessful) {
+        if (uiState.isAddChildSuccessful)
+            navigateToChildrenScreen()
+    }
 
     Scaffold(
         topBar = {
@@ -124,8 +126,8 @@ fun AddChildScreen(
                     },
                     hint1 = R.string.first_name_hint,
                     hint2 = R.string.second_name_hint,
-                    errorMessage1 = uiState.childSecondNameErrorMessage ,
-                    errorMessage2 = uiState.childSecondNameErrorMessage ,
+                    errorMessage1 = uiState.childSecondNameErrorMessage,
+                    errorMessage2 = uiState.childSecondNameErrorMessage,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
@@ -160,7 +162,7 @@ fun AddChildScreen(
                     },
                     hint1 = R.string.first_name_hint,
                     hint2 = R.string.second_name_hint,
-                    errorMessage1 = uiState.motherFirstNameErrorMessage ,
+                    errorMessage1 = uiState.motherFirstNameErrorMessage,
                     errorMessage2 = uiState.motherSecondNameErrorMessage,
                 )
 
@@ -173,8 +175,8 @@ fun AddChildScreen(
                     hint = R.string.birthday_hint,
                     imeAction = ImeAction.Done,
                     errorMessage = uiState.dateOfBirthErrorMessage,
-                    onOpenCalendarClick = {uiState.datePickerState.show()},
-                    clearTextFieldValue =clearTextFieldValue,
+                    onOpenCalendarClick = { uiState.datePickerState.show() },
+                    clearTextFieldValue = clearTextFieldValue,
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.medium))
@@ -239,7 +241,7 @@ private fun AddChildScreenPreview() {
                 updateMotherFirstNameEvent = {},
                 navigateToChildrenScreen = {},
                 uiState = AddChildUiState(),
-                clearTextFieldValue={},
+                clearTextFieldValue = {},
                 updateBookedDateEvent = {}
             )
         }

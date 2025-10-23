@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -78,8 +79,10 @@ fun SignUpScreen(
     )
 
 
-    if (uiState.isSuccessful)
-        navigateToScheduleScreen()
+    LaunchedEffect(uiState.isSuccessful){
+        if (uiState.isSuccessful)
+            navigateToScheduleScreen()
+    }
 
     if (uiState.showDoctorImageUploader)
         ImagePickerDialog(
