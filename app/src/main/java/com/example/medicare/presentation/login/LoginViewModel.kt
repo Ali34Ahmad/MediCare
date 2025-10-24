@@ -64,8 +64,8 @@ class LoginViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     updateLoadingDialogVisibilityState(true)
-                    accountService.login(uiState.value.email, uiState.value.password)
-                    _uiState.value = _uiState.value.copy(authState = AuthState.Success)
+                    val authState=accountService.login(uiState.value.email, uiState.value.password)
+                    _uiState.value = _uiState.value.copy(authState = authState)
                     updateLoadingDialogVisibilityState(false)
                     Log.e("Log in viewmodel", uiState.value.authState.toString())
                 } catch (e: Exception) {

@@ -1,6 +1,7 @@
 package com.example.medicare.core
 
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.date.Age
 import com.example.medicare.data.model.date.FullDate
@@ -153,6 +154,20 @@ fun FullDate.formatDate(): String {
 
 fun <T : Any> NavController.navigate(destination: T, viewModel: MedicareAppViewModel) {
     navigate(destination)
+    viewModel.updateCurrentDestination(destination)
+}
+
+fun <T : Any> NavController.switchToDestination(destination: T, viewModel: MedicareAppViewModel) {
+
+    val currentDestinationId = currentDestination?.id
+
+    navigate(destination) {
+        currentDestinationId?.let {
+            popUpTo(it) {
+                inclusive = true
+            }
+        }
+    }
     viewModel.updateCurrentDestination(destination)
 }
 

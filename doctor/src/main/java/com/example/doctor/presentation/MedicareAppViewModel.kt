@@ -15,7 +15,7 @@ class MedicareAppViewModel @Inject constructor(
     val _uiState= MutableStateFlow(MedicareAppUiState())
     val uiState=_uiState.asStateFlow()
 
-    fun updateCurrentDestination(destination: Destination){
+    fun <T : Any> updateCurrentDestination(destination: T){
         _uiState.value=_uiState.value.copy(
             currentDestination = destination
         )
