@@ -1,5 +1,6 @@
 package com.example.medicare.data.repositories.impl
 
+import android.util.Log
 import com.example.medicare.core.constants.DatabaseCollections
 import com.example.medicare.data.model.user.User
 import com.example.medicare.data.repositories.UserRepository
@@ -23,9 +24,17 @@ class UserRepositoryImpl @Inject constructor(
     override val currentUserId :String?
         get() = auth.currentUser?.uid
 
-    override suspend fun addNewUser(user: User) {
-        currentUserId?.let {usersRef.document(it).set(user).await()}
-    }
+    override suspend fun addNewUser(user: User) =
+        try {
+        currentUserId?.let {
+            usersRef.document(it).set(user).await()
+            true
+        }?:false
+        }catch(e: Exception){
+            Log.e("UserRepositoryImpl","Error adding new user: ${e.message}")
+            false
+        }
+
 
     override suspend fun getUser(): User? {
         return currentUserId?.let { usersRef.document(it).get().await().toObject(User::class.java) }

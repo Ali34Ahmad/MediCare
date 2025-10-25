@@ -1,5 +1,6 @@
 package com.example.medicare.data.repositories.impl
 
+import android.util.Log
 import com.example.medicare.core.constants.DatabaseCollections
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.date.FullDate
@@ -25,9 +26,14 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val appointmentsRef = database.collection(DatabaseCollections.APPOINTMENTS_COLLECTION)
 
 
-    override suspend fun addAppointment(appointment: Appointment) {
-        appointmentsRef.add(appointment).await()
-    }
+    override suspend fun addAppointment(appointment: Appointment) =
+        try {
+            appointmentsRef.add(appointment).await()
+            true
+        }catch (e: Exception) {
+            Log.e("AppointmentRepositoryImpl","Error adding new appointment: ${e.message}")
+            false
+        }
 
     override suspend fun deleteAppointment(id: String) {
         appointmentsRef.document(id).delete().await()

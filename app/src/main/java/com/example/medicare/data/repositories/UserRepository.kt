@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     /** Add a new user to the database with the same ID as the current user*/
-    suspend fun addNewUser(user: User)
+    suspend fun addNewUser(user: User): Boolean
     /** Get the current user*/
     suspend fun getUser() : User?
     /** Update a user in the database*/

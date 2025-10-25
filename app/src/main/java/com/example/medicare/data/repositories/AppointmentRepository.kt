@@ -9,7 +9,7 @@ interface AppointmentRepository {
      * Add a new appointment in the clinic -> appointment collection
      * and the function returns the id of the appointment
      */
-    suspend fun addAppointment(appointment: Appointment)
+    suspend fun addAppointment(appointment: Appointment): Boolean
     /**Get all the user appointments*/
     val appointments : Flow<List<Appointment>>
     /**Delete the appointment with the given id*/

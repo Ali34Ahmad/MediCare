@@ -1,5 +1,6 @@
 package com.example.medicare.data.repositories.impl
 
+import android.util.Log
 import com.example.medicare.core.constants.DatabaseCollections
 import com.example.medicare.data.childTable.ChildTable
 import com.example.medicare.data.model.child.Child
@@ -30,11 +31,16 @@ class ChildRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun addChild(child: Child) {
+    override suspend fun addChild(child: Child) = try{
         val id = childrenRef?.add(child)?.await()?.id
         if (id != null) {
             childTable.initTable(id)
+            true
         }
+        false
+    }catch (e: Exception){
+        Log.e("ChildRepositoryImpl","Error adding new child: ${e.message}")
+        false
     }
 
     override suspend fun getVaccineTable(childId: String): List<VaccineTableItem> {
