@@ -8,7 +8,6 @@ import com.example.medicare.core.composables.generateDaySocketsList
 import com.example.medicare.core.enums.Month
 import com.example.medicare.core.getMonthByJavaMonth
 import com.example.medicare.core.toFullDate
-import com.example.medicare.data.fake.mmrVaccine
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.clinic.Clinic
@@ -25,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,7 +52,7 @@ class BookAppointmentViewModel @Inject constructor(
     val daySockets = generateDaySocketsList()
 
     init {
-        Log.v("userId",accountService.currentUserId)
+        Log.v("userId", accountService.currentUserId)
     }
 
     fun updateUserAndChildrenNames(userAndChildrenNames: List<String>) {
@@ -114,12 +112,12 @@ class BookAppointmentViewModel @Inject constructor(
         return -1
     }
 
-    fun updateErrorDialogVisibilityState(isVisible:Boolean) {
+    fun updateErrorDialogVisibilityState(isVisible: Boolean) {
         _uiState.value =
             _uiState.value.copy(showErrorDialog = !isVisible)
     }
 
-    fun updateLoadingDialogVisibilityState(isVisible:Boolean) {
+    fun updateLoadingDialogVisibilityState(isVisible: Boolean) {
         _uiState.value =
             _uiState.value.copy(showLoadingDialog = isVisible)
     }
@@ -128,7 +126,6 @@ class BookAppointmentViewModel @Inject constructor(
         val selectedTimeSocketIndex = uiState.value.chosenTimeSocketIndex
         try {
             if (selectedTimeSocketIndex != null) {
-
                 viewModelScope.launch {
                     updateLoadingDialogVisibilityState(true)
                     appointmentRepository.addAppointment(
@@ -142,17 +139,15 @@ class BookAppointmentViewModel @Inject constructor(
                                 day = uiState.value.bookedDate.dayOfMonth
                             ),
                             timeSocket = uiState.value.freeTimes[selectedTimeSocketIndex],
-                            vaccineId = uiState.value.vaccineName ?: "",
+                            vaccineId = uiState.value.currentSelectedVaccineId ?: "",
                             clinic = uiState.value.clinic,
-                            patientName =uiState.value.userAndChildrenNames[uiState.value.chosenNameIndex]
+                            patientName = uiState.value.userAndChildrenNames[uiState.value.chosenNameIndex]
                         )
                     )
                     _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = true)
                     updateLoadingDialogVisibilityState(false)
 
                 }
-            } else {
-                throw Exception("You have to choose a time for your appointment")
             }
         } catch (e: Exception) {
             updateLoadingDialogVisibilityState(false)
@@ -189,12 +184,13 @@ class BookAppointmentViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentSelectedIndex(index:Int,vaccineId:String) {
-        _uiState.update { it.copy(currentSelectedVaccineIndex = index) }
-        updateVaccineId(vaccineId)
-    }
-    fun updateVaccineId(vaccineId:String) {
-        _uiState.update { it.copy(vaccineName = vaccineId) }
+    fun updateCurrentSelectedId(index: Int, vaccineId: String) {
+        _uiState.update {
+            it.copy(
+                currentSelectedVaccineIndex = index,
+                currentSelectedVaccineId = vaccineId
+            )
+        }
     }
 
 }

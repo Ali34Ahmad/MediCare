@@ -79,7 +79,7 @@ class SignUpViewModel @Inject constructor(
     }
 
 
-    fun signUp()=viewModelScope.launch {
+    fun signUp() = viewModelScope.launch {
         _uiState.value =
             _uiState.value.copy(
                 emailErrorMessage = Validator.checkEmail(uiState.value.email),
@@ -90,25 +90,25 @@ class SignUpViewModel @Inject constructor(
             )
 
         if (checkAllEnteredData()) {
-                try {
-                    updateLoadingDialogVisibilityState()
-                    accountService.signUp(uiState.value.email, uiState.value.password)
-                    userRepository.addNewUser(
-                        User(
-                            email = uiState.value.email,
-                            firstName = uiState.value.firstName,
-                            lastName = uiState.value.secondName,
-                            gender = uiState.value.gender ?: Gender.MALE,
-                        )
+            try {
+                updateLoadingDialogVisibilityState()
+                val authState = accountService.signUp(uiState.value.email, uiState.value.password)
+                userRepository.addNewUser(
+                    User(
+                        email = uiState.value.email,
+                        firstName = uiState.value.firstName,
+                        lastName = uiState.value.secondName,
+                        gender = uiState.value.gender ?: Gender.MALE,
                     )
-                    updateLoadingDialogVisibilityState()
-                    _uiState.value=_uiState.value.copy(signUpState = AuthState.Success)
-                    Log.e("Sign Up", "Successful")
-                } catch (e: Exception) {
-                    _uiState.value=_uiState.value.copy(signUpState = AuthState.Error(e))
-                    updateLoadingDialogVisibilityState()
-                    updateErrorDialogVisibilityState()
-                    Log.e("Sign Up", e.message ?: "Error")
+                )
+                updateLoadingDialogVisibilityState()
+                _uiState.value = _uiState.value.copy(signUpState = authState)
+                Log.e("Sign Up", "Successful")
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(signUpState = AuthState.Error(e))
+                updateLoadingDialogVisibilityState()
+                updateErrorDialogVisibilityState()
+                Log.e("Sign Up", e.message ?: "Error")
             }
         }
     }

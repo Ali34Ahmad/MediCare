@@ -22,6 +22,7 @@ import com.example.medicare.core.navigateToBookAppointment
 import com.example.medicare.core.navigateToVaccinationTable
 import com.example.medicare.core.navigateUp
 import com.example.medicare.core.popUpToAndNavigate
+import com.example.medicare.core.switchToDestination
 import com.example.medicare.data.model.appointment.Appointment
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.presentation.addchild.AddChildScreen
@@ -45,7 +46,6 @@ import com.example.medicare.presentation.vaccinationappointments.VaccinationAppo
 import com.example.medicare.presentation.vaccinationappointments.VaccinationAppointmentsScreen
 import com.example.medicare.presentation.vaccinationtable.VaccinationTableScreen
 import com.example.medicare.presentation.vaccinationtable.VaccinationTableViewModel
-import kotlinx.coroutines.flow.collect
 
 val screenWhereToShowBottomBar = listOf(
     Destination.Home,
@@ -84,16 +84,16 @@ fun MedicareApp(
             navController.navigate(Destination.AddChild, viewModel)
         },
         onHomeItemClicked = {
-            navController.navigate(Destination.Home, viewModel)
+            navController.switchToDestination(Destination.Home, viewModel)
         },
         onVaccinesItemClicked = {
-            navController.navigate(Destination.VaccinationAppointments, viewModel)
+            navController.switchToDestination(Destination.VaccinationAppointments, viewModel)
         },
         onAppointmentItemClicked = {
-            navController.navigate(Destination.ClinicAppointments, viewModel)
+            navController.switchToDestination(Destination.ClinicAppointments, viewModel)
         },
         onChildrenItemClicked = {
-            navController.navigate(Destination.Children, viewModel)
+            navController.switchToDestination(Destination.Children, viewModel)
         },
         selectedIndex = uiState.value.selectedIndex
     ) {
@@ -200,7 +200,7 @@ fun MedicareApp(
                     clinicAppointments = clinicAppointments,
                     vaccinationAppointments = vaccinationAppointments,
                     navigateToBookAppointment = { clinicId ->
-                        navController.navigateToBookAppointment(clinicId,viewModel)
+                        navController.navigateToBookAppointment(clinicId, viewModel)
                     },
                     navigateToVaccinationAppointment = {
                         navController.navigate(Destination.VaccinationAppointments, viewModel)
@@ -234,7 +234,7 @@ fun MedicareApp(
                                     appointment.isUpcoming()
                                 else
                                     !appointment.isUpcoming()
-                            appointment.vaccineId.isNotBlank()&&isUpcoming
+                            appointment.vaccineId.isNotBlank() && isUpcoming
                         }
 
                 VaccinationAppointmentsScreen(
@@ -260,7 +260,7 @@ fun MedicareApp(
                                     appointment.isUpcoming()
                                 else
                                     !appointment.isUpcoming()
-                            appointment.vaccineId.isBlank()&&isUpcoming
+                            appointment.vaccineId.isBlank() && isUpcoming
                         }
 
                 ClinicAppointmentsScreen(
@@ -279,7 +279,7 @@ fun MedicareApp(
                 val children: List<Child> =
                     childrenViewModel.children.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
-                viewModel.updateFABVisibility(children.isNotEmpty()&&isChildrenScreen)
+                viewModel.updateFABVisibility(children.isNotEmpty() && isChildrenScreen)
 
                 ChildrenScreen(
                     uiState = childrenUiState.value,
@@ -321,7 +321,7 @@ fun MedicareApp(
                     updateCheckStateEvent = addChildViewModel::updateCheckState,
                     updateErrorDialogVisibilityState = addChildViewModel::updateErrorDialogVisibilityState,
                     uiState = addChildUiState.value,
-                    clearTextFieldValue=addChildViewModel::clearBirthDayTextFieldValue,
+                    clearTextFieldValue = addChildViewModel::clearBirthDayTextFieldValue,
                     updateBookedDateEvent = addChildViewModel::updateDateOfBirth,
                 )
             }
@@ -344,7 +344,8 @@ fun MedicareApp(
                 val notificationViewModel: NotificationViewModel = hiltViewModel()
                 val notificationUiState = notificationViewModel.uiState.collectAsState()
 
-                val listOfNotifications=notificationViewModel.notifications.collectAsState(initial = emptyList())
+                val listOfNotifications =
+                    notificationViewModel.notifications.collectAsState(initial = emptyList())
 
                 NotificationScreen(
                     onNavigateUpClick = {
@@ -359,17 +360,19 @@ fun MedicareApp(
                 val bookAppointmentViewModel: BookAppointmentViewModel = hiltViewModel()
                 val bookAppointmentUiState = bookAppointmentViewModel.uiState.collectAsState()
 
-                val availableVaccines=bookAppointmentViewModel.vaccines.collectAsState(initial = emptyList())
+                val availableVaccines =
+                    bookAppointmentViewModel.vaccines.collectAsState(initial = emptyList())
 
                 val children =
                     bookAppointmentViewModel.listOfChildren.collectAsStateWithLifecycle(initialValue = emptyList()).value
-                val user=bookAppointmentViewModel.user.collectAsState(initial = null)
+                val user = bookAppointmentViewModel.user.collectAsState(initial = null)
 
-                val userAndChildrenNames: MutableList<String> = mutableListOf("${user.value?.firstName} ${user.value?.lastName}" )
+                val userAndChildrenNames: MutableList<String> =
+                    mutableListOf("${user.value?.firstName} ${user.value?.lastName}")
                 children.forEach { child ->
                     userAndChildrenNames.add("${child.firstName} ${child.lastName}")
                 }
-                Log.v("Username",user.value?.firstName.toString())
+                Log.v("Username", user.value?.firstName.toString())
 
                 val args = it.toRoute<Destination.BookAppointment>()
                 BookAppointmentScreen(
@@ -391,9 +394,9 @@ fun MedicareApp(
                         navController.navigate(Destination.Home, viewModel)
                     },
                     availableVaccines = availableVaccines.value,
-                    onAvailableVaccineListItemClick = bookAppointmentViewModel::updateCurrentSelectedIndex,
+                    onAvailableVaccineListItemClick = bookAppointmentViewModel::updateCurrentSelectedId,
                     updateErrorDialogVisibilityState = bookAppointmentViewModel::updateErrorDialogVisibilityState,
-                    userAndChildrenNames=userAndChildrenNames
+                    userAndChildrenNames = userAndChildrenNames
                 )
             }
         }

@@ -52,6 +52,7 @@ import com.example.medicare.core.composables.TimeSocketsPager
 import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.core.navigate
 import com.example.medicare.core.toFullDate
+import com.example.medicare.data.fake.vaccines
 import com.example.medicare.data.model.child.Child
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.FullDate
@@ -73,7 +74,7 @@ fun BookAppointmentScreen(
     clinicId: String,
     modifier: Modifier = Modifier,
     uiState: BookAppointmentUiState,
-    userAndChildrenNames:List<String>,
+    userAndChildrenNames: List<String>,
     updateClinicEvent: (String) -> Unit,
     updateUserAndChildrenNamesEvent: (List<String>) -> Unit,
     updateBookedDateEvent: (LocalDate) -> Unit,
@@ -83,16 +84,14 @@ fun BookAppointmentScreen(
     updateChosenNameIndexEvent: (Int) -> Unit,
     updateNamesMenuVisibilityStateEvent: () -> Unit,
     availableVaccines: List<Vaccine>,
-    onAvailableVaccineListItemClick: (Int,String) -> Unit,
+    onAvailableVaccineListItemClick: (index: Int, vaccineId: String) -> Unit,
 ) {
     try {
         updateClinicEvent(clinicId)
         updateUserAndChildrenNamesEvent(userAndChildrenNames)
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
     }
-
-
 
 
     val timeSockets =
@@ -126,7 +125,7 @@ fun BookAppointmentScreen(
     )
 
 
-    LaunchedEffect(uiState.isBookAppointmentIsSuccessful){
+    LaunchedEffect(uiState.isBookAppointmentIsSuccessful) {
         if (uiState.isBookAppointmentIsSuccessful)
             navigateToHomeScreen()
     }
@@ -182,18 +181,23 @@ fun BookAppointmentScreen(
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
                 if (uiState.clinic.name == stringResource(id = R.string.vaccines)) {
-                    if(availableVaccines.isNotEmpty()) {
+                    if (availableVaccines.isNotEmpty()) {
                         HomeScreenSection(title = R.string.available_vaccines) {
                             Column {
                                 AvailableVaccineList(
                                     availableVaccines = availableVaccines,
                                     selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
-                                    onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
+                                    onAvailableVaccineListItemClick = { index ->
+                                        onAvailableVaccineListItemClick(
+                                            index,
+                                            vaccines[index].id,
+                                        )
+                                    }
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.medium))
                             }
                         }
-                    }else{
+                    } else {
                         NoListItemAvailableComponent(text = R.string.no_available_vaccines)
                     }
                 }
@@ -260,7 +264,7 @@ fun PagerController(
     pagesNumber: Int = 0,
     modifier: Modifier = Modifier,
 ) {
-    if (pagesNumber != 0){
+    if (pagesNumber != 0) {
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -372,8 +376,12 @@ fun ChoosePatientNameDropDownMenu(
         ) {
             listOfNames.forEachIndexed { index, name ->
                 DropdownMenuItem(
-                    text = { Text(name,
-                        overflow = TextOverflow.Ellipsis) },
+                    text = {
+                        Text(
+                            name,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
                     onClick = {
                         onMenuItemClick(index)
                         onDismissRequest()
@@ -415,7 +423,7 @@ private fun BookAppointmentScreenPreview() {
                 slideToPreviousPageEvent = {},
                 uiState = BookAppointmentUiState(),
                 availableVaccines = emptyList(),
-                onAvailableVaccineListItemClick = {int,string->},
+                onAvailableVaccineListItemClick = { int, string -> },
                 updateErrorDialogVisibilityState = {}
             )
         }

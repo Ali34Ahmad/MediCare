@@ -11,6 +11,7 @@ import com.example.doctor.core.composables.MainScaffold
 import com.example.doctor.core.composables.generateDaySocketsList
 import com.example.doctor.core.navigate
 import com.example.doctor.core.popUpToAndNavigate
+import com.example.doctor.core.switchToDestination
 import com.example.doctor.data.model.vaccine.Vaccine
 import com.example.doctor.presentation.login.LoginScreen
 import com.example.doctor.presentation.login.LoginViewModel
@@ -44,10 +45,10 @@ fun MedicareApp(
     MainScaffold(
         showBottomBar = showBottomNavBar,
         onScheduleItemClicked = {
-            navController.navigate(Destination.Schedule, viewModel)
+            navController.switchToDestination(Destination.Schedule, viewModel)
         },
         onProfileItemClicked = {
-            navController.navigate(Destination.Profile, viewModel)
+            navController.switchToDestination(Destination.Profile, viewModel)
         },
         selectedIndex = uiState.value.selectedIndex
     ) {

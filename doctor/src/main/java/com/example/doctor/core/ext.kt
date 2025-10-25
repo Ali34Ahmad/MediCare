@@ -193,6 +193,19 @@ inline fun <reified T : Any> NavController.popUpToAndNavigate(
     viewModel.updateCurrentDestination(destination)
 }
 
+fun <T : Any> NavController.switchToDestination(destination: T, viewModel:MedicareAppViewModel) {
+
+    val currentDestinationId = currentDestination?.id
+
+    navigate(destination) {
+        currentDestinationId?.let {
+            popUpTo(it) {
+                inclusive = true
+            }
+        }
+    }
+    viewModel.updateCurrentDestination(destination)
+}
 
 fun NavController.navigateUp(viewModel: MedicareAppViewModel) {
     navigateUp()
