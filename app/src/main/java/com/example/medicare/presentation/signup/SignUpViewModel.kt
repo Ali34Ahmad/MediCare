@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -78,6 +79,9 @@ class SignUpViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = !uiState.value.showLoadingDialog)
     }
 
+    private fun updateSnackBarState(isVisible: Boolean) {
+        _uiState.update { it.copy(showSnackBar = isVisible) }
+    }
 
     fun signUp() = viewModelScope.launch {
         _uiState.value =
@@ -103,12 +107,13 @@ class SignUpViewModel @Inject constructor(
                 )
                 updateLoadingDialogVisibilityState()
                 _uiState.value = _uiState.value.copy(signUpState = authState)
-                Log.e("Sign Up", "Successful")
+                updateSnackBarState(authState is AuthState.Error)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(signUpState = AuthState.Error(e))
                 updateLoadingDialogVisibilityState()
                 updateErrorDialogVisibilityState()
                 Log.e("Sign Up", e.message ?: "Error")
+                updateSnackBarState(true)
             }
         }
     }

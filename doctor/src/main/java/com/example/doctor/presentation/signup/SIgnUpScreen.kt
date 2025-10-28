@@ -14,9 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -79,7 +84,7 @@ fun SignUpScreen(
     )
 
 
-    LaunchedEffect(uiState.isSuccessful){
+    LaunchedEffect(uiState.isSuccessful) {
         if (uiState.isSuccessful)
             navigateToScheduleScreen()
     }
@@ -108,137 +113,163 @@ fun SignUpScreen(
             onDismissRequest = onClinicImagePickerDialogDismissRequest,
             showProgressBar = uiState.showClinicProgressBar,
         )
-    if (!uiState.showDoctorImageUploader && !uiState.showClinicImageUploader)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(Spacing.medium),
-            verticalArrangement = Arrangement.Center
-        ) {
-            AppLogo(modifier = Modifier.fillMaxWidth())
 
-            Spacer(modifier = Modifier.height(Spacing.large))
+    val snackBarHostState = remember { SnackbarHostState() }
 
-            OutlinedTextFieldComponent(
-                title = stringResource(id = R.string.email),
-                textFieldValue = uiState.email,
-                onValueChange = {
-                    updateEmailEvent(it)
-                },
-                hint = R.string.email_hint,
-                errorMessage = uiState.emailErrorMessage
+    val errorMessage = stringResource(R.string.something_went_wrong)
+    LaunchedEffect(uiState.showSnackBar) {
+        if (uiState.showSnackBar) {
+            snackBarHostState.showSnackbar(
+                message = errorMessage,
+                duration = SnackbarDuration.Short
             )
-
-            Spacer(modifier = Modifier.height(Spacing.medium))
-
-            OutlinedTextFieldWithTwoFieldsComponent(
-                title = stringResource(id = R.string.name),
-                textFieldValue1 = uiState.firstName,
-                textFieldValue2 = uiState.secondName,
-                onValueChange1 = {
-                    updateFirstNameEvent(it)
-                },
-                onValueChange2 = {
-                    updateSecondNameEvent(it)
-                },
-                hint1 = R.string.first_name_hint,
-                hint2 = R.string.second_name_hint,
-                errorMessage1 = uiState.firstNameErrorMessage,
-                errorMessage2 = uiState.secondNameErrorMessage,
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.medium))
-
-            OutlinedTextFieldComponent(
-                title = stringResource(id = R.string.speciality),
-                textFieldValue = uiState.speciality,
-                onValueChange = {
-                    updateSpecialityEvent(it)
-                },
-                hint = R.string.ophthalmologist,
-                errorMessage = uiState.specialityErrorMessage
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.medium))
-
-            OutlinedTextFieldComponent(
-                title = stringResource(id = R.string.clinic_name),
-                textFieldValue = uiState.clinicName,
-                onValueChange = {
-                    updateClinicNameEvent(it)
-                },
-                hint = R.string.test_eye,
-                errorMessage = uiState.clinicNameErrorMessage
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.medium))
-
-            OutlinedTextFieldComponent(
-                title = stringResource(id = R.string.password),
-                textFieldValue = uiState.password,
-                onValueChange = {
-                    updatePasswordEvent(it)
-                },
-                hint = R.string.password,
-                errorMessage = uiState.passwordErrorMessage,
-                showEyeTrailingIcon = true,
-                onVisibilityIconClicked = {
-                    updatePasswordVisibilityStateEvent()
-                },
-                isPasswordVisible = uiState.isPasswordVisible,
-                imeAction = ImeAction.Done,
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.medium))
-
-            ChooseTab(
-                title = stringResource(id = R.string.gender),
-                text1 = R.string.male,
-                text2 = R.string.female,
-                chooseTabState = uiState.chooseTabState,
-                onChooseChange = { chooseTabState ->
-                    updateGenderEvent(chooseTabState)
-                },
-                errorMessage = uiState.genderError
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.large))
-
-            CheckBoxComponent(
-                checked = uiState.acceptPrivacyIsChecked,
-                onCheckedChange = {
-                    updateCheckStateEvent(it)
-                },
-                text1 = stringResource(id = R.string.checkbox_auth_text1),
-                text2 = stringResource(id = R.string.checkbox_auth_text2),
-                text3 = stringResource(id = R.string.checkbox_auth_text3),
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.large))
-
-            ElevatedButtonComponent(
-                text = R.string.sign_up,
-                onClick = {
-                    onSignUpClickEvent()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                isDisabled = false
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.large))
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                SpannableTextComponent(
-                    text1 = stringResource(id = R.string.already_have_account_part1),
-                    text2 = stringResource(id = R.string.already_have_account_part2),
-                    onCLick = onLoginClickEvent
-                )
-            }
         }
+    }
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+            )
+        },
+    ) { contentPadding ->
+        Surface(modifier = Modifier.padding(contentPadding)) {
+            if (!uiState.showDoctorImageUploader && !uiState.showClinicImageUploader) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(Spacing.medium),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AppLogo(modifier = Modifier.fillMaxWidth())
+
+                    Spacer(modifier = Modifier.height(Spacing.large))
+
+                    OutlinedTextFieldComponent(
+                        title = stringResource(id = R.string.email),
+                        textFieldValue = uiState.email,
+                        onValueChange = {
+                            updateEmailEvent(it)
+                        },
+                        hint = R.string.email_hint,
+                        errorMessage = uiState.emailErrorMessage
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    OutlinedTextFieldWithTwoFieldsComponent(
+                        title = stringResource(id = R.string.name),
+                        textFieldValue1 = uiState.firstName,
+                        textFieldValue2 = uiState.secondName,
+                        onValueChange1 = {
+                            updateFirstNameEvent(it)
+                        },
+                        onValueChange2 = {
+                            updateSecondNameEvent(it)
+                        },
+                        hint1 = R.string.first_name_hint,
+                        hint2 = R.string.second_name_hint,
+                        errorMessage1 = uiState.firstNameErrorMessage,
+                        errorMessage2 = uiState.secondNameErrorMessage,
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    OutlinedTextFieldComponent(
+                        title = stringResource(id = R.string.speciality),
+                        textFieldValue = uiState.speciality,
+                        onValueChange = {
+                            updateSpecialityEvent(it)
+                        },
+                        hint = R.string.ophthalmologist,
+                        errorMessage = uiState.specialityErrorMessage
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    OutlinedTextFieldComponent(
+                        title = stringResource(id = R.string.clinic_name),
+                        textFieldValue = uiState.clinicName,
+                        onValueChange = {
+                            updateClinicNameEvent(it)
+                        },
+                        hint = R.string.test_eye,
+                        errorMessage = uiState.clinicNameErrorMessage
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    OutlinedTextFieldComponent(
+                        title = stringResource(id = R.string.password),
+                        textFieldValue = uiState.password,
+                        onValueChange = {
+                            updatePasswordEvent(it)
+                        },
+                        hint = R.string.password,
+                        errorMessage = uiState.passwordErrorMessage,
+                        showEyeTrailingIcon = true,
+                        onVisibilityIconClicked = {
+                            updatePasswordVisibilityStateEvent()
+                        },
+                        isPasswordVisible = uiState.isPasswordVisible,
+                        imeAction = ImeAction.Done,
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    ChooseTab(
+                        title = stringResource(id = R.string.gender),
+                        text1 = R.string.male,
+                        text2 = R.string.female,
+                        chooseTabState = uiState.chooseTabState,
+                        onChooseChange = { chooseTabState ->
+                            updateGenderEvent(chooseTabState)
+                        },
+                        errorMessage = uiState.genderError
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.large))
+
+                    CheckBoxComponent(
+                        checked = uiState.acceptPrivacyIsChecked,
+                        onCheckedChange = {
+                            updateCheckStateEvent(it)
+                        },
+                        text1 = stringResource(id = R.string.checkbox_auth_text1),
+                        text2 = stringResource(id = R.string.checkbox_auth_text2),
+                        text3 = stringResource(id = R.string.checkbox_auth_text3),
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.large))
+
+                    ElevatedButtonComponent(
+                        text = R.string.sign_up,
+                        onClick = {
+                            onSignUpClickEvent()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        isDisabled = false
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.large))
+
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        SpannableTextComponent(
+                            text1 = stringResource(id = R.string.already_have_account_part1),
+                            text2 = stringResource(id = R.string.already_have_account_part2),
+                            onCLick = onLoginClickEvent
+                        )
+                    }
+                }
+            }
+
+        }
+    }
+
 }
 
 @Preview(showBackground = true)
@@ -256,7 +287,7 @@ private fun SignUpScreenPreview() {
                 updateEmailEvent = {},
                 updatePasswordVisibilityStateEvent = {},
                 updateGenderEvent = {},
-                updateSpecialityEvent={},
+                updateSpecialityEvent = {},
                 updateErrorDialogVisibilityState = {},
                 updateFirstNameEvent = {},
                 updateClinicNameEvent = {},

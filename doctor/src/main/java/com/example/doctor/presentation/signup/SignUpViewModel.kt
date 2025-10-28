@@ -111,6 +111,9 @@ class SignUpViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = isVisible)
     }
 
+    private fun updateSnackBarState(isVisible: Boolean) {
+        _uiState.update { it.copy(showSnackBar = isVisible) }
+    }
 
     fun signUp() {
         _uiState.value =
@@ -127,7 +130,7 @@ class SignUpViewModel @Inject constructor(
                 try {
                     viewModelScope.launch {
                         updateLoadingDialogVisibilityState(true)
-                        accountService.signUp(uiState.value.email, uiState.value.password)
+                        val authState=accountService.signUp(uiState.value.email, uiState.value.password)
 
                         doctorRepository.addDoctor(
                             Doctor(
@@ -142,11 +145,13 @@ class SignUpViewModel @Inject constructor(
                         updateLoadingDialogVisibilityState(false)
                         _uiState.update { it.copy(authState = AuthState.Success) }
                         updateDoctorImagePickerDialogVisibilityState(true)
+                        updateSnackBarState(authState is AuthState.Error)
                     }
                 } catch (e: Exception) {
                     _uiState.update { it.copy(authState = AuthState.Error(e)) }
                     updateLoadingDialogVisibilityState(false)
                     updateErrorDialogVisibilityState(true)
+                    updateSnackBarState(false)
                     Log.e("Sign Up", e.message ?: "Error")
                 }
         }

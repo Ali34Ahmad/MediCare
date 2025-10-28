@@ -10,9 +10,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -60,91 +68,116 @@ fun LoginScreen(
         if (uiState.authState is AuthState.Success)
             navigateToHomeScreen()
     }
+    val snackBarHostState = remember { SnackbarHostState() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Spacing.medium),
-        verticalArrangement = Arrangement.Center
-    ) {
-        AppLogo(modifier = Modifier.fillMaxWidth())
-
-        Spacer(modifier = Modifier.height(Spacing.large))
-
-        OutlinedTextFieldComponent(
-            title = stringResource(id = R.string.email),
-            textFieldValue = uiState.email,
-            onValueChange = {
-                updateEmailEvent(it)
-            },
-            hint = R.string.email_hint,
-            errorMessage = uiState.emailErrorMessage
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.medium))
-
-        OutlinedTextFieldComponent(
-            title = stringResource(id = R.string.password),
-            textFieldValue = uiState.password,
-            onValueChange = {
-                updatePasswordEvent(it)
-            },
-            hint = R.string.password,
-            errorMessage = uiState.passwordErrorMessage ,
-            showEyeTrailingIcon = true,
-            onVisibilityIconClicked = {
-                updatePasswordVisibilityStateEvent()
-            },
-            imeAction = ImeAction.Done,
-            isPasswordVisible = uiState.isPasswordVisible
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.large))
-
-        CheckBoxComponent(
-            checked = uiState.acceptPrivacyIsChecked,
-            onCheckedChange = {
-                updateCheckStateEvent(it)
-            },
-            text1 = stringResource(id = R.string.checkbox_auth_text1),
-            text2 = stringResource(id = R.string.checkbox_auth_text2),
-            text3 = stringResource(id = R.string.checkbox_auth_text3),
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.large))
-
-        ElevatedButtonComponent(
-            text = R.string.log_in,
-            onClick = {
-                onLoginClick()
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.large))
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            SpannableTextComponent(
-                text1 = stringResource(id = R.string.do_not_have_account_part1),
-                text2 = stringResource(id = R.string.do_not_have_account_part2),
-                onCLick = onSignUpClick
+    val errorMessage = stringResource(R.string.something_went_wrong)
+    LaunchedEffect(uiState.showSnackBar) {
+        if (uiState.showSnackBar) {
+            snackBarHostState.showSnackbar(
+                message = errorMessage,
+                duration = SnackbarDuration.Short
             )
         }
-        Spacer(modifier = Modifier.height(Spacing.large))
+    }
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+            )
+        },
+    ) { contentPadding ->
+        Surface(modifier = Modifier.padding(contentPadding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(Spacing.medium),
+                verticalArrangement = Arrangement.Center
+            ) {
+                AppLogo(modifier = Modifier.fillMaxWidth())
+
+                Spacer(modifier = Modifier.height(Spacing.large))
+
+                OutlinedTextFieldComponent(
+                    title = stringResource(id = R.string.email),
+                    textFieldValue = uiState.email,
+                    onValueChange = {
+                        updateEmailEvent(it)
+                    },
+                    hint = R.string.email_hint,
+                    errorMessage = uiState.emailErrorMessage
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.medium))
+
+                OutlinedTextFieldComponent(
+                    title = stringResource(id = R.string.password),
+                    textFieldValue = uiState.password,
+                    onValueChange = {
+                        updatePasswordEvent(it)
+                    },
+                    hint = R.string.password,
+                    errorMessage = uiState.passwordErrorMessage,
+                    showEyeTrailingIcon = true,
+                    onVisibilityIconClicked = {
+                        updatePasswordVisibilityStateEvent()
+                    },
+                    imeAction = ImeAction.Done,
+                    isPasswordVisible = uiState.isPasswordVisible
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.large))
+
+                CheckBoxComponent(
+                    checked = uiState.acceptPrivacyIsChecked,
+                    onCheckedChange = {
+                        updateCheckStateEvent(it)
+                    },
+                    text1 = stringResource(id = R.string.checkbox_auth_text1),
+                    text2 = stringResource(id = R.string.checkbox_auth_text2),
+                    text3 = stringResource(id = R.string.checkbox_auth_text3),
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.large))
+
+                ElevatedButtonComponent(
+                    text = R.string.log_in,
+                    onClick = {
+                        onLoginClick()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.large))
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpannableTextComponent(
+                        text1 = stringResource(id = R.string.do_not_have_account_part1),
+                        text2 = stringResource(id = R.string.do_not_have_account_part2),
+                        onCLick = onSignUpClick
+                    )
+                }
+                Spacer(modifier = Modifier.height(Spacing.large))
+            }
+        }
+
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
+    var showSnackBar by remember { mutableStateOf(false) }
     MediCareTheme {
         Surface {
             LoginScreen(
-                onLoginClick = { AuthState.Loading },
+                onLoginClick = {
+                    showSnackBar=!showSnackBar
+                },
                 onSignUpClick = {},
                 navigateToHomeScreen = {},
                 updateErrorDialogVisibilityStateEvent = {},
@@ -152,7 +185,9 @@ private fun LoginScreenPreview() {
                 updateEmailEvent = {},
                 updatePasswordEvent = {},
                 updateCheckStateEvent = {},
-                uiState = LoginUiState(),
+                uiState = LoginUiState(
+                    showSnackBar = showSnackBar
+                ),
             )
         }
     }

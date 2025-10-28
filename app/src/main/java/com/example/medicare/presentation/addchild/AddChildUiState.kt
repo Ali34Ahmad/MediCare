@@ -31,4 +31,5 @@ data class AddChildUiState(
     val showErrorDialog:Boolean=false,
     val isAddChildSuccessful:Boolean=false,
     val datePickerState: UseCaseState = UseCaseState(),
+    val showSnackBar:Boolean  = false,
 )

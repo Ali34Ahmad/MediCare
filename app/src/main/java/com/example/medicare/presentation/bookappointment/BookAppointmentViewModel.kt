@@ -122,13 +122,17 @@ class BookAppointmentViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = isVisible)
     }
 
+    private fun updateSnackBarState(isVisible: Boolean) {
+        _uiState.update { it.copy(showSnackBar = isVisible) }
+    }
+
     fun bookAppointment() {
         val selectedTimeSocketIndex = uiState.value.chosenTimeSocketIndex
         try {
             if (selectedTimeSocketIndex != null) {
                 viewModelScope.launch {
                     updateLoadingDialogVisibilityState(true)
-                    appointmentRepository.addAppointment(
+                    val isSuccessful=appointmentRepository.addAppointment(
                         Appointment(
                             id = "",
                             clinicId = uiState.value.clinic.id,
@@ -144,9 +148,9 @@ class BookAppointmentViewModel @Inject constructor(
                             patientName = uiState.value.userAndChildrenNames[uiState.value.chosenNameIndex]
                         )
                     )
-                    _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = true)
+                    _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = isSuccessful)
                     updateLoadingDialogVisibilityState(false)
-
+                    updateSnackBarState(!isSuccessful)
                 }
             }
         } catch (e: Exception) {
@@ -154,6 +158,7 @@ class BookAppointmentViewModel @Inject constructor(
             updateErrorDialogVisibilityState(true)
             Log.e("Book Appointment", e.message ?: "Error")
             _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = false)
+            updateSnackBarState(true)
         }
     }
 

@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,6 +51,10 @@ class LoginViewModel @Inject constructor(
             _uiState.value.copy(showLoadingDialog = isVisible)
     }
 
+    private fun updateSnackBarState(isVisible: Boolean) {
+        _uiState.update { it.copy(showSnackBar = isVisible) }
+    }
+
     fun login() {
         _uiState.value=
             _uiState.value.copy(
@@ -63,14 +68,16 @@ class LoginViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     updateLoadingDialogVisibilityState(true)
-                    accountService.login(uiState.value.email,uiState.value.password)
+                    val authState = accountService.login(uiState.value.email,uiState.value.password)
                     updateLoadingDialogVisibilityState(false)
-                    _uiState.value = _uiState.value.copy(authState = AuthState.Success)
+                    _uiState.value = _uiState.value.copy(authState = authState)
+                    updateSnackBarState(authState is AuthState.Error)
                 }catch (e:Exception){
                     _uiState.value = _uiState.value.copy(authState = AuthState.Error(e))
                     updateLoadingDialogVisibilityState(false)
                     updateErrorDialogVisibilityState(true)
                     Log.e("Log in",e.message?:"Error")
+                    updateSnackBarState(true)
                 }
             }
         }

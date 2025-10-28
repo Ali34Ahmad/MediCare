@@ -12,4 +12,5 @@ data class LoginUiState(
     val showLoadingDialog: Boolean = false,
     val showErrorDialog: Boolean = false,
     val authState: AuthState = AuthState.Loading,
+    val showSnackBar:Boolean  = false,
 )

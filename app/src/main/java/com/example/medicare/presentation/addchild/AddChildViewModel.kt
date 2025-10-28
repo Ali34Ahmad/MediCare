@@ -122,6 +122,11 @@ class AddChildViewModel @Inject constructor(
         _uiState.update { it.copy(showLoadingDialog = isVisible) }
     }
 
+    private fun updateSnackBarState(isVisible: Boolean) {
+        _uiState.update { it.copy(showSnackBar = isVisible) }
+    }
+
+
     fun addChild() {
         extractNumberComponents("${uiState.value.upNumber}/${uiState.value.downNumber}")
         _uiState.value =
@@ -143,7 +148,7 @@ class AddChildViewModel @Inject constructor(
                     val month: Month =
                         getMonthByNumber(uiState.value.dateOfBirth?.month?.ordinal ?: 1)
                     val day: Int = uiState.value.dateOfBirth?.dayOfMonth ?: 1
-                    childRepository.addChild(
+                    val isSuccessful=childRepository.addChild(
                         Child(
                             firstName = uiState.value.childFirstName,
                             lastName = uiState.value.childSecondName,
@@ -163,16 +168,17 @@ class AddChildViewModel @Inject constructor(
                     )
 
                     updateLoadingDialogVisibilityState(false)
-                    Log.v("Loading",uiState.value.showLoadingDialog.toString())
                     _uiState.update {
-                        it.copy(isAddChildSuccessful = true)
+                        it.copy(isAddChildSuccessful = isSuccessful)
                     }
+                    updateSnackBarState(!isSuccessful)
                 }
             } catch (e: Exception) {
                 updateLoadingDialogVisibilityState(false)
                 updateErrorDialogVisibilityState(true)
                 _uiState.update { it.copy(isAddChildSuccessful = false) }
                 Log.e("Add Child", e.message ?: "Error")
+                updateSnackBarState(true)
             }
         }
     }

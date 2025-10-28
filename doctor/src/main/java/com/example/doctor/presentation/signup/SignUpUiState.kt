@@ -41,4 +41,5 @@ data class SignUpUiState(
     val clinicImageUrl:String="",
     val speciality: String="",
     val specialityErrorMessage:Int?=null,
-)
+    val showSnackBar:Boolean  = false,
+    )

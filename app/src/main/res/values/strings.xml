@@ -137,4 +137,5 @@
     <string name="no_upcoming_appointments">No upcoming appointments.</string>
     <string name="no_upcoming_vaccination_appointments">No upcoming vaccination appointments.</string>
     <string name="no_available_vaccines">No available vaccines now.</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

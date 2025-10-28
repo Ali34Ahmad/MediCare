@@ -61,4 +61,5 @@ data class BookAppointmentUiState (
     val vaccineName:String?=null,
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
+    val showSnackBar:Boolean  = false,
 )

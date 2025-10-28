@@ -126,8 +126,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             if (clinicId != null)
                 appointmentsToNumberOfVisits.add(
-                    //appointmentRepository.getNumberOfAppointments(userId,clinicId)
-                    Random.nextInt(1, 10)
+                    appointmentRepository.getNumberOfAppointments(userId,clinicId)
                 )
             Log.v("NumberOfVisitsCor", appointmentsToNumberOfVisits.toString())
             Log.v("NumberOfVisitsCor:ClinicId", clinicId.toString())

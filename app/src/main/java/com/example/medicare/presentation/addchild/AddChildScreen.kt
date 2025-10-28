@@ -1,6 +1,5 @@
 package com.example.medicare.presentation.addchild
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -30,8 +34,6 @@ import com.example.medicare.core.composables.ErrorDialog
 import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.MyDatePickerDialog
-import com.example.medicare.core.navigate
-import com.example.medicare.presentation.navigation.Destination
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 import java.time.LocalDate
@@ -84,7 +86,24 @@ fun AddChildScreen(
             navigateToChildrenScreen()
     }
 
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    val errorMessage = stringResource(R.string.something_went_wrong)
+    LaunchedEffect(uiState.showSnackBar) {
+        if (uiState.showSnackBar) {
+            snackBarHostState.showSnackbar(
+                message = errorMessage,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+            )
+        },
         topBar = {
             MedicareTopAppBar(
                 showNavigateUpIconButton = true,

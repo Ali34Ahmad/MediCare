@@ -21,4 +21,5 @@ data class SignUpUiState(
     val showLoadingDialog:Boolean=false,
     val showErrorDialog:Boolean=false,
     val signUpState:AuthState=AuthState.Loading,
+    val showSnackBar:Boolean  = false,
 )
