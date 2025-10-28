@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.medicare.R
 import com.example.medicare.core.composables.ErrorDialog
+import com.example.medicare.core.composables.LoadingComponent
 import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.data.model.child.Child
@@ -68,7 +69,7 @@ fun ChildrenScreen(
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
             if (children.isEmpty()) {
-                NoChildrenAddedYet(onAddChildClick = navigateToAddChildScreen)
+                LoadingComponent()
             } else {
                 AddedChildrenList(
                     children = children,
