@@ -21,6 +21,7 @@ import com.example.doctor.R
 import com.example.doctor.core.composables.ClinicAppointmentVerticalList
 import com.example.doctor.core.composables.DatePickerButtonComponent
 import com.example.doctor.core.composables.DaySocketHorizontalList
+import com.example.doctor.core.composables.LoadingComponent
 import com.example.doctor.core.composables.MedicareTopAppBar
 import com.example.doctor.core.composables.MyDatePickerDialog
 import com.example.doctor.core.composables.SpannableTextComponent
@@ -57,37 +58,41 @@ fun ScheduleScreen(
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
 
-            Column(
-                modifier = modifier
-                    .fillMaxSize(),
-            ) {
-                HomeScreenSection(title = R.string.upcoming_appointments) {
-                    Column {
-                        Spacer(modifier = Modifier.height(Spacing.small))
-                        DatePickerButtonComponent(
-                            date =uiState.bookedDate.toFullDate(),
-                            onClick = {
-                                uiState.datePickerState.show()
-                            },
-                            modifier = Modifier.padding(horizontal = Spacing.medium),
-                        )
+            if (clinicsAppointments.isEmpty()){
+                LoadingComponent()
+            }else{
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                ) {
+                    HomeScreenSection(title = R.string.upcoming_appointments) {
+                        Column {
+                            Spacer(modifier = Modifier.height(Spacing.small))
+                            DatePickerButtonComponent(
+                                date = uiState.bookedDate.toFullDate(),
+                                onClick = {
+                                    uiState.datePickerState.show()
+                                },
+                                modifier = Modifier.padding(horizontal = Spacing.medium),
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    DaySocketHorizontalList(
+                        workDays = uiState.clinic.workDays,
+                        selectedIndex = uiState.selectedDaySocketIndex,
+                        updateSelectedIndex = updateBookedDateEvent,
+                        startDayBeforeToday = 0,
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    ClinicAppointmentVerticalList(
+                        clinicsAppointments = clinicsAppointments,
+                        appointmentsVisitNumbers = appointmentsVisitNumbers,
+                    )
                 }
-                Spacer(modifier = Modifier.height(Spacing.medium))
-
-                DaySocketHorizontalList(
-                    workDays = uiState.clinic.workDays,
-                    selectedIndex = uiState.selectedDaySocketIndex,
-                    updateSelectedIndex = updateBookedDateEvent,
-                    startDayBeforeToday=0,
-                )
-
-                Spacer(modifier = Modifier.height(Spacing.medium))
-
-                ClinicAppointmentVerticalList(
-                    clinicsAppointments=clinicsAppointments,
-                    appointmentsVisitNumbers=appointmentsVisitNumbers,
-                )
             }
         }
     }

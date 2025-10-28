@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.medicare.R
+import com.example.medicare.core.composables.LoadingComponent
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.NotificationList
 import com.example.medicare.data.model.notification.Notification
@@ -38,13 +39,17 @@ fun NotificationScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
-            Column {
-                Spacer(modifier = Modifier.height(Spacing.medium))
+            if (listOfNotifications.isEmpty()){
+                LoadingComponent()
+            }else{
+                Column {
+                    Spacer(modifier = Modifier.height(Spacing.medium))
 
-                NotificationList(
-                    notifications = listOfNotifications,
-                    modifier = modifier.padding(horizontal = Spacing.medium)
-                )
+                    NotificationList(
+                        notifications = listOfNotifications,
+                        modifier = modifier.padding(horizontal = Spacing.medium)
+                    )
+                }
             }
         }
     }

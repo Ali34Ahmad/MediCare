@@ -19,6 +19,7 @@ import com.example.dispensary.ui.composables.ElevatedButtonComponent
 import com.example.dispensary.ui.composables.ResponsibleDoctorCardComponent
 import com.example.dispensary.ui.composables.SpannableTextComponent
 import com.example.medicare.R
+import com.example.medicare.core.composables.LoadingComponent
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.NoListItemAvailableComponent
 import com.example.medicare.core.enums.DayOfWeek
@@ -71,70 +72,74 @@ fun HomeScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-            ) {
-                HomeScreenSection(
-                    title = R.string.clinics,
-                    list = {
-                        SectionsList(
-                            clinics = clinics,
-                            modifier = Modifier.padding(vertical = Spacing.small),
-                            onClick = {
-                                updateSelectedClinicEvent(it)
-                            },
-                            currentIndex = uiState.selectedClinicIndex
+            if (clinics.isEmpty()) {
+                LoadingComponent()
+            } else {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                ) {
+                    HomeScreenSection(
+                        title = R.string.clinics,
+                        list = {
+                            SectionsList(
+                                clinics = clinics,
+                                modifier = Modifier.padding(vertical = Spacing.small),
+                                onClick = {
+                                    updateSelectedClinicEvent(it)
+                                },
+                                currentIndex = uiState.selectedClinicIndex
 
-                        )
-                    },
-                )
-                ResponsibleDoctorCardComponent(
-                    doctor = if (clinics.isNotEmpty()) clinics[uiState.selectedClinicIndex].responsibleDoctor else Doctor(),
-                    onClick = { if (clinics.isNotEmpty()) navigateToBookAppointment(clinics[uiState.selectedClinicIndex].id) },
-                    modifier = Modifier.padding(
-                        horizontal = Spacing.medium,
-                        vertical = Spacing.small
-                    )
-                )
-                HomeScreenSection(
-                    title = R.string.upcoming_vaccinations,
-                    list = {
-                        if (vaccinationAppointments.isNotEmpty())
-                            UpcomingVaccinationAppointmentHorizontalList(
-                                upcomingVaccinationAppointments = vaccinationAppointments,
-                                modifier = Modifier.padding(vertical = Spacing.small)
                             )
-                        else
-                            NoListItemAvailableComponent(text=R.string.no_upcoming_vaccination_appointments)
-                    },
-                    showSubtext = true,
-                    onSubtextClick = {
-                        navigateToVaccinationAppointment()
-                    },
-                    numberOfUpcomingAppointments = vaccinationAppointments.size,
-                    showSeeAllButton = true,
-                )
-
-                HomeScreenSection(
-                    title = R.string.upcoming_appointment,
-                    list = {
-                        if(clinicAppointments.isNotEmpty())
-                        ClinicAppointmentHorizontalList(
-                            clinicsAppointments = clinicAppointments,
-                            modifier = Modifier.padding(vertical = Spacing.small)
+                        },
+                    )
+                    ResponsibleDoctorCardComponent(
+                        doctor = if (clinics.isNotEmpty()) clinics[uiState.selectedClinicIndex].responsibleDoctor else Doctor(),
+                        onClick = { if (clinics.isNotEmpty()) navigateToBookAppointment(clinics[uiState.selectedClinicIndex].id) },
+                        modifier = Modifier.padding(
+                            horizontal = Spacing.medium,
+                            vertical = Spacing.small
                         )
-                        else
-                            NoListItemAvailableComponent(text=R.string.no_upcoming_appointments)
-                    },
-                    onSubtextClick = {
-                        navigateToClinicsAppointment()
-                    },
-                    showSubtext = true,
-                    numberOfUpcomingAppointments = clinicAppointments.size,
-                    showSeeAllButton = true,
-                )
+                    )
+                    HomeScreenSection(
+                        title = R.string.upcoming_vaccinations,
+                        list = {
+                            if (vaccinationAppointments.isNotEmpty())
+                                UpcomingVaccinationAppointmentHorizontalList(
+                                    upcomingVaccinationAppointments = vaccinationAppointments,
+                                    modifier = Modifier.padding(vertical = Spacing.small)
+                                )
+                            else
+                                NoListItemAvailableComponent(text = R.string.no_upcoming_vaccination_appointments)
+                        },
+                        showSubtext = true,
+                        onSubtextClick = {
+                            navigateToVaccinationAppointment()
+                        },
+                        numberOfUpcomingAppointments = vaccinationAppointments.size,
+                        showSeeAllButton = true,
+                    )
 
+                    HomeScreenSection(
+                        title = R.string.upcoming_appointment,
+                        list = {
+                            if (clinicAppointments.isNotEmpty())
+                                ClinicAppointmentHorizontalList(
+                                    clinicsAppointments = clinicAppointments,
+                                    modifier = Modifier.padding(vertical = Spacing.small)
+                                )
+                            else
+                                NoListItemAvailableComponent(text = R.string.no_upcoming_appointments)
+                        },
+                        onSubtextClick = {
+                            navigateToClinicsAppointment()
+                        },
+                        showSubtext = true,
+                        numberOfUpcomingAppointments = clinicAppointments.size,
+                        showSeeAllButton = true,
+                    )
+
+                }
             }
         }
     }

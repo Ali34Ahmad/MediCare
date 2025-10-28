@@ -23,6 +23,7 @@ import com.example.doctor.core.composables.DatePickerButtonComponent
 import com.example.doctor.core.composables.DaySocketHorizontalList
 import com.example.doctor.core.composables.ElevatedButtonComponent
 import com.example.doctor.core.composables.ErrorDialog
+import com.example.doctor.core.composables.LoadingComponent
 import com.example.doctor.core.composables.LoadingDialog
 import com.example.doctor.core.composables.MedicareTopAppBar
 import com.example.doctor.core.composables.MyDatePickerDialog
@@ -51,8 +52,6 @@ fun ProfileScreen(
     updateErrorDialogVisibilityStateEvent:(Boolean)->Unit,
     updateSuccessDialogVisibilityStateEvent:(Boolean)->Unit,
 ) {
-
-
     ErrorDialog(
         showDialog = uiState.showErrorDialog,
         onDismissRequest = {
@@ -93,81 +92,85 @@ fun ProfileScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize(),
-            ) {
-                Spacer(modifier = Modifier.height(Spacing.medium))
+            if (clinicsAppointments.isEmpty()){
+                LoadingComponent()
+            }else{
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                ) {
+                    Spacer(modifier = Modifier.height(Spacing.medium))
 
-                ClinicInformationCardComponent(
-                    clinic = uiState.clinic,
-                    modifier = Modifier.padding(horizontal = Spacing.medium)
-                )
+                    ClinicInformationCardComponent(
+                        clinic = uiState.clinic,
+                        modifier = Modifier.padding(horizontal = Spacing.medium)
+                    )
 
-                Spacer(modifier = Modifier.height(Spacing.small))
+                    Spacer(modifier = Modifier.height(Spacing.small))
 
-                if (uiState.clinic.name == stringResource(id = R.string.vaccines)) {
-                    Column {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Spacing.medium),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = stringResource(id = R.string.new_vaccine_available))
-                            Spacer(modifier = Modifier.weight(1f))
-                            ElevatedButtonComponent(
-                                text = R.string.notify_parents,
-                                onClick = {
-                                    if (uiState.currentSelectedVaccineIndex != null && defaultVaccineTableVaccines.isNotEmpty())
-                                        pushNotificationEvent(
-                                            defaultVaccineTableVaccines[uiState.currentSelectedVaccineIndex]
-                                        )
-                                },
-                                isDisabled = false
+                    if (uiState.clinic.name == stringResource(id = R.string.vaccines)) {
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = Spacing.medium),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = stringResource(id = R.string.new_vaccine_available))
+                                Spacer(modifier = Modifier.weight(1f))
+                                ElevatedButtonComponent(
+                                    text = R.string.notify_parents,
+                                    onClick = {
+                                        if (uiState.currentSelectedVaccineIndex != null && defaultVaccineTableVaccines.isNotEmpty())
+                                            pushNotificationEvent(
+                                                defaultVaccineTableVaccines[uiState.currentSelectedVaccineIndex]
+                                            )
+                                    },
+                                    isDisabled = false
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(Spacing.medium))
+
+                            DefaultVaccineTableList(
+                                defaultVaccineTable = defaultVaccineTableVaccines,
+                                selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
+                                onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
                             )
                         }
-                        Spacer(modifier=Modifier.height(Spacing.medium))
-
-                        DefaultVaccineTableList(
-                            defaultVaccineTable = defaultVaccineTableVaccines,
-                            selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
-                            onAvailableVaccineListItemClick = onAvailableVaccineListItemClick
-                        )
                     }
-                }
 
 
-                Spacer(modifier = Modifier.height(Spacing.small))
+                    Spacer(modifier = Modifier.height(Spacing.small))
 
-                HomeScreenSection(title = R.string.appointment_history) {
-                    Column {
-                        DatePickerButtonComponent(
-                            date = uiState.bookedDate.toFullDate(),
-                            onClick = {
-                                uiState.datePickerState.show()
-                            },
-                            modifier = Modifier.padding(horizontal = Spacing.medium),
-                        )
-                        Spacer(modifier = Modifier.height(Spacing.medium))
+                    HomeScreenSection(title = R.string.appointment_history) {
+                        Column {
+                            DatePickerButtonComponent(
+                                date = uiState.bookedDate.toFullDate(),
+                                onClick = {
+                                    uiState.datePickerState.show()
+                                },
+                                modifier = Modifier.padding(horizontal = Spacing.medium),
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.medium))
 
-                        DaySocketHorizontalList(
-                            workDays = uiState.clinic.workDays,
-                            selectedIndex = uiState.selectedDaySocketIndex,
-                            updateSelectedIndex = updateBookedDateEvent,
-                            startDayBeforeToday = 60,
-                        )
+                            DaySocketHorizontalList(
+                                workDays = uiState.clinic.workDays,
+                                selectedIndex = uiState.selectedDaySocketIndex,
+                                updateSelectedIndex = updateBookedDateEvent,
+                                startDayBeforeToday = 60,
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    ClinicAppointmentVerticalList(
+                        clinicsAppointments = clinicsAppointments,
+                        appointmentsVisitNumbers = appointmentsVisitNumbers
+                    )
+
+
                 }
-
-                Spacer(modifier = Modifier.height(Spacing.medium))
-
-                ClinicAppointmentVerticalList(
-                    clinicsAppointments = clinicsAppointments,
-                    appointmentsVisitNumbers = appointmentsVisitNumbers
-                )
-
-
             }
         }
     }

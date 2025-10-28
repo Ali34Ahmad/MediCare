@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.medicare.R
+import com.example.medicare.core.composables.LoadingComponent
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.VaccinationTableList
 import com.example.medicare.core.enums.AgeUnit
@@ -38,10 +39,14 @@ fun VaccinationTableScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
-            VaccinationTableList(
-                modifier = modifier,
-                listOfVaccines = vaccinationTable
-            )
+            if (vaccinationTable.isEmpty()){
+                LoadingComponent()
+            }else{
+                VaccinationTableList(
+                    modifier = modifier,
+                    listOfVaccines = vaccinationTable
+                )
+            }
         }
     }
 }

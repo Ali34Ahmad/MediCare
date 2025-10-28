@@ -79,7 +79,7 @@ fun MedicareApp(
 
     MainScaffold(
         showBottomBar = showBottomNavBar,
-        showFloatingActionButton = uiState.value.showFloatingActionButton,
+        showFloatingActionButton = isChildrenScreen,
         onFloatingActionButtonClicked = {
             navController.navigate(Destination.AddChild, viewModel)
         },
@@ -269,7 +269,7 @@ fun MedicareApp(
                     onNotificationIconButtonClick = {
                         navController.navigate(Destination.Notification, viewModel)
                     },
-                    updateSelectedFilter = clinicAppointmentsViewModel::updateSelectedFilter
+                    updateSelectedFilter = clinicAppointmentsViewModel::updateSelectedFilter,
                 )
             }
 
@@ -279,7 +279,7 @@ fun MedicareApp(
                 val children: List<Child> =
                     childrenViewModel.children.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
-                viewModel.updateFABVisibility(children.isNotEmpty() && isChildrenScreen)
+//                viewModel.updateFABVisibility(children.isNotEmpty() && isChildrenScreen)
 
                 ChildrenScreen(
                     uiState = childrenUiState.value,
@@ -395,8 +395,8 @@ fun MedicareApp(
                     },
                     availableVaccines = availableVaccines.value,
                     onAvailableVaccineListItemClick = bookAppointmentViewModel::updateCurrentSelectedId,
-                    updateErrorDialogVisibilityState = bookAppointmentViewModel::updateErrorDialogVisibilityState,
-                    userAndChildrenNames = userAndChildrenNames
+                    updateErrorDialogVisibilityState = bookAppointmentViewModel::updateErrorMessageVisibilityState,
+                    userAndChildrenNames = userAndChildrenNames,
                 )
             }
         }

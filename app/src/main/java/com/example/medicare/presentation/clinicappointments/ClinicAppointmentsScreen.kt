@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.dispensary.ui.composables.ChooseTab
 import com.example.dispensary.ui.composables.ChooseTabState
 import com.example.medicare.R
+import com.example.medicare.core.composables.LoadingComponent
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.enums.DayPeriod
 import com.example.medicare.core.enums.Month
@@ -46,23 +47,26 @@ fun ClinicAppointmentsScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
+            if (clinicAppointments.isEmpty()){
+                LoadingComponent()
+            }else{
+                Column {
+                    ChooseTab(
+                        title = null,
+                        text1 = R.string.upcoming,
+                        text2 = R.string.history,
+                        chooseTabState = uiState.selectedFilter,
+                        onChooseChange = {
+                            updateSelectedFilter(it)
+                        },
+                        modifier = Modifier.padding(horizontal = Spacing.medium)
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.small))
 
-            Column {
-                ChooseTab(
-                    title = null,
-                    text1 = R.string.upcoming,
-                    text2 = R.string.history,
-                    chooseTabState = uiState.selectedFilter,
-                    onChooseChange = {
-                        updateSelectedFilter(it)
-                    },
-                    modifier = Modifier.padding(horizontal = Spacing.medium)
-                )
-                Spacer(modifier = Modifier.height(Spacing.small))
-
-                ClinicAppointmentVerticalList(
-                    clinicsAppointments = clinicAppointments
-                )
+                    ClinicAppointmentVerticalList(
+                        clinicsAppointments = clinicAppointments
+                    )
+                }
             }
         }
     }
@@ -87,7 +91,7 @@ fun ClinicAppointmentsScreenPreview() {
                         )
                     )
                 ),
-                updateSelectedFilter = {}
+                updateSelectedFilter = {},
             )
         }
     }

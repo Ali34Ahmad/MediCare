@@ -138,4 +138,8 @@
     <string name="no_upcoming_vaccination_appointments">No upcoming vaccination appointments.</string>
     <string name="no_available_vaccines">No available vaccines now.</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="error_description">We couldn\'t load the data. Please try again</string>
+    <string name="retry">Retry</string>
+    <string name="loading_description">Trying to fetch your data …</string>
+    <string name="loading">Loading…</string>
 </resources>

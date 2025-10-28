@@ -48,25 +48,19 @@ import com.example.medicare.R
 import com.example.medicare.core.composables.AvailableVaccineList
 import com.example.medicare.core.composables.DaySocketHorizontalList
 import com.example.medicare.core.composables.ErrorDialog
+import com.example.medicare.core.composables.LoadingComponent
 import com.example.medicare.core.composables.LoadingDialog
 import com.example.medicare.core.composables.MedicareTopAppBar
 import com.example.medicare.core.composables.MyDatePickerDialog
 import com.example.medicare.core.composables.NoListItemAvailableComponent
 import com.example.medicare.core.composables.TimeSocketsPager
 import com.example.medicare.core.enums.TimeSocketState
-import com.example.medicare.core.navigate
-import com.example.medicare.core.toFullDate
 import com.example.medicare.data.fake.vaccines
-import com.example.medicare.data.model.child.Child
-import com.example.medicare.data.model.clinic.Clinic
-import com.example.medicare.data.model.date.FullDate
 import com.example.medicare.data.model.vaccine.Vaccine
 import com.example.medicare.presentation.home.HomeScreenSection
-import com.example.medicare.presentation.navigation.Destination
 import com.example.medicare.ui.theme.MediCareTheme
 import com.example.medicare.ui.theme.Spacing
 import java.time.LocalDate
-import java.time.Month
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,7 +110,7 @@ fun BookAppointmentScreen(
     )
 
     ErrorDialog(
-        showDialog = uiState.showErrorDialog,
+        showDialog = uiState.showErrorMessage,
         onDismissRequest = {
             updateErrorDialogVisibilityState(false)
         },
@@ -162,115 +156,118 @@ fun BookAppointmentScreen(
         }
     ) { contentPadding ->
         Surface(modifier = Modifier.padding(contentPadding)) {
+            if (clinicId.isEmpty()){
+                LoadingComponent()
+            }else{
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                ) {
+                    Spacer(modifier = Modifier.height(Spacing.medium))
 
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                Spacer(modifier = Modifier.height(Spacing.medium))
-
-                ClinicInformationCardComponent(
-                    clinic = uiState.clinic,
-                    modifier = Modifier.padding(horizontal = Spacing.medium)
-                )
-
-                Spacer(modifier = Modifier.height(Spacing.medium))
-
-                HomeScreenSection(title = R.string.book_a_date) {
-                    Column {
-                        DatePickerButtonComponent(
-                            dayOfMonth = uiState.bookedDate.dayOfMonth,
-                            month = uiState.bookedDate.month.toString(),
-                            onClick = {
-                                uiState.datePickerState.show()
-                            },
-                            modifier = Modifier.padding(horizontal = Spacing.medium)
-                        )
-                        Spacer(modifier = Modifier.height(Spacing.medium))
-
-                        DaySocketHorizontalList(
-                            workDays = uiState.clinic.workDays,
-                            selectedIndex = uiState.selectedDaySocketIndex,
-                            updateSelectedIndex = updateBookedDateEvent
-                        )
-                    }
-
-                }
-
-
-                Spacer(modifier = Modifier.height(Spacing.medium))
-
-                if (uiState.clinic.name == stringResource(id = R.string.vaccines)) {
-                    if (availableVaccines.isNotEmpty()) {
-                        HomeScreenSection(title = R.string.available_vaccines) {
-                            Column {
-                                AvailableVaccineList(
-                                    availableVaccines = availableVaccines,
-                                    selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
-                                    onAvailableVaccineListItemClick = { index ->
-                                        onAvailableVaccineListItemClick(
-                                            index,
-                                            vaccines[index].id,
-                                        )
-                                    }
-                                )
-                                Spacer(modifier = Modifier.height(Spacing.medium))
-                            }
-                        }
-                    } else {
-                        NoListItemAvailableComponent(text = R.string.no_available_vaccines)
-                    }
-                }
-
-                HomeScreenSection(title = R.string.available_times) {
-                    TimeSocketsPager(
-                        timeSockets = timeSockets,
-                        onPreviousButtonClick = {
-                            slideToPreviousPageEvent()
-                        },
-                        onNextButtonClick = {
-                            slideToNextPageEvent()
-                        },
-                        pagerState = uiState.pagerState,
-                        modifier = Modifier.padding(horizontal = Spacing.small),
-                        onClick = {
-                            updateChosenTimeSocketIndexEvent(it)
-                        },
-                        currentSelectedTimeSocketIndex = uiState.chosenTimeSocketIndex
+                    ClinicInformationCardComponent(
+                        clinic = uiState.clinic,
+                        modifier = Modifier.padding(horizontal = Spacing.medium)
                     )
-                }
 
-                Spacer(modifier = Modifier.height(Spacing.large))
+                    Spacer(modifier = Modifier.height(Spacing.medium))
 
-                ChoosePatientNameSection(
-                    chosenNameIndex = uiState.chosenNameIndex,
-                    showMenu = uiState.isNamesMenuVisible,
-                    listOfNames = uiState.userAndChildrenNames,
-                    modifier = Modifier.padding(horizontal = Spacing.medium),
-                    onMenuItemClick = { index ->
-                        updateChosenNameIndexEvent(index)
-                    },
-                    onClick = {
-                        updateNamesMenuVisibilityStateEvent()
-                    },
-                    onDismissRequest = {
-                        updateNamesMenuVisibilityStateEvent()
+                    HomeScreenSection(title = R.string.book_a_date) {
+                        Column {
+                            DatePickerButtonComponent(
+                                dayOfMonth = uiState.bookedDate.dayOfMonth,
+                                month = uiState.bookedDate.month.toString(),
+                                onClick = {
+                                    uiState.datePickerState.show()
+                                },
+                                modifier = Modifier.padding(horizontal = Spacing.medium)
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.medium))
+
+                            DaySocketHorizontalList(
+                                workDays = uiState.clinic.workDays,
+                                selectedIndex = uiState.selectedDaySocketIndex,
+                                updateSelectedIndex = updateBookedDateEvent
+                            )
+                        }
+
                     }
-                )
 
-                Spacer(modifier = Modifier.height(Spacing.large))
 
-                ElevatedButtonComponent(
-                    text = R.string.book_now,
-                    onClick = {
-                        onBookNowButtonClick()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.medium)
-                )
-                Spacer(modifier = Modifier.height(Spacing.large))
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    if (uiState.clinic.name == stringResource(id = R.string.vaccines)) {
+                        if (availableVaccines.isNotEmpty()) {
+                            HomeScreenSection(title = R.string.available_vaccines) {
+                                Column {
+                                    AvailableVaccineList(
+                                        availableVaccines = availableVaccines,
+                                        selectedVaccineIndex = uiState.currentSelectedVaccineIndex,
+                                        onAvailableVaccineListItemClick = { index ->
+                                            onAvailableVaccineListItemClick(
+                                                index,
+                                                vaccines[index].id,
+                                            )
+                                        }
+                                    )
+                                    Spacer(modifier = Modifier.height(Spacing.medium))
+                                }
+                            }
+                        } else {
+                            NoListItemAvailableComponent(text = R.string.no_available_vaccines)
+                        }
+                    }
+
+                    HomeScreenSection(title = R.string.available_times) {
+                        TimeSocketsPager(
+                            timeSockets = timeSockets,
+                            onPreviousButtonClick = {
+                                slideToPreviousPageEvent()
+                            },
+                            onNextButtonClick = {
+                                slideToNextPageEvent()
+                            },
+                            pagerState = uiState.pagerState,
+                            modifier = Modifier.padding(horizontal = Spacing.small),
+                            onClick = {
+                                updateChosenTimeSocketIndexEvent(it)
+                            },
+                            currentSelectedTimeSocketIndex = uiState.chosenTimeSocketIndex
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(Spacing.large))
+
+                    ChoosePatientNameSection(
+                        chosenNameIndex = uiState.chosenNameIndex,
+                        showMenu = uiState.isNamesMenuVisible,
+                        listOfNames = uiState.userAndChildrenNames,
+                        modifier = Modifier.padding(horizontal = Spacing.medium),
+                        onMenuItemClick = { index ->
+                            updateChosenNameIndexEvent(index)
+                        },
+                        onClick = {
+                            updateNamesMenuVisibilityStateEvent()
+                        },
+                        onDismissRequest = {
+                            updateNamesMenuVisibilityStateEvent()
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.large))
+
+                    ElevatedButtonComponent(
+                        text = R.string.book_now,
+                        onClick = {
+                            onBookNowButtonClick()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Spacing.medium)
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.large))
+                }
             }
         }
     }
@@ -445,7 +442,7 @@ private fun BookAppointmentScreenPreview() {
                 uiState = BookAppointmentUiState(),
                 availableVaccines = emptyList(),
                 onAvailableVaccineListItemClick = { int, string -> },
-                updateErrorDialogVisibilityState = {}
+                updateErrorDialogVisibilityState = {},
             )
         }
     }

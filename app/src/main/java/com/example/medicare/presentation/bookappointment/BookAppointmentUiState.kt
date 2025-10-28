@@ -7,7 +7,6 @@ import com.example.medicare.core.enums.TimeSocketState
 import com.example.medicare.data.model.clinic.Clinic
 import com.example.medicare.data.model.date.Time
 import com.example.medicare.data.model.date.TimeSocket
-import com.example.medicare.data.model.vaccine.Vaccine
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import java.time.LocalDate
 
@@ -60,6 +59,6 @@ data class BookAppointmentUiState (
     val currentSelectedVaccineId: String?=null,
     val vaccineName:String?=null,
     val showLoadingDialog:Boolean=false,
-    val showErrorDialog:Boolean=false,
+    val showErrorMessage:Boolean=false,
     val showSnackBar:Boolean  = false,
 )

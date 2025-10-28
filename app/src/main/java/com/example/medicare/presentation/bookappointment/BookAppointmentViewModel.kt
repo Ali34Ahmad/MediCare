@@ -21,9 +21,15 @@ import com.example.medicare.data.repositories.VaccineRepository
 import com.example.medicare.data.services.AccountService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,6 +48,7 @@ class BookAppointmentViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookAppointmentUiState())
     val uiState = _uiState.asStateFlow()
+
 
     var user = userRepository.user
 
@@ -112,9 +119,9 @@ class BookAppointmentViewModel @Inject constructor(
         return -1
     }
 
-    fun updateErrorDialogVisibilityState(isVisible: Boolean) {
+    fun updateErrorMessageVisibilityState(isVisible: Boolean) {
         _uiState.value =
-            _uiState.value.copy(showErrorDialog = !isVisible)
+            _uiState.value.copy(showErrorMessage = !isVisible)
     }
 
     fun updateLoadingDialogVisibilityState(isVisible: Boolean) {
@@ -132,7 +139,7 @@ class BookAppointmentViewModel @Inject constructor(
             if (selectedTimeSocketIndex != null) {
                 viewModelScope.launch {
                     updateLoadingDialogVisibilityState(true)
-                    val isSuccessful=appointmentRepository.addAppointment(
+                    val isSuccessful = appointmentRepository.addAppointment(
                         Appointment(
                             id = "",
                             clinicId = uiState.value.clinic.id,
@@ -148,14 +155,15 @@ class BookAppointmentViewModel @Inject constructor(
                             patientName = uiState.value.userAndChildrenNames[uiState.value.chosenNameIndex]
                         )
                     )
-                    _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = isSuccessful)
+                    _uiState.value =
+                        _uiState.value.copy(isBookAppointmentIsSuccessful = isSuccessful)
                     updateLoadingDialogVisibilityState(false)
                     updateSnackBarState(!isSuccessful)
                 }
             }
         } catch (e: Exception) {
             updateLoadingDialogVisibilityState(false)
-            updateErrorDialogVisibilityState(true)
+            updateErrorMessageVisibilityState(true)
             Log.e("Book Appointment", e.message ?: "Error")
             _uiState.value = _uiState.value.copy(isBookAppointmentIsSuccessful = false)
             updateSnackBarState(true)
