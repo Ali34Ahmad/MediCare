@@ -21,9 +21,9 @@ The Medicare application suite consists of two distinct mobile applications that
 * Doctor App:  This application enables doctors to view patient history, review vaccination records, and display their schedules.
 
 ## Technologies
-* Frontend (Kotlin): Admin, Employee, and Doctor apps
-
-* Platform: Android, with potential for future expansion to other platforms
+* Architecture: Engineered a robust MVVM (Model-View-ViewModel) and Dual-App Architecture (Patient & Doctor clients) communicating via a central Firebase backend.
+* Design & DI: Successfully built the entire system using Kotlin for the first time, leveraging Hilt-Dagger for robust dependency injection and Jetpack Compose for the entire modern UI.
+* Backend: Utilized Firebase Authentication, Firestore, and FCM (Firebase Cloud Messaging) for real-time data synchronization and notifications, with a Ktor server handling specific business logic.
 
 ## Screenshots of the app:
 <table style="width:100;">
