@@ -4,6 +4,13 @@ An innovative mobile application suite designed to streamline organizational and
 ## Overview
 Medicare is a comprehensive platform developed as a showcase of a semester academic project. It addresses critical issues in healthcare administration, particularly in underserved communities, by providing a robust system for managing patient data, vaccination schedules, and appointments. The application suite consists of multiple interconnected mobile applications, each tailored for a specific user role within a dispensary.
 
+## How it Works
+The Medicare application suite consists of two distinct mobile applications that communicate with a central backend system:
+
+* User App:  This application allows users (patients or their parents) to view their health records, track vaccination schedules, and display appointments.
+
+* Doctor App:  This application enables doctors to view patient history, review vaccination records, and display their schedules.
+
 ## Features
 * Patient Management: The system provides a centralized way to archive children's vaccination records and appointment history, ensuring data integrity and easy access.
 
@@ -12,13 +19,6 @@ Medicare is a comprehensive platform developed as a showcase of a semester acade
 * Data Transparency: By digitizing records, the platform creates a highly transparent system that minimizes errors and improves overall operational efficiency.
 
 * Intuitive UI/UX: The applications feature a clean and user-friendly interface designed to simplify complex healthcare workflows for all user types.
-
-## How it Works
-The Medicare application suite consists of two distinct mobile applications that communicate with a central backend system:
-
-* User App:  This application allows users (patients or their parents) to view their health records, track vaccination schedules, and display appointments.
-
-* Doctor App:  This application enables doctors to view patient history, review vaccination records, and display their schedules.
 
 ## Technologies
 * Architecture: Engineered a robust MVVM (Model-View-ViewModel) and Dual-App Architecture (Patient & Doctor clients) communicating via a central Firebase backend.
